@@ -1,0 +1,77 @@
+The folder mysite/ the name can be anything and is simply a container for the project.
+
+The folder mysite/mysite/ is directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it 
+
+ This is the folder you will usually by inside of.
+
+
+What are apps in Django?
+	An app is a Web application that does something – e.g., a Weblog system, 
+	a database of public records or a small poll app. An app can be in multiple projects.
+
+What are projects in Django?
+	A project is a collection of configuration and apps for a particular website.
+  A project can contain multiple apps.
+  
+Create the db with this command: python manage.py migrate
+	Creates your database accoriding to settings in the mysite/settings.py file and existing 
+	db migrations shipped with django.
+	
+	
+'python manage.py makemigrations polls' Tells Django youve made some changes to your models.
+	and that you want your changes to be stored as a migration. This means you model infomation is
+	saved into migrations files which can then be run using python manage.py migrate. This command actually
+	makes changes to the database. This command only runs migrations that havent been run yet.
+	
+	
+'python manage.py createsuperuser' Creates a new user that can access the Django admin console.
+
+'python manage.py runserver' Start the DEV server. Uses a small lightweight server 
+	built into Djanog, not for prod at all.
+	
+python manage.py shell
+	Allows you to open an interactive python shell that can make changes to your site and db.
+
+'https://pymongo.readthedocs.io/en/stable/installation.html' Go here and install pymongo to use mongodb with Django.
+
+Install DJONGO
+	'pip install djongo'
+	
+DOWNGRADE PYMONGO
+	'python -m pip install pymongo==3.12.2'
+	For some reason pymongo 4.0 doesnt work with djongo so downgrade it to this.
+	Not sure why or how I was supposed to know that but someone on stackoverflow recommended to downgrade pymongo.
+	https://stackoverflow.com/questions/70185942/why-i-am-getting-not-implemented-error-
+	database-objects-do-not-implement-truth
+	
+	
+Djongo allows us to use Django as if we had a relational database, so refer to this as a reference
+	https://docs.djangoproject.com/en/3.2/intro/tutorial02/ when working with database data in django. The tutorial
+	is using an interactive shell but it works the same in the actual Djanog view code.
+	
+	https://www.djongomapper.com/get-started/ -- shows you how to use Djangos built in relational object methods
+	to interact with the mongodb database.
+
+pip freeze | grep pymongo - view what version of pymongo is running on your project
+pip freeze | grep djongo
+
+
+
+MONGODB:
+
+	Collections are like tables, collections hold documents, and each document has an id or object id which is 
+	like a 	primary key.
+	
+	
+	'use dbname' to use or create a db
+	'db.dropDatabase()' to delete a db
+	'db.createCollection('collectionName')' create a collection, which is like a table with the given name
+	'db.collectionName.insert({key: 'value', date: Date(), likes: 4, tags: ['news', 'events'], user: {name: 'Johny', status: 'author', age: 99} })'
+		insert a value into the collection, like inserting a row in sql.
+	'show collections' shows all the collections in the db
+	'db.collectionName.find().pretty()' - shows all documents in the collection. pretty is optional but makes it the output look nice.
+	'db.posts.find({ category: 'News'}).pretty()' Finds the document in posts that has category equal to 'News'.
+
+	
+	
+	

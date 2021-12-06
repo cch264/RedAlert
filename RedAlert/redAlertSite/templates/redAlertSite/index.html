@@ -1,0 +1,18 @@
+<div>
+  YOUR SITE WORKS!!!
+  {% if user_list %}
+    {% for user in user_list %}
+      <ul>
+          <li> Agent Name: {{ user.username }} Agent password: {{ user.password }}</li>
+      </ul>
+
+    {% endfor %}
+
+  {% else %}
+    <div> No Users in system </div>
+
+  {% endif %}
+
+<!-- url is a function that takes a apps URLconf name space defined in redAlertSite/urls.py and a name, which is assigned in the redAlertSite/urls.py file -->
+  <a href= "{% url 'red_alert_site:create_new_user' %}"> Click Here to create a new user! </a>
+</div>
