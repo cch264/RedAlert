@@ -4,5 +4,7 @@ from django.db import models
 # It were a relational database! This is so we dont have to do any roundabout stuff
 # To do things that are built into Django.
 
-    class client_data( Models.models ):
-        client_name = models.CharField( max_length=200 )
+   class ClientData(models.Model):
+    client_ID = models.IntegerField()
+    client_Name = models.CharField(max_length=70)
+    client_Email = models.EmailField(max_length=70)
