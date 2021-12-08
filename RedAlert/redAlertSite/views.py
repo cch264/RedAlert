@@ -3,6 +3,7 @@ from django.template import loader
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 
 # Create your views here.
