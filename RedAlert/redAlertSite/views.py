@@ -44,3 +44,16 @@ def save_new_user( request ):
     new_user.save()
 
     return HttpResponseRedirect( reverse('red_alert_site:landing_page') )
+
+def send_email( request ):
+    if request.method == "POST":
+        subject = request.POST['email-subject']
+        message = request.POST['email-message']
+        recipient = request.POST['recipient-email']
+
+        send_mail(subject, message, "RedAlertTester@gmail.com", recipient)
+
+        return render(request, 'redAlertSite/send_email.html')
+
+    else:
+        return render(request, 'redAlertSite/send_email.html')
