@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<div>
+  <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
+<form action="{% url 'red_alert_site:send_email' %}" method="post">
+  <!-- Protects against Cross Site Request Forgeries -->
+  {% csrf_token %}
+
+  <div>
+    <span> Receiving Email: </span>
+    <input type="email" id="recipient-email" name="recipient-email"> </input>
+  </div>
+
+  <div>
+    <span> Subject: </span>
+    <input type="subject" id="email-subject" name="email-subject">  </input>
+  </div>
+
+  <div>
+    <span> Message: </span>
+    <input type="message" id="email-message" name="email-message">  </input>
+  </div>
+
+  <input type="submit" value="Send Email">
+</form>
+</div>
+© 2021 GitHub, Inc.
+Terms
+Privacy
