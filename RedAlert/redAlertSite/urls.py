@@ -12,4 +12,5 @@ urlpatterns = [
     path('admin/', admin.site.urls ),
     path('create_new_user/', views.create_new_user, name='create_new_user'),
     path('save_new_user/', views.save_new_user, name='save_new_user'),
+    path('send_email/', views.send_email, name='send_email'),
 ]
