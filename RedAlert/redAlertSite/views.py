@@ -3,13 +3,19 @@ from django.template import loader
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.core.mail import send_mail
+from django.views import View
+from django.db.models import Q
+from .models import Client
+import random
 
 
 # Create your views here.
 # A view function is the code we run before showing a user a page so we can query the database and perform other functions
 # like user authentication or creating a list of data to show on the web page.
-def landing_page( request ):
+# If login_success =3 , user did not just log in. 0 if user failed to log in and 1 if they succeeded in logging in.
+def landing_page( request, login_success=3 ):
 
     # Users are stored in the auth_user table!!!
     # User class is something built into Djanog, so you will not see a User object in the models.py file.
@@ -19,6 +25,7 @@ def landing_page( request ):
 
     context = {
                'user_list': user_list,
+               'login_success': login_success,
     }
     # More concise way of rendering a template. Takes a request object, template name as second arg,
     # and dictionary as its third arg.
@@ -50,7 +57,8 @@ def send_email( request ):
     if request.method == "POST":
         subject = request.POST['email-subject']
         message = request.POST['email-message']
-        recipient = request.POST['recipient-email']
+        # The recipient must be a tuple or list.
+        recipient = (request.POST['recipient-email'], )
 
         send_mail(subject, message, "RedAlertTester@gmail.com", recipient)
 
@@ -58,3 +66,59 @@ def send_email( request ):
 
     else:
         return render(request, 'redAlertSite/send_email.html')
+
+
+def user_log_in( request ):
+    return render(request, 'redAlertSite/user_login.html')
+
+
+def auth_user_login( request ):
+    user = authenticate(username= request.POST['user-name'], password=request.POST['user-pass'])
+    if user is not None:
+        # A backend authenticated the credentials
+        return HttpResponseRedirect(reverse('red_alert_site:landing_page', args=(1,)))
+    else:
+        # No backend authenticated the credentials
+        return HttpResponseRedirect(reverse('red_alert_site:landing_page', args=(0,)))
+
+def search_clients( request):
+    '''
+    name_list = ['Johny', 'Bell', "Johnathan", "Connor", "Candace", "Bill", "Colton", "Ben"]
+    for n in range(8):
+        new_client = Client()
+        new_client.name = name_list[n]
+        new_client.email = random.randint(2000, 3000)
+        new_client.age = random.randint(1, 100)
+
+        new_client.save()
+'''
+    all_clients = Client.objects.all()
+
+    context = {
+               'all_clients': all_clients,
+    }
+
+    return render(request, 'redAlertSite/search_clients.html', context )
+
+def execute_search( request ):
+    client_query = request.POST['search-query']
+    search_results = get_queryset( client_query )
+
+    context = {
+        'search_results': search_results,
+    }
+
+    return render(request, 'redAlertSite/search_clients_results.html', context )
+
+
+def get_queryset( search_query ): # new
+
+    print("SEARCH QUERY IS " + search_query )
+    # If search query is number convert it to a number
+    if search_query.isdigit():
+        search_query = int( search_query )
+        print("CONVERTED TO INT" )
+
+
+    return Client.objects.filter(
+        Q(age=search_query) | Q(name__icontains= search_query) | Q(email=search_query))
