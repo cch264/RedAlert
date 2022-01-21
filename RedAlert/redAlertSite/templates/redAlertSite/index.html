@@ -1,5 +1,9 @@
-<div>
-  YOUR SITE WORKS!!!
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'redAlertSite/styles/style.css' %}">
+<script src="{% static 'redAlertSite/js/app.js' %}" > </script>
+
+<div id='main-display-div' >
   {% if user_list %}
     {% for user in user_list %}
       <ul>
@@ -13,6 +17,20 @@
 
   {% endif %}
 
+  {% if login_success == 0 %}
+    <div style="background-color: red; display:inline-block"> Failed to log in! Try again! </div>
+    <br>
+  {% elif login_success == 1 %}
+    <div style="background-color: green; display:inline-block"> Succesfuly authenticated your account! </div>
+    <br>
+  {% endif %}
+
 <!-- url is a function that takes a apps URLconf name space defined in redAlertSite/urls.py and a name, which is assigned in the redAlertSite/urls.py file -->
   <a href= "{% url 'red_alert_site:create_new_user' %}"> Click Here to create a new user! </a>
+  <br>
+  <a href= "{% url 'red_alert_site:send_email' %}"> Click Here to send an email notification! </a>
+  <br>
+  <a href= "{% url 'red_alert_site:log_in_user' %}"> Click Here to log in! </a>
+  <br>
+  <a href= "{% url 'red_alert_site:search_clients' %}"> Click Hereto search for users! </a>
 </div>

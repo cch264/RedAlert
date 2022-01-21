@@ -1,0 +1,22 @@
+<div>
+  <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
+<form action="{% url 'red_alert_site:execute_search' %}" method="post">
+  <!-- Protects against Cross Site Request Forgeries -->
+  {% csrf_token %}
+
+  <div>
+    <span>Search Query: </span>
+    <input type="text" id="client-search-box" name="search-query"> </input>
+  </div>
+
+</form>
+
+
+<div>
+  <span>All Clients in DB </span> <br>
+  {% for client in all_clients %}
+    <div> Client Name: {{ client.name}} Client Email: {{ client.email }} Client Age {{ client.age}} </div>
+
+  {% endfor %}
+</div>
+</div>
