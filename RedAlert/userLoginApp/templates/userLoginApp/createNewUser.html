@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+
+
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/style.css' %}">
+  <script src="{% static 'userLoginApp/js/app.js' %}" > </script>
+
+  {% block head_content %}
+    <head>
+      <title>Create New User </title>
+      <meta name="description" content="Our first page">
+    </head> 
+  {% endblock %}  
+
+  {% block content %}
+    <div>
+
+        <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
+      <form action="{% url 'loginAppUrls:save_new_user' %}" method="post">
+        <!-- Protects against Cross Site Request Forgeries -->
+        {% csrf_token %}
+      
+        <div>
+          <span> First Name: </span>
+          <input type="text" id="new-user-first-name" name="new-user-first-name"> </input>
+        </div>
+
+        <div>
+          <span> Last Name: </span>
+          <input type="text" id="new-user-last-name" name="new-user-last-name"> </input>
+        </div>
+
+
+        <div>
+          <span> Email: </span>
+          <input type="text" id="new-user-email" name="new-user-email"> </input>
+        </div>
+      
+        <div>
+          <span> Password: </span>
+          <input type="password" id="new-user-pass" name="new-user-pass">  </input>
+        </div>
+
+        <div>
+            <span> Birthdate: </span>
+            <input type="text" id="new-user-birthday" name="new-user-birthday">  </input>
+        </div>
+
+        <div>
+            <span> State Farm Agency Name: </span>
+            <input type="text" id="new-user-agency" name="new-user-agency">  </input>
+        </div>
+
+
+        <div>
+            <span> Agent Code: </span>
+            <input type="text" id="new-user-agent-code" name="new-user-agent-code">  </input>
+        </div>
+
+        <div>
+            <span> Phone Number: </span>
+            <input type="text" id="new-user-phone" name="new-user-agent-phone">  </input>
+        </div>
+
+        <div>
+            <span> Your Address: </span>
+            <input type="text" id="new-user-address" name="new-user-address">  </input>
+        </div>
+      
+      
+        <input type="submit" value="Create your account!">
+      </form>
+    </div>
+  {% endblock %}

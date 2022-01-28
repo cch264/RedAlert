@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% block head_content %}
+    <head>
+        <title>{% block title %}My amazing site{% endblock %}</title>
+    </head>
+{% endblock %}
+
+    <body>
+        <div> This is Our Site Nav Bar! </div>
+
+
+        <div>
+            <!-- Templates located in apps will extend this template and contain
+                 blocks of their own which will overwrite the content block with their
+                 own content. Templates in apps will contain their own block titles content, which will tell django to place that HTML
+                 inside of this file and display it.
+            -->
+            {% block content %} {% endblock %}
+        </div>
+
+
+        <div> This is our site Footer! </div>
+    </body>
+
+    
+</html>

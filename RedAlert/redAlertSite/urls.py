@@ -12,6 +12,7 @@ urlpatterns = [
     # you can have multiple urls for the same path. In this case we want to go to the landing page but we want to pass in a success
     # value so we know the user just logged in.
     path('<int:login_success>', views.landing_page, name='landing_page' ),
+    path('log_in_success', views.landing_page, name="landing_page_2"),
     path('admin/', admin.site.urls ),
     path('create_new_user/', views.create_new_user, name='create_new_user'),
     path('save_new_user/', views.save_new_user, name='save_new_user'),

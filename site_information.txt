@@ -4,6 +4,7 @@ The folder mysite/mysite/ is directory is the actual Python package for your pro
 
  This is the folder you will usually by inside of.
 
+Django root directory is the directory that contains manage.py
 
 What are apps in Django?
 	An app is a Web application that does something – e.g., a Weblog system, 
@@ -34,6 +35,9 @@ python manage.py shell
 
 'https://pymongo.readthedocs.io/en/stable/installation.html' Go here and install pymongo to use mongodb with Django.
 
+Install Django:
+	pip3 install Django
+
 Install DJONGO
 	'pip install djongo'
 	
@@ -52,16 +56,37 @@ Djongo allows us to use Django as if we had a relational database, so refer to t
 	https://www.djongomapper.com/get-started/ -- shows you how to use Djangos built in relational object methods
 	to interact with the mongodb database.
 
+Create new Django App
+	python manage.py startapp user_login_app
+
 pip freeze | grep pymongo - view what version of pymongo is running on your project
 pip freeze | grep djongo
 
 
+Install Nginx   
+	sudo apt install nginx
+   
+Remove enabled site that you dont need.
+   rm /etc/nginx/sites-enabled/default
+   
+
+Allow NGINx through firewall by using UFW
+	sudo ufw allow 'Nginx Full'
+	
+Allow SSH to server DO THIS BEFORE STARTING UFW or else you cant connect back to the server
+	sudo ufw allow ssh
+
+
 
 MONGODB:
+	
+	connect to mongodb shell 'mongo'
+	
+	Show all databases 'show databases'
+
 
 	Collections are like tables, collections hold documents, and each document has an id or object id which is 
 	like a 	primary key.
-	
 	
 	'use dbname' to use or create a db
 	'db.dropDatabase()' to delete a db
@@ -72,6 +97,21 @@ MONGODB:
 	'db.collectionName.find().pretty()' - shows all documents in the collection. pretty is optional but makes it the output look nice.
 	'db.posts.find({ category: 'News'}).pretty()' Finds the document in posts that has category equal to 'News'.
 
+List information about running db server
+	db.serverCmdLineOpts()
+	127.0.0.1:60924
+	db name: red_alert_db_development
+	
+Show ipaddress and port number for running db server	
+	db.runCommand({whatsmyuri : 1})
+
+
+Start Stop or Restart mongodb local server
+	sudo systemctl status mongodb
+	sudo systemctl stop mongodb
+	sudo systemctl start mongodb
+	sudo systemctl restart mongodb
+	
 	
 	
 	
