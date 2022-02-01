@@ -139,6 +139,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Define directories where static files are located so django can find them.
+# Without the path to static_assets, the files in static_assets would not be added to /RedAlert/static which is
+# where our production http server, NGINX finds files to serve our site with.
 STATICFILES_DIRS = (
     'RedAlert/static_assets',
 )

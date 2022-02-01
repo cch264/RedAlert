@@ -4,17 +4,19 @@
 <html lang="en">
     <head>
         {% block head_title %}
-            <title>{% block title %}Red Alert Site{% endblock %}</title>
+            <title>Red Alert Site</title>
         {% endblock %}
 
-        <!-- Custom page styles go here -->
-        {% block css_and_js_links %} {% endblock %}
-
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- <script type="text/javascript" src="{% static '../jquery-3.6.0.min.js' %}"></script> -->
 
-        <!-- Every single page has access to jquery with this tag. -->
-        <script src="{% static 'GlobalAssets/js/jquery-3.6.0.min.js' %}" > </script>
+        <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/bootstrap.min.css' %}">
+
+
+        <!-- Custom page styles go here, load custom style sheets last. -->
+        {% block css_links %} {% endblock %}
+
         
     </head>
 
@@ -33,6 +35,20 @@
 
 
         <div> This is our site Footer! </div>
+
+        <!-- Add jquery and bootstrap to every single page. Bootstrap says to place these scripts here right before the closing body tag.-->
+        <!-- Every single page has access to jquery with this tag. -->
+        <script src="{% static 'GlobalAssets/js/jquery-3.6.0.min.js' %}" > </script>
+        
+        <!-- Jquery uses jquery 3.2.1 so if there are issues well download a new version of jquery-->
+        <script src="{% static 'GlobalAssets/js/bootstrap.min.js' %}" > </script>
+
+        <script src="{% static 'GlobalAssets/js/popper.min.js' %}" > </script>
+
+
+        <!-- Add page custom js last. -->
+        {% block js_links %} {% endblock %}
+
     </body>
 
     

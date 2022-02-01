@@ -4,39 +4,40 @@
 
   
 
-  <head>
+  
       {% block head_title %}
         <title>Create New User </title>
       {% endblock %}  
 
       <meta name="description" content="Our first page">
 
-      {% block css_and_js_links %}
+      {% block css_links %}
         <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userLogin.css' %}">
-        <script src="{% static 'userLoginApp/js/userLogin.js' %}" > pageLoad(); </script> 
 
       {% endblock %}
-    </head> 
+  
 
   {% block content %}
-    <div>
+
+    <div class="d-flex justify-content-center my-xl-5 mx-2 ">
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <!-- Submit to the same url that brought us here! Now we dont need 2 views to create and save a user. -->
-      <form action="{% url 'loginAppUrls:create_new_user' %}" method="post">
+      <form id='create-new-user-form' action="{% url 'loginAppUrls:create_new_user' %}" method="post">
         <!-- Protects against Cross Site Request Forgeries -->
         {% csrf_token %}
         
           <!-- as_ul wraps all the output form elements into li elements, but we need to provide the surrounding ul tag elements. -->
-          <!-- {{ signUpForm.as_ul }} -->
+          <!-- signUpForm.as_ul  -->
 
           <!-- What seems to be the best way to render a form with style tags without needing js to finish the job. -->  
           {% for field in signUpForm %}
 
-            <div> 
+            <div class="form-group label-input-cont"> 
               <!-- Render the fields label -->
-              <span class="form-label"> {{ field.label_tag }} </span>
+              {{ field.label_tag }}
+
               <!-- Render the actual field-->
-              <span class="form-field"> {{ field }} </span>
+              {{ field }} 
              </div>
 
 
@@ -46,4 +47,11 @@
         <input type="submit" value="Create your account!">
       </form>
     </div>
+
+
+  </div>  
+  {% endblock %}
+
+  {% block js_links %}
+    <script src="{% static 'userLoginApp/js/userLogin.js' %}" > pageLoad(); </script> 
   {% endblock %}
