@@ -15,3 +15,6 @@ class UserInfo( models.Model ):
     # This is the id of the user object! Not this object but a seperate object model created by django which we actually use for authentication.
     user_id = models.IntegerField()
     account_creation_date = models.DateField( auto_now = True )
+
+    def __str__(self):
+        return self.name

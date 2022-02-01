@@ -1,11 +1,22 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
-{% block head_content %}
     <head>
-        <title>{% block title %}My amazing site{% endblock %}</title>
+        {% block head_title %}
+            <title>{% block title %}Red Alert Site{% endblock %}</title>
+        {% endblock %}
+
+        <!-- Custom page styles go here -->
+        {% block css_and_js_links %} {% endblock %}
+
+
+        <!-- <script type="text/javascript" src="{% static '../jquery-3.6.0.min.js' %}"></script> -->
+
+        <!-- Every single page has access to jquery with this tag. -->
+        <script src="{% static 'GlobalAssets/js/jquery-3.6.0.min.js' %}" > </script>
+        
     </head>
-{% endblock %}
 
     <body>
         <div> This is Our Site Nav Bar! </div>

@@ -1,74 +1,48 @@
 {% extends "base.html" %}
 
+{% load static %}
 
+  
 
-  {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/style.css' %}">
-  <script src="{% static 'userLoginApp/js/app.js' %}" > </script>
+  <head>
+      {% block head_title %}
+        <title>Create New User </title>
+      {% endblock %}  
 
-  {% block head_content %}
-    <head>
-      <title>Create New User </title>
       <meta name="description" content="Our first page">
+
+      {% block css_and_js_links %}
+        <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userLogin.css' %}">
+        <script src="{% static 'userLoginApp/js/userLogin.js' %}" > pageLoad(); </script> 
+
+      {% endblock %}
     </head> 
-  {% endblock %}  
 
   {% block content %}
     <div>
-
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
-      <form action="{% url 'loginAppUrls:save_new_user' %}" method="post">
+        <!-- Submit to the same url that brought us here! Now we dont need 2 views to create and save a user. -->
+      <form action="{% url 'loginAppUrls:create_new_user' %}" method="post">
         <!-- Protects against Cross Site Request Forgeries -->
         {% csrf_token %}
-      
-        <div>
-          <span> First Name: </span>
-          <input type="text" id="new-user-first-name" name="new-user-first-name"> </input>
-        </div>
+        
+          <!-- as_ul wraps all the output form elements into li elements, but we need to provide the surrounding ul tag elements. -->
+          <!-- {{ signUpForm.as_ul }} -->
 
-        <div>
-          <span> Last Name: </span>
-          <input type="text" id="new-user-last-name" name="new-user-last-name"> </input>
-        </div>
+          <!-- What seems to be the best way to render a form with style tags without needing js to finish the job. -->  
+          {% for field in signUpForm %}
 
-
-        <div>
-          <span> Email: </span>
-          <input type="text" id="new-user-email" name="new-user-email"> </input>
-        </div>
-      
-        <div>
-          <span> Password: </span>
-          <input type="password" id="new-user-pass" name="new-user-pass">  </input>
-        </div>
-
-        <div>
-            <span> Birthdate: </span>
-            <input type="text" id="new-user-birthday" name="new-user-birthday">  </input>
-        </div>
-
-        <div>
-            <span> State Farm Agency Name: </span>
-            <input type="text" id="new-user-agency" name="new-user-agency">  </input>
-        </div>
+            <div> 
+              <!-- Render the fields label -->
+              <span class="form-label"> {{ field.label_tag }} </span>
+              <!-- Render the actual field-->
+              <span class="form-field"> {{ field }} </span>
+             </div>
 
 
-        <div>
-            <span> Agent Code: </span>
-            <input type="text" id="new-user-agent-code" name="new-user-agent-code">  </input>
-        </div>
 
-        <div>
-            <span> Phone Number: </span>
-            <input type="text" id="new-user-phone" name="new-user-agent-phone">  </input>
-        </div>
-
-        <div>
-            <span> Your Address: </span>
-            <input type="text" id="new-user-address" name="new-user-address">  </input>
-        </div>
-      
-      
+          {% endfor %}
+        
         <input type="submit" value="Create your account!">
       </form>
     </div>

@@ -16,6 +16,7 @@ from redAlertSite.models import Client
 from .models import UserInfo
 import random
 from django.utils.dateparse import parse_date
+from .forms import UserSignUpForm
 
 
 # Create your views here.
@@ -42,44 +43,87 @@ def authenticateUserLogin( request ):
 
 
 def createNewUserForm( request ):
-    return render(request, 'userLoginApp/createNewUser.html')
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        # This is called binding the form.
+        userSignUpForm = UserSignUpForm(request.POST)
+
+        # check whether it's valid:
+        # PROLLY NOT VALID TBH
+        if userSignUpForm.is_valid():
+        # process the data in form.cleaned_data as required
+
+            # Get the cleaned data dictionary from the form.
+            cd = userSignUpForm.cleaned_data
+            # username, email, password is the order of args that create_user takes.
+            # Create user using Djangos built in user authentication which encrypts user passwords in the db.
+            # Username has to be unique so for now we will use email as username since that must be unique for a user to make an account.
+            new_user = User.objects.create_user( cd['email'] , cd['email'], cd['password'] )
+
+            # Set the first and last name fields of the new_user object
+            new_user.first_name = cd['first_name']
+            new_user.last_name = cd['last_name']
+
+            new_user.save()
+
+            # Create a user info object to store the agents info. new_use is a object that comes from the User model provided by django.
+            # It has limited fields, only email pass, username, so we store extra info in this model for each agent.
+            # There is a custom User model users can implement but this seemed easier.
+            new_user_info = UserInfo()
+            new_user_info.first_name = cd['first_name']
+            new_user_info.last_name = cd['last_name']
+            new_user_info.email = cd['email']
+
+
+            # When user enters birthday in the form, it must look exactly like this YYYY-MM-DD for it to be valid.
+            # The python form handles turning the string into a python datetime.date object.
+            new_user_info.birthdate = cd['birthday']
+
+
+            new_user_info.agency_name = cd['agency_name']
+            new_user_info.agent_code = cd['agent_code']
+            new_user_info.agent_phone_number = cd['agent_phone_number']
+            new_user_info.agent_address = cd['agent_address']
+            new_user_info.user_id = new_user.id
+
+            # Save the user to the db.
+            new_user_info.save()
+
+            print("REDIRECTING TO NEW URL")
+
+            # redirect to a new URL:
+            return  render(request, 'userLoginApp/newUserSuccess.html')
+            #HttpResponseRedirect(reverse('loginAppUrls:new_user_success'))
+
+        else:
+            # Get the cleaned data dictionary from the form.
+            cd = userSignUpForm.cleaned_data
+            print("Failed to validate, The cleaned data is: {}".format(cd) )
+
+            # This part is IMPORTANT. If the data failed to completely validate, then redirect the user to the same page
+            # and pass the form object back to the template. The form now has already been bound with data, so after
+            # the page loads the form will still be filled with data and will prompt the user to fix the errors in the form.
+            return render(request, 'userLoginApp/createNewUser.html', {'signUpForm': userSignUpForm})
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        userSignUpForm = UserSignUpForm()
+
+        # Pass the form object to the view with the name signUpForm.
+        return render(request, 'userLoginApp/createNewUser.html', {'signUpForm': userSignUpForm})
 
 def loginSuccess( request ):
     return render(request, 'userLoginApp/userLoginSuccess.html')
 
 
+# Need to check and make sure email is not already in use before saving new user.
 def saveNewUser( request ):
-    # username, email, password,
-    # Create user using Djangos built in user authentication which encrypts user passwords in the db.
-    new_user = User.objects.create_user( "none", request.POST['new-user-email'], request.POST['new-user-pass'] )
-
-    # Set the first and last name fields of the new_user object
-    new_user.first_name = request.POST['new-user-first-name']
-    new_user.last_name = request.POST['new-user-last-name']
-
-    new_user.save()
-    
-    # Create a user info object to store the agents info. new_use is a object that comes from the User model provided by django.
-    # It has limited fields, only email pass, username, so we store extra info in this model for each agent.
-    # There is a custom User model users can implement but this seemed easier.
-    new_user_info = UserInfo()
-    new_user_info.first_name = request.POST['new-user-first-name']
-    new_user_info.last_name = request.POST['new-user-last-name']
-    new_user_info.email = request.POST['new-user-email']
-
-    # Returns a date object YYYY-MM-DD
-    user_birthday = parse_date(request.POST['new-user-birthday'])
-    new_user_info.birthdate = user_birthday
 
 
-    new_user_info.agency_name = request.POST['new-user-agency']
-    new_user_info.agent_code = request.POST['new-user-agent-code']
-    new_user_info.agent_phone_number = request.POST['new-user-agent-phone']
-    new_user_info.agent_address = request.POST['new-user-address']
-    new_user_info.user_id = new_user.id
-
-
-    return HttpResponseRedirect(reverse('loginAppUrls:new_user_success'))
+    return HttpResponseRedirect(reverse('loginAppUrls:user_login_page'))
 
 
 def newUserSuccess( request ):

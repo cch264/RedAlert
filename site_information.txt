@@ -58,6 +58,12 @@ Djongo allows us to use Django as if we had a relational database, so refer to t
 
 Create new Django App
 	python manage.py startapp user_login_app
+	
+Install Jquery for your django app
+	cd into your root project templates file
+	ex: "/home/calvin/Documents/NAUClasses/CS476_486/red_alert_site/RedAlert/static"
+	run the command  "wget https://code.jquery.com/jquery-3.6.0.min.js"
+	This downloads a compressed folder containing jquery source code.
 
 pip freeze | grep pymongo - view what version of pymongo is running on your project
 pip freeze | grep djongo
@@ -77,6 +83,7 @@ Allow SSH to server DO THIS BEFORE STARTING UFW or else you cant connect back to
 	sudo ufw allow ssh
 
 
+The templatetags folder holds custom defined filter functions created by the user to be used in html templates.
 
 MONGODB:
 	
