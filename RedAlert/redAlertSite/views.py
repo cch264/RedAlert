@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.views import View
 from django.db.models import Q
 from .models import Client
+from sms import send_sms
 import random
 
 
@@ -67,6 +68,18 @@ def send_email( request ):
     else:
         return render(request, 'redAlertSite/send_email.html')
 
+def send_sms_message( request ):
+    if request.method =="POST":
+        message = request.POST['sms-message']
+        sender = '+13096202335'
+        recipient = (request.POST['recipient-phone'], )
+
+        send_sms( message, sender, recipient, fail_silently=False )
+
+        return render(request, 'redAlertSite/send_email.html')
+
+    else:
+        return render(request, 'redAlertSite/send_email.html')
 
 def user_log_in( request ):
     return render(request, 'redAlertSite/user_login.html')
