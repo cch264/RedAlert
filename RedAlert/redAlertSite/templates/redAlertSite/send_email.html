@@ -22,6 +22,22 @@
 
   <input type="submit" value="Send Email">
 </form>
+<form action="{% url 'red_alert_site:send_sms_message' %}" method="post">
+  <!-- Protects against Cross Site Request Forgeries -->
+  {% csrf_token %}
+
+  <div>
+    <span> Receiving Phone Number: </span>
+    <input type="phone" id="recipient-phone" name="recipient-phone"> </input>
+  </div>
+
+  <div>
+    <span> Message: </span>
+    <input type="message" id="sms-message" name="sms-message">  </input>
+  </div>
+
+  <input type="submit" value="Send SMS Message">
+</form>
 </div>
 © 2021 GitHub, Inc.
 Terms
