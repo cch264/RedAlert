@@ -21,7 +21,7 @@
     </head>
 
     <body>
-        <div> This is Our Site Nav Bar! </div>
+        <div id="primary-nav-bar"> This is Our Site Nav Bar! </div>
 
 
         <div>
@@ -45,9 +45,12 @@
 
         <script src="{% static 'GlobalAssets/js/popper.min.js' %}" > </script>
 
+        <script src="{% static 'GlobalAssets/js/global.js' %}" > </script>
 
         <!-- Add page custom js last. -->
         {% block js_links %} {% endblock %}
+
+        <div id="primary-footer"> </div>
 
     </body>
 
