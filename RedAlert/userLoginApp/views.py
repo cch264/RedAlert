@@ -36,10 +36,10 @@ def authenticateUserLogin( request ):
     if user is not None:
         print("MADE IT HERE")
         # A backend authenticated the credentials
-        return HttpResponseRedirect(reverse('loginAppUrls:login_success'))
+        return HttpResponseRedirect('/dashboard')
     else:
-        # No backend authenticated the credentials
-        return HttpResponseRedirect(reverse('red_alert_site:landing_page', args=(0,)))
+        # No backend authenticated the credentials, redirect user back to login page.
+        return HttpResponseRedirect(reverse('loginAppUrls:user_login_page', args=(0,)))
 
 
 def createNewUserForm( request ):
