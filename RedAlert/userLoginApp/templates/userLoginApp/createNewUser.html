@@ -12,19 +12,20 @@
       <meta name="description" content="Our first page">
 
       {% block css_links %}
-        <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userLogin.css' %}">
-
+        <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userlogin.css' %}">
       {% endblock %}
   
 
   {% block content %}
 
-    <div class="d-flex justify-content-center my-xl-5 mx-2 ">
+    <div class="d-flex justify-content-center footer-padding-fix">
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <!-- Submit to the same url that brought us here! Now we dont need 2 views to create and save a user. -->
       <form id='create-new-user-form' action="{% url 'loginAppUrls:create_new_user' %}" method="post">
         <!-- Protects against Cross Site Request Forgeries -->
         {% csrf_token %}
+
+        {{signUpForm.non_field_errors}}
         
           <!-- as_ul wraps all the output form elements into li elements, but we need to provide the surrounding ul tag elements. -->
           <!-- signUpForm.as_ul  -->
@@ -38,6 +39,7 @@
 
               <!-- Render the actual field-->
               {{ field }} 
+              {{ field.errors }} 
              </div>
 
 
