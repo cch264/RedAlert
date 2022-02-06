@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*','127.0.0.1','localhost']
 INSTALLED_APPS = [
     'redAlertSite.apps.RedalertsiteConfig', # redAlertSite folder app.py file, inside here there is the name of a func called RedalertsiteConfig.
     'userLoginApp.apps.UserLoginAppConfig',
+    'dashboard.apps.DashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
