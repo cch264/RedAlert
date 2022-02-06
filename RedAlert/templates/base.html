@@ -13,6 +13,8 @@
 
         <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/bootstrap.min.css' %}">
 
+        <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/globalstyles.css' %}">
+
 
         <!-- Custom page styles go here, load custom style sheets last. -->
         {% block css_links %} {% endblock %}
@@ -21,7 +23,42 @@
     </head>
 
     <body>
-        <div id="primary-nav-bar"> This is Our Site Nav Bar! </div>
+        <nav id="primary-nav-bar" class="navbar navbar-expand-lg navbar-light bg-light mb-2" >
+
+             <div class="d-flex align-items-center justify-content-between w-100">
+
+                 <div class="flex-nowrap d-flex align-items-center" >
+                    <div>
+                        <a href='loginAppUrls:user_login_page'> <img src="{% static 'GlobalAssets/images/Capstone_Logo.png' %}" width="50" height="50"> </a>
+                    </div>
+                    <div class="ml-4"> State Farm Red Alert </div>
+                </div>
+                
+                <!-- Hide this div on screens smaller than large -->
+                <div id="nav-bar-links-desktop" class="d-md-flex d-none align-items-center justify-content-between" >
+                        <a class="dropdown-item"> Profile Page </a>
+                        <a class="dropdown-item"> Dashboard </a>
+                        <a class="dropdown-item"> Automations </a>
+                    
+                </div>
+
+                 <!-- Hide this div on screens bigger than large.-->
+                 <div id="nav-bar-links-mobile" class="d-md-none d-flex align-items-center justify-content-between" >
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Navigation
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item"> Profile Page </a>
+                            <a class="dropdown-item"> Dashboard </a>
+                            <a class="dropdown-item"> Automations </a>
+                        </div>
+                    </div>
+                </div>
+               
+
+             </div>
+        </nav>
 
 
         <div>
@@ -30,11 +67,10 @@
                  own content. Templates in apps will contain their own block titles content, which will tell django to place that HTML
                  inside of this file and display it.
             -->
-            {% block content %} {% endblock %}
+            {% block content %} 
+            {% endblock %}
         </div>
 
-
-        <div> This is our site Footer! </div>
 
         <!-- Add jquery and bootstrap to every single page. Bootstrap says to place these scripts here right before the closing body tag.-->
         <!-- Every single page has access to jquery with this tag. -->
@@ -50,8 +86,18 @@
         <!-- Add page custom js last. -->
         {% block js_links %} {% endblock %}
 
-        <div id="primary-footer"> </div>
+        <nav id="primary-footer" class="navbar fixed-bottom navbar-light bg-light">
+            <div class="d-flex flex-column justify-content-center w-100">
 
+                <div class="d-flex justify-content-center" >
+                    Project Red Alert 
+                </div>
+
+                <div class="d-flex justify-content-center" >
+                    Last Updated: 5 February 2022
+                </div>
+            </div>
+          </nav>
     </body>
 
     

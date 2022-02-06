@@ -1,23 +1,54 @@
-<div>
-  <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
-<form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
-  <!-- Protects against Cross Site Request Forgeries -->
-  {% csrf_token %}
+{% extends "base.html" %}
 
-  <div>
-    <span> Username: </span>
-    <input type="text" id="user-name" name="user-name"> </input>
-  </div>
+{% load static %}
 
-  <div>
-    <span> Password: </span>
-    <input type="password" id="user-pass" name="user-pass">  </input>
-  </div>
+  {% block head_title %}
+    <title>Log In!</title>
+  {% endblock %}  
+
+  <meta name="description" content="Our first page">
+
+  {% block css_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userLogin.css' %}">
+
+  {% endblock %}
+
+  {% block content %}
+    <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
+
+      <div class="w-25">
+        <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
+        <form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
+          <!-- Protects against Cross Site Request Forgeries -->
+          {% csrf_token %}
+
+          <div>
+            <span> Username: </span>
+            <input type="text" id="user-name" class="form-control" name="user-name"> </input>
+          </div>
+
+          <div>
+            <span> Password: </span>
+            <input type="password" id="user-pass" class="form-control" name="user-pass">  </input>
+          </div>
 
 
-  <input type="submit" value="Log in!">
-</form>
+          <div class="float-right mt-2">
+            <input type="submit" class="btn btn-success btn-link" value="Log in!">
+          </div>
+         
+        </form>
+      </div>
+
+      <div>
+        <button type="button" class="btn btn-primary btn-link"> <a href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a> </button> 
+      </div>
+
+    </div>
+
+  {% endblock %}
 
 
-<a href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a>
-</div>
+{% block js_links %}
+    <script src="{% static 'userLoginApp/js/userLogin.js' %}" > pageLoad(); </script> 
+  {% endblock %}
