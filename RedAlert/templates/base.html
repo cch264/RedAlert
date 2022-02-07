@@ -9,11 +9,18 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- <script type="text/javascript" src="{% static '../jquery-3.6.0.min.js' %}"></script> -->
+    
 
-        <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/bootstrap.min.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+        <!-- Using CDN so we dont need this now. -->
+        <!-- <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/bootstrap.min.css' %}"> -->
 
         <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/globalstyles.css' %}">
+
+        <link href='https://css.gg/search.css' rel='stylesheet'>
+
+        
 
 
         <!-- Custom page styles go here, load custom style sheets last. -->
@@ -27,15 +34,15 @@
 
              <div class="d-flex align-items-center justify-content-between w-100">
 
-                 <div class="flex-nowrap d-flex align-items-center" >
+                 <div class="flex-nowrap d-flex align-items-center ms-4" >
                     <div>
                         <a href='loginAppUrls:user_login_page'> <img src="{% static 'GlobalAssets/images/Capstone_Logo.png' %}" width="50" height="50"> </a>
                     </div>
-                    <div class="ml-4"> State Farm Red Alert </div>
+                    <div class="ms-4"> State Farm Red Alert </div>
                 </div>
                 
                 <!-- Hide this div on screens smaller than large -->
-                <div id="nav-bar-links-desktop" class="d-md-flex d-none align-items-center justify-content-between" >
+                <div id="nav-bar-links-desktop" class="d-md-flex d-none align-items-center justify-content-between me-4" >
                         <a class="dropdown-item"> Profile Page </a>
                         <a class="dropdown-item"> Dashboard </a>
                         <a class="dropdown-item"> Automations </a>
@@ -43,9 +50,9 @@
                 </div>
 
                  <!-- Hide this div on screens bigger than large.-->
-                 <div id="nav-bar-links-mobile" class="d-md-none d-flex align-items-center justify-content-between" >
+                 <div id="nav-bar-links-mobile" class="d-md-none d-flex align-items-center justify-content-between me-1" >
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Navigation
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -77,9 +84,13 @@
         <script src="{% static 'GlobalAssets/js/jquery-3.6.0.min.js' %}" > </script>
         
         <!-- Jquery uses jquery 3.2.1 so if there are issues well download a new version of jquery-->
-        <script src="{% static 'GlobalAssets/js/bootstrap.min.js' %}" > </script>
+        <!-- <script src="{% static 'GlobalAssets/js/bootstrap.min.js' %}" > </script> -->
 
-        <script src="{% static 'GlobalAssets/js/popper.min.js' %}" > </script>
+        <!-- <script src="{% static 'GlobalAssets/js/popper.min.js' %}" > </script> -->
+
+        <!-- This js file includes bootstrap js and popper.-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 
         <script src="{% static 'GlobalAssets/js/global.js' %}" > </script>
 

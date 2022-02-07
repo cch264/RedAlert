@@ -12,7 +12,7 @@
       <meta name="description" content="Site dashboard.">
 
       {% block css_links %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/dashboard.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/style.css' %}">
       {% endblock %}
   
 
@@ -25,7 +25,23 @@
       <div class="col-10">
         <div class= "container-fluid">
           <div class="row" >
-            <div style="background-color:greenyellow" class="col">Search Bar</div>
+            <div class="col">
+
+              
+
+              <div class="form-floating my-3 d-flex flex-row flex-nowrap border border-primary rounded">
+                <input type="text" class="form-control border-0" id="floatingInput" placeholder="Type your search here!">
+
+                <label for="floatingInput">Search: </label>
+
+                <button class="btn btn-info w-6">
+                  <span class="gg-search center-inline-elem"> </span>
+                </button>
+            
+              </div>
+
+
+            </div>
           </div>
 
           <div class="row">
