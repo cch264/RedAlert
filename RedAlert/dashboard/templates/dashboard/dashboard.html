@@ -30,65 +30,70 @@
               
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                <input type="text" class="form-control border border-primary rounded" id="floatingInput" placeholder="Type your search here!">
+                <input type="text" class="form-control border border-primary rounded flex-grow-1" id="floatingInput" placeholder="Type your search here!">
 
                 <label for="floatingInput"> Search: </label>
 
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
+                      City
+                    </button>
+  
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                    
+                  </div>
+  
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Age
+                    </button>
+  
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                    
+                  </div>
+  
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Policy
+                    </button>
+  
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                    
+                  </div>
+                  
+                  <button class="btn btn-info w-6">
+                    <!-- Button with magnifying glass icon. -->
+                    <span class="gg-search center-inline-elem"> </span>
+                  </button>
+                
+
+            
+                </div>
+                
+                <div class="d-flex flex-row-reverse mb-2">
+                  <button class="btn btn-secondary w-21" data-bs-toggle="modal" data-bs-target="#exampleModal" > Show More Search Options </button>
+                </div>
               
-                <div class="btn-group">
-                  <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
-                    City
-                  </button>
 
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Separated link</a></li>
-                  </ul>
-                  
-                </div>
-
-                <div class="btn-group">
-                  <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Age
-                  </button>
-
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Separated link</a></li>
-                  </ul>
-                  
-                </div>
-
-                <div class="btn-group">
-                  <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Policy
-                  </button>
-
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Separated link</a></li>
-                  </ul>
-                  
-                </div>
-                
-                <button class="btn btn-info w-6">
-                  <span class="gg-search center-inline-elem"> </span>
-                </button>
-                
-              </div>
-
-              <div class="d-flex flex-row-reverse mb-2">
-                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" > Show More Search Options </button>
-              </div>
+              
             
 
 
@@ -145,11 +150,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Search Options</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          Here are where the search options will go:
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
