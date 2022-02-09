@@ -12,7 +12,7 @@
       <meta name="description" content="Our first page">
 
       {% block css_links %}
-        <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userlogin.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/css/userlogin.css' %}">
       {% endblock %}
   
 
@@ -47,7 +47,9 @@
 
           {% endfor %}
         
-        <input type="submit" value="Create your account!">
+          <div class="d-flex flex-row-reverse">
+            <input type="submit" value="Create your account!" class="mt-2 btn btn-success">
+          </div>
       </form>
     </div>
 

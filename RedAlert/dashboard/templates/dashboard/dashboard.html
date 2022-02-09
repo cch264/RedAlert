@@ -12,7 +12,7 @@
       <meta name="description" content="Site dashboard.">
 
       {% block css_links %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/style.css' %}">
       {% endblock %}
   
 
@@ -102,14 +102,113 @@
           </div>
 
           <div class="row">
-            <div style="background-color:burlywood" class="col">
-              Search Results and Client Selection
+            <div class="col">
+
+              <div>
+
+                <ul class="nav nav-tabs py-2 my-2" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" disabled>
+                      Search Results Container
+                    </button>
+                  </li>
+                </ul>
+
+                <div class="bootstrap-grey-border pb-2">
+                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
+                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
+                    </div>
+                    <div class=" bootstrap-grey-bottom my-1 me-1 ms-5">
+                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
+                    </div>
+                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
+                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
+                    </div>
+                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
+                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
+                    </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
           <div class="row">
-            <div style="background-color:royalblue" class="col">
-              Notification Creation Section
+            <div class="col">
+              <div id="notif-container" class="my-3">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">SMS</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Email</button>
+                  </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+
+                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    
+                    <h4> Send SMS</h4>
+
+                    <div id="notif-tab-1" class="notif-tab px-3 py-3">
+                      <div class="d-flex justify-content-between">
+    
+                        <div>
+                          <label for="sms-subjet-name"> Subject: </label>
+                          <input id="sms-subjet-name" class="form-control" type="text">
+                        </div>
+    
+                        <div>
+                          <button class="btn btn-primary">Social</button>
+                          <button class="btn btn-primary">Emergency</button>
+                        </div>
+    
+                      </div>
+    
+                      <div class="message-div">
+                        <label for="sms-message-inp"> Message: </label>
+                        <input id="sms-message-inp" class="form-control" type="text">   
+                      </div>
+
+                      <div class="d-flex flex-row-reverse">
+                        <button class="btn btn-primary">Send Message</button>
+                   </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <h4> Send Email</h4>
+                    <div id="notif-tab-1" class="notif-tab px-3 py-3">
+                      <div class="d-flex justify-content-between">
+    
+                        <div>
+                          <label for="sms-subjet-name"> Subject: </label>
+                          <input id="sms-subjet-name" class="form-control" type="text">
+                        </div>
+    
+                        <div>
+                          <button class="btn btn-primary">Social</button>
+                          <button class="btn btn-primary">Emergency</button>
+                        </div>
+    
+                      </div>
+    
+                      <div class="message-div">
+                        <label for="sms-message-inp"> Message: </label>
+                        <input id="sms-message-inp" class="form-control" type="text">   
+                      </div>
+
+                      <div class="d-flex flex-row-reverse">
+                           <button class="btn btn-primary">Send Message</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+
+
+              </div>
             </div>
           </div>
 
@@ -117,16 +216,52 @@
       </div>
 
       <!-- This col is going to be really small because it only gets 1 column space out of the 12 available in this row.-->
-      <div class="col-2">
-        <div class= "container-fluid">
+      <div class="col-2 px-0">
+        <div class= "container-fluid px-0">
           <div class="row" >
-            <div style="background-color:grey" class="col">
-              Saved Searches
+            <div class="col">
+              
+
+              <div class="box-with-header mb-5">
+                <div class="bwh-header d-flex justify-content-center px-1 py-1">
+                  <h4> Saved Searches</h4>
+                </div>
+                
+                <div class="bwh-content px-2 pb-2">
+                  <ul class="list-group">
+                    <li class="list-group-item">An active item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item">And a fifth one</li>
+                  </ul>
+                </div>
+              </div>
+
             </div>
+
           </div>
+
           <div class="row" >
-            <div style="background-color:pink" class="col">
-              Saved Subsets
+            <div class="col">
+              
+               <div class="box-with-header">
+                <div class="bwh-header d-flex justify-content-center px-1 py-1">
+                  <h4> Saved Subsets</h4>
+                </div>
+                
+                <div class="bwh-content px-2 pb-2">
+                  <ul class="list-group">
+                    <li class="list-group-item">An active item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item">And a fifth one</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
             </div>
           </div>
         </div>  

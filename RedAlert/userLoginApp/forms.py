@@ -1,5 +1,5 @@
+from attr import attr 
 from cProfile import label
-import attr
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
