@@ -22,7 +22,7 @@ class UserSignUpForm(forms.Form):
     # Assign an html attribute to the field.
     email.widget.attrs['autocomplete'] = 'off'
 
-    # forms.CharField specifies the type of input field, widgets are 
+    # forms.CharField specifies the type of input field, widgets are
     # kind of like addons. forms.CharField is called a form field,
     # PasswordInput is a form widget.
     # If label is not provided, the label defaults to the name of the form field.
@@ -65,7 +65,7 @@ class UserSignUpForm(forms.Form):
                 "Both Password Fields Must Be Filled Out!"
             )
 
-    
+
 
 
 
@@ -104,7 +104,7 @@ def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password")
         password2 = cleaned_data.get("password_confirm")
-        
+
         # Empty strings are false ie ''. Non empty strings are always true ie 'hello'
         # So if both strings are non empty, then execute the if block.
         if password1 and password2:
@@ -119,7 +119,7 @@ def clean(self):
 
             self.add_error('password', "Please repeat your password.")
             self.add_error('password_confirm', "Please repeat your password.")
-'''            
+'''
 
 
 '''
