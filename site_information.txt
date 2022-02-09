@@ -1,3 +1,9 @@
+PROGRAM VERSIONS:
+	Django==3.2.8
+	djongo==1.3.6
+	pymongo==3.12.2
+	mongoDB==4.4.4
+
 The folder mysite/ the name can be anything and is simply a container for the project.
 
 The folder mysite/mysite/ is directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it 

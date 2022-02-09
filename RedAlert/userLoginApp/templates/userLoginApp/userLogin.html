@@ -9,7 +9,7 @@
   <meta name="description" content="Our first page">
 
   {% block css_links %}
-    <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/styles/userLogin.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'userLoginApp/css/userLogin.css' %}">
 
   {% endblock %}
 
@@ -34,15 +34,15 @@
           </div>
 
 
-          <div class="float-right mt-2">
-            <input type="submit" class="btn btn-success btn-link" value="Log in!">
+          <div class="d-flex flex-row-reverse mt-2">
+            <input type="submit" class="btn btn-success" value="Log in!">
           </div>
          
         </form>
       </div>
 
       <div>
-        <button type="button" class="btn btn-primary btn-link"> <a href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a> </button> 
+        <button type="button" class="btn btn-primary"> <a style="color: black;" href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a> </button> 
       </div>
 
     </div>
