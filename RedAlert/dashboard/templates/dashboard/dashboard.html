@@ -2,19 +2,19 @@
 
 {% load static %}
 
-  
 
-  
+
+
       {% block head_title %}
         <title> Dashboard </title>
-      {% endblock %}  
+      {% endblock %}
 
       <meta name="description" content="Site dashboard.">
 
       {% block css_links %}
         <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/style.css' %}">
       {% endblock %}
-  
+
 
   {% block content %}
 
@@ -27,7 +27,7 @@
           <div class="row" >
             <div class="col">
 
-              
+
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
                 <input type="text" class="form-control border border-primary rounded flex-grow-1" id="floatingInput" placeholder="Type your search here!">
@@ -38,7 +38,7 @@
                     <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
                       City
                     </button>
-  
+
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -46,14 +46,14 @@
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Separated link</a></li>
                     </ul>
-                    
+
                   </div>
-  
+
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
                       Age
                     </button>
-  
+
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -61,14 +61,14 @@
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Separated link</a></li>
                     </ul>
-                    
+
                   </div>
-  
+
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-expanded="false">
                       Policy
                     </button>
-  
+
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -76,25 +76,25 @@
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Separated link</a></li>
                     </ul>
-                    
+
                   </div>
-                  
+
                   <button class="btn btn-info w-6">
                     <!-- Button with magnifying glass icon. -->
                     <span class="gg-search center-inline-elem"> </span>
                   </button>
-                
 
-            
+
+
                 </div>
-                
+
                 <div class="d-flex flex-row-reverse mb-2">
                   <button class="btn btn-secondary w-21" data-bs-toggle="modal" data-bs-target="#exampleModal" > Show More Search Options </button>
                 </div>
-              
 
-              
-            
+
+
+
 
 
             </div>
@@ -134,7 +134,7 @@
               Saved Subsets
             </div>
           </div>
-        </div>  
+        </div>
       </div>
 
     </div>
@@ -164,10 +164,13 @@
     </div>
   </div>
 
+  <a href='/tech_demo/send_email'></a>
   {% endblock %}
 
 
 
+
+
   {% block js_links %}
-    <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script> 
+    <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script>
   {% endblock %}

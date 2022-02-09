@@ -17,6 +17,7 @@ from .models import UserInfo
 import random
 from django.utils.dateparse import parse_date
 from .forms import UserSignUpForm
+from sms import send_sms
 
 
 # Create your views here.
@@ -30,7 +31,7 @@ def userLoginPage( request ):
 
 # Not done yet.
 def authenticateUserLogin( request ):
-    
+
     user = authenticate(username= request.POST['user-name'], password=request.POST['user-pass'])
 
     if user is not None:

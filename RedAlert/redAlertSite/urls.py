@@ -21,5 +21,6 @@ urlpatterns = [
     path('auth_new_user/', views.auth_user_login, name='auth_user_login'),
     path('search_clients/', views.search_clients, name='search_clients'),
     path('execute_search/', views.execute_search, name='execute_search'),
+    path('send_sms/', views.send_sms_message, name='send_sms_message'),
 
 ]
