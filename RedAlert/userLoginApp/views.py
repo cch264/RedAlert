@@ -8,7 +8,7 @@ from django.template import loader
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from django.views import View
 from django.db.models import Q
@@ -17,7 +17,7 @@ from .models import UserInfo
 import random
 from django.utils.dateparse import parse_date
 from .forms import UserSignUpForm
-from sms import send_sms
+#from sms import send_sms
 
 
 # Create your views here.
@@ -34,9 +34,15 @@ def authenticateUserLogin( request ):
 
     user = authenticate(username= request.POST['user-name'], password=request.POST['user-pass'])
 
+    # If user is already logged in, redirect them to the dashboard!
+    # request.user.is_authenticated
     if user is not None:
         print("MADE IT HERE")
+
+        # This saves the users information into the Django session object. This will be used to verify a user is logged in before showing them a page.
+        login(request, user)
         # A backend authenticated the credentials
+        # Redirect user to the dashboard.html template. We only provide a relative path because RedAlert/urls.py file will take over the routing from here.
         return HttpResponseRedirect('/dashboard')
     else:
         # No backend authenticated the credentials, redirect user back to login page.

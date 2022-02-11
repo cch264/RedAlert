@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+  {% block head_title %}
+    <title>Automations</title>
+  {% endblock %}  
+
+  <meta name="description" content="User Automations">
+
+  {% block css_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'UserPages/css/userpages.css' %}">
+
+  {% endblock %}
+
+
+  {% block content %}
+    <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
+        <div class="w-50">
+            <h1> Your Automations </h1> 
+
+            <ul id="automation-list" class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+
+        
+
+        
+            <h1> Your Subsets </h1>
+
+            <ul id="subset-list" class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+
+        
+
+        
+            <h1> Your Search Queries </h1>
+
+            <ul id="search-list" class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+  {% endblock %}
+
+
+{% block js_links %}
+    <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
+  {% endblock %}

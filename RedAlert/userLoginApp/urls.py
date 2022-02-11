@@ -7,7 +7,6 @@ from . import views
 
 app_name = 'loginAppUrls'
 urlpatterns = [
-    
     path('', views.userLoginPage, name='user_login_page' ),
     path('log_in_success', views.loginSuccess, name="login_success" ),
     path('auth_user_login', views.authenticateUserLogin, name='auth_user_login'),
