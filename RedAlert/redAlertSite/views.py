@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.views import View
 from django.db.models import Q
 from .models import Client
-#from sms import send_sms
+from sms import send_sms
 import random
 
 

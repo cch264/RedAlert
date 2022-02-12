@@ -17,7 +17,7 @@ from .models import UserInfo
 import random
 from django.utils.dateparse import parse_date
 from .forms import UserSignUpForm
-#from sms import send_sms
+from sms import send_sms
 
 
 # Create your views here.
