@@ -30,9 +30,15 @@
 
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                <input type="text" class="form-control border border-primary rounded flex-grow-1" id="floatingInput" placeholder="Type your search here!">
+                
+                <form id="user-search-box-form" class="flex-grow-1 form-floating" method="post">
+                   <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
+                  {% csrf_token %}
 
-                <label for="floatingInput"> Search: </label>
+                  <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
+
+                  <label for="user-search-input"> Search: </label>
+                </form>
 
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
