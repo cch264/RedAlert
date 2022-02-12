@@ -7,6 +7,20 @@ PROGRAM VERSIONS:
 Generate a new Django app:
 	python manage.py startapp your_app_name
 
+Twilio and Email Information:
+	Email Info:
+
+	Email: redalerttester@gmail.com
+	Email Password: CS486RedAlert
+	________________________________________________________
+	Twilio Info:
+
+	Twilio Account Username: redalerttester@gmail.com
+	Twilio Account Password: CS486RedAlertSMS
+	Twilio Phone Number: +19087749012
+	Twilio Account SID: ACd232a36bec0e51f5a8d55b978f773c56
+	Twilio Account Auth: 678c512574c3642b3824a2a5ccce9c59
+
 The folder mysite/ the name can be anything and is simply a container for the project.
 
 The folder mysite/mysite/ is directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it 
@@ -77,6 +91,22 @@ Install Jquery for your django app
 pip freeze | grep pymongo - view what version of pymongo is running on your project
 pip freeze | grep djongo
 
+
+Setting up the Django Environment Variables file
+	Create .env file inside the same directory as settings.py
+	install this -> 'pip install django-environ'
+	Now inside your .env file define variables in the form TEST_VAR="VALUE"
+	The in settings.py, add these lines
+		import environ
+
+		env = environ.Env()
+
+		environ.Env.read_env()
+
+	Access vars from the .env file with this syntax: env("TEST_VAR")
+
+Install Twilio With Pip
+	pip install "django-sms[twilio]"
 
 Install Nginx   
 	sudo apt install nginx
