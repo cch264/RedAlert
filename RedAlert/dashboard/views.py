@@ -5,15 +5,53 @@ from redAlertSite.models import Client
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 # Do not show the dashboard if the user isnt logged in!
 # login_url is the urls to redirect a user to if they are not logged in!
 @login_required( login_url='/' )
 def show_dashboard( request ):
-    return render(request, 'dashboard/dashboard.html')
+
+    #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
+
+    all_clients_array = Client.objects.all()
+
+    json_array = []
+    for client in all_clients_array:
+        a_client_dict = {}
+        a_client_dict["id"] = client.id
+        a_client_dict["name"] = client.name
+        a_client_dict["email"] = client.email
+        a_client_dict["age"] = client.age
+
+        json_array.append( a_client_dict )
+
+    print( len( json_array ) )
+    print( str(json_array) )
+
+    
+    client_json = json.dumps( json_array )
+
+    response = {
+        'client_json' : client_json
+    }
+        
+    return render(request, 'dashboard/dashboard.html', response)
 
 
+
+    
+
+    
+
+
+
+
+
+    
+
+# EXAMPLE AJAX REQUEST RESPONSE METHOD.
 # @csrf_exempt
 def execute_search( request ):
     print("IN EXECUTE SEARCH")
@@ -24,47 +62,9 @@ def execute_search( request ):
 
         response_str = "The users query was {}".format( user_query )
 
-        response = {
-                        'msg': response_str
-        }
+        response = [ 
+            {'msg': response_str, 'amsg': "hello"},
+            {'obj2': "val", "objTwo": "hello"}
+                   ]
 
         return JsonResponse(response) # return response as JSON
-
-
-
-    '''
-    client_query = request.POST['search-query']
-    search_results = get_queryset( client_query )
-
-    context = {
-        'search_results': search_results,
-    }
-
-    return render(request, 'redAlertSite/search_clients_results.html', context )
-    '''
-
-
-def get_queryset( search_query ): # new
-
-    print("SEARCH QUERY IS " + search_query )
-    # If search query is number convert it to a number
-    if search_query.isdigit():
-        search_query = int( search_query )
-        print("CONVERTED TO INT" )
-
-
-    return Client.objects.filter(
-        Q(age=search_query) | Q(name__icontains=search_query) | Q(email=search_query))
-
-
-# ajax_posting function
-def ajax_posting(request):
-    if request.is_ajax():
-        first_name = request.POST.get('first_name', None) # getting data from first_name input 
-        last_name = request.POST.get('last_name', None)  # getting data from last_name input
-        if first_name and last_name: #cheking if first_name and last_name have value
-            response = {
-                         'msg':'Your form has been submitted successfully' # response message
-            }
-            return JsonResponse(response) # return response as JSON
-    

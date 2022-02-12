@@ -35,6 +35,8 @@
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
 
+                  <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
+
                   <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
                   <label for="user-search-input"> Search: </label>
