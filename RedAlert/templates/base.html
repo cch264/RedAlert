@@ -16,7 +16,7 @@
         <!-- Using CDN so we dont need this now. -->
         <!-- <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/bootstrap.min.css' %}"> -->
 
-        <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/globalstyles.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'GlobalAssets/css/style.css' %}">
 
         <link href='https://css.gg/search.css' rel='stylesheet'>
 
@@ -43,9 +43,10 @@
                 
                 <!-- Hide this div on screens smaller than large -->
                 <div id="nav-bar-links-desktop" class="d-md-flex d-none align-items-center justify-content-between me-4" >
-                        <a class="dropdown-item"> Profile Page </a>
-                        <a class="dropdown-item"> Dashboard </a>
-                        <a class="dropdown-item"> Automations </a>
+                        <a class="dropdown-item" href="{% url 'user_pages_urls:show_profile_page'%}"> Profile Page </a>
+                        <a class="dropdown-item" href="{% url 'dashboard_urls:dashboard_page'%}"> Dashboard </a>
+                        <a class="dropdown-item" href="{% url 'user_pages_urls:automation_page'%}"> Automations </a>
+                        <a class="dropdown-item" href="{% url 'user_pages_urls:faq_page'%}"> FAQ </a>
                     
                 </div>
 

@@ -4,6 +4,9 @@ PROGRAM VERSIONS:
 	pymongo==3.12.2
 	mongoDB==4.4.4
 
+Generate a new Django app:
+	python manage.py startapp your_app_name
+
 The folder mysite/ the name can be anything and is simply a container for the project.
 
 The folder mysite/mysite/ is directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it 
@@ -109,6 +112,14 @@ MONGODB:
 	'show collections' shows all the collections in the db
 	'db.collectionName.find().pretty()' - shows all documents in the collection. pretty is optional but makes it the output look nice.
 	'db.posts.find({ category: 'News'}).pretty()' Finds the document in posts that has category equal to 'News'.
+
+Delete all docs in a collection
+	db.userLoginApp_userinfo.deleteMany({})
+
+Delete one doc from collection
+	db.collectionname.deleteOne( { field_name: value_either_string_or_int } )
+
+
 
 List information about running db server
 	db.serverCmdLineOpts()
