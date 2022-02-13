@@ -113,6 +113,16 @@ Install Nginx
    
 Remove enabled site that you dont need.
    rm /etc/nginx/sites-enabled/default
+
+
+Resetting database migrations in django
+	On linux run this command, (Delete all files in migrations folder except the __init__.py file)
+		find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+	Now run this cmd ( Delete cached migration files )
+		find . -path "*/migrations/*.pyc"  -delete 
+	Now run migrtations as normal
+		python manage.py makemigrations
+		python manage.py migrate
    
 
 Allow NGINx through firewall by using UFW
