@@ -14,7 +14,7 @@ class Client( models.Model ):
     policies = models.CharField( max_length=200 )
     age = models.IntegerField()
     # Dont automatically assign the current date to this field apon user creation.
-    birthdate = models.DateField( auto_now= False )
+    birthdate = models.DateField( auto_now= True )
     gender = models.CharField( max_length=5 )
     notification_status = models.CharField( max_length=200 )
     email = models.CharField( max_length=200 )

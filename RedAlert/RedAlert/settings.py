@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'RedAlert.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'red_alert_db_development',
+        'NAME': 'red_alert_db_development'
     }
 }
 
