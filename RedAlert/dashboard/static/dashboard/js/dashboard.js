@@ -142,8 +142,18 @@ function executeFuseSearch( user_pattern )
         keys: [
           "id",
           "name",
-          "email",
-          "age"
+          "unit_num",
+          "street",
+          "city",
+          "zip_code",
+          "state",
+          "license_num",
+          "policies",
+          "age",
+          "birthdate",
+          "gender",
+          "notificatoin_status",
+          "email"
         ]
       };
     
@@ -176,19 +186,71 @@ window.addEventListener('load', (event) => {
 
             search_result_object = executeFuseSearch(  $('#user-search-input').val() );
 
-            console.log(`Search result leng ${search_result_object.length }`)
+            console.log(`Search result leng ${search_result_object.length }`);
 
-
-            search_result_object.forEach( ( result ) => {
-                console.log(`The result: ${JSON.stringify(result.item) }`);
-                console.log(`id ${ result.item.id }`);
-                console.log(`name ${ result.item.name }`);
-                console.log(`email ${ result.item.email }`);
-                console.log(`age ${ result.item.age }`);
-
-            });
+            fill_client_results_box( search_result_object );
         })
   });
+
+
+function fill_client_results_box( client_list )
+{
+  // Remove previous search results
+  $('#search-results-container').empty();
+
+
+  client_list.forEach( ( result ) => {
+
+
+
+  let element_to_append = `
+    <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+                <input type="checkbox" class="me-5 ms-3" >
+                  
+                <div class="container">
+
+                  <div class="row mb-1">
+                    <div class="col"> Name: ${result.item.name} </div>
+                    <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                    <div class="col"> Policies: ${result.item.polcies}</div>
+                  </div>
+
+                  <div class="row mb-1">
+                    <div class="col"> Age: ${result.item.age}</div>
+                    <div class="col"> Birthdate: ${result.item.birthdate}</div>
+                    <div class="col"> Gender: ${result.item.gender}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col"> Notification Status: ${result.item.notification_status}</div>
+                    <div class="col"> License Number: ${result.item.license_num}</div>
+                    <div class="col"> Phone Number: ${result.item.phone}</div>
+                  </div>
+
+                </div>
+    </div>
+    `;
+
+    /*
+  let element_to_append = 
+            "<div class=\"client-sr\"  data-client-id=\"" + result.item.id + "\" class=\"bootstrap-grey-bottom my-1 me-1 ms-5\">
+              <input type=\"checkbox\" class=\"me-5 ms-3\" >
+                 <span class=\"mx-5\"> Name: " + result.item.name +
+                "</span> <span class=\"mx-5\"> Address:"+ result.item.unit_num+ " " + result.item.street +" " + result.item.city  
+                    + ", " + result.item.state+", " +result.item.zip_code +"</span> 
+                <span class=\"mx-5\"> Policies: " + result.item.polcies +"</span></div>";
+    */
+
+    $('#search-results-container').append( element_to_append );
+
+    console.log(`The result: ${JSON.stringify(result.item) }`);
+    //console.log(`id ${ result.item.id }`);
+    //console.log(`name ${ result.item.name }`);
+    //console.log(`email ${ result.item.email }`);
+    //console.log(`age ${ result.item.age }`);
+
+});
+}
 
 function executeSearchAjax() {
     $.ajax({

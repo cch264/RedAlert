@@ -16,6 +16,7 @@ import datetime
 @login_required( login_url='/' )
 def show_dashboard( request ):
 
+    #delete_all_clients()
     #create_client_list()
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
@@ -27,8 +28,20 @@ def show_dashboard( request ):
         a_client_dict = {}
         a_client_dict["id"] = client.id
         a_client_dict["name"] = client.name
-        a_client_dict["email"] = client.email
+        a_client_dict["unit_num"] = client.unit_num
+        a_client_dict["street"] = client.street
+        a_client_dict["city"] = client.city
+        a_client_dict["zip_code"] = client.zip_code
+        a_client_dict["state"] = client.state
+        a_client_dict["license_num"] = client.license_num
+        a_client_dict["policies"] = client.policies
         a_client_dict["age"] = client.age
+        a_client_dict["birthdate"] = str(client.birthdate)
+        a_client_dict["gender"] = client.gender
+        a_client_dict["notification_status"] = client.notification_status
+        a_client_dict["email"] = client.email
+        a_client_dict["phone"] = client.phone
+        
 
         json_array.append( a_client_dict )
 
@@ -101,11 +114,17 @@ def create_client_list():
         a_client.gender = gender[ random.randint(0,1)]
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
         a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
+        #a_client.phone = "4803690030"
         a_client.save()
     
     print("LENG OF CLIENTS COLLECTION IS: {}".format( len( Client.objects.all()) ) )
 
 
+def delete_all_clients():
+    client_list = Client.objects.all()
+
+    for client in client_list:
+        client.delete()
     
 
     
