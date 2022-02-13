@@ -243,6 +243,39 @@ function fill_client_results_box( client_list )
 
     $('#search-results-container').append( element_to_append );
 
+    // Get the div that contains the search result.
+    $(`#sr-${result.item.id}`).on('click', (event) => {
+
+      
+
+      if( $(`#selected-sr-${result.item.id}`).length )
+      {
+        $(`#selected-sr-${result.item.id}`).remove();
+      }
+      else
+      {
+        $("#selected-clients-container").append( $(`#sr-${result.item.id}`).clone().attr('id', `selected-sr-${result.item.id}` ) );
+        // Remove all ids from the container
+        $("#selected-clients-id-array").val("");
+
+        let clientIdString = "";
+
+        $("#selected-clients-container").children().each( function(index) {
+          // Ignore index 0 as it is the input we are storing client ids in so it is not needed
+          if( index > 0)
+          {
+            console.log(`ID OF CHILD ${ $(this).attr('id')}`);
+  
+            clientIdString += $( this ).data("clientId") + " ";
+          }
+        })
+
+        $("#selected-clients-id-array").val(clientIdString);
+        
+      }
+
+    })
+
     console.log(`The result: ${JSON.stringify(result.item) }`);
     //console.log(`id ${ result.item.id }`);
     //console.log(`name ${ result.item.name }`);
