@@ -12,7 +12,7 @@ import json
 # login_url is the urls to redirect a user to if they are not logged in!
 @login_required( login_url='/' )
 def show_dashboard( request ):
-
+    #create_client_list()
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
     all_clients_array = Client.objects.all()
@@ -27,8 +27,8 @@ def show_dashboard( request ):
 
         json_array.append( a_client_dict )
 
-    print( len( json_array ) )
-    print( str(json_array) )
+    #print( len( json_array ) )
+    #print( str(json_array) )
 
     
     client_json = json.dumps( json_array )
@@ -38,6 +38,13 @@ def show_dashboard( request ):
     }
         
     return render(request, 'dashboard/dashboard.html', response)
+
+
+def create_client_list():
+
+    for index in range(50):
+        a_client = Client()
+        a_client.name = "bobby"
 
 
 

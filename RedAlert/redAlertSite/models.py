@@ -5,8 +5,19 @@ from django.db import models
     # To do things that are built into Django.
 class Client( models.Model ):
     name = models.CharField( max_length=200 )
-    email = models.IntegerField()
+    unit_num = models.IntegerField()
+    street = models.CharField( max_length=200 )
+    city = models.CharField( max_length=200 )
+    zip_code = models.IntegerField()
+    state = models.CharField( max_length=200 )
+    license_num = models.CharField( max_length=200 )
+    policies = models.CharField( max_length=200 )
     age = models.IntegerField()
+    # Dont automatically assign the current date to this field apon user creation.
+    birthdate = models.DateField( auto_now= False )
+    gender = models.CharField( max_length=5 )
+    notification_status = models.CharField( max_length=200 )
+    email = models.CharField( max_length=200 )
 
     def __str__(self):
         return self.name
