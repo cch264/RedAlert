@@ -10,10 +10,13 @@
       {% endblock %}  
 
       <meta name="description" content="Site dashboard.">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
       {% block css_links %}
         <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/style.css' %}">
-      {% endblock %}
+        {% endblock %}
+        <!-- Leaflet css -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   
 
   {% block content %}
@@ -101,7 +104,7 @@
           </div>
 
           <div class="row">
-            <div style="background-color:aqua" class="col">
+            <div style="background-color:aqua" class="col" id="map">
               Map Section
             </div>
           </div>
@@ -170,4 +173,7 @@
 
   {% block js_links %}
     <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script> 
-  {% endblock %}
+    <!-- Map js scripts -->
+    {% endblock %}
+    <script src="/RedAlert/dashboard/static/dashboard/js/map.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
