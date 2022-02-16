@@ -1,0 +1,19 @@
+
+
+/* These are global css variables for us to use in any css file. Accessed like this, var(--bootstrap-grey) */
+:root {
+    --bootstrap-grey: 2px solid rgba(0,0,0,.125);
+    --secondary-color: rgb(255, 255, 255);
+}
+
+.footer-padding-fix{
+    padding-bottom: 50px;;
+}
+
+.display-none{
+    display: none;
+}
+
+.global-styles-test{
+    color: blue;
+}

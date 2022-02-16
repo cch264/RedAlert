@@ -30,9 +30,17 @@
 
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                <input type="text" class="form-control border border-primary rounded flex-grow-1" id="floatingInput" placeholder="Type your search here!">
+                
+                <form id="user-search-box-form" class="flex-grow-1 form-floating" method="post">
+                   <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
+                  {% csrf_token %}
 
-                <label for="floatingInput"> Search: </label>
+                  <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
+
+                  <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
+
+                  <label for="user-search-input"> Search: </label>
+                </form>
 
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -114,24 +122,13 @@
                 <ul class="nav nav-tabs py-2 my-2" id="myTab" role="tablist">
                   <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" disabled>
-                      Search Results Container
+                      Search Results
                     </button>
                   </li>
                 </ul>
 
-                <div class="bootstrap-grey-border pb-2">
-                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
-                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
-                    </div>
-                    <div class=" bootstrap-grey-bottom my-1 me-1 ms-5">
-                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
-                    </div>
-                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
-                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
-                    </div>
-                    <div class="bootstrap-grey-bottom my-1 me-1 ms-5">
-                      <input type="checkbox" class="me-5 ms-3" > <span class="mx-5"> Name: None</span> <span class="mx-5"> Address: None    </span> <span class="mx-5"> Policies: None </span>
-                    </div>
+                <div class="bootstrap-grey-border pb-2" id="search-results-container">
+                    
                 </div>
               </div>
 
@@ -143,10 +140,7 @@
               <div id="notif-container" class="my-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">SMS</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Email</button>
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Notifications</button>
                   </li>
                 </ul>
 
@@ -154,61 +148,56 @@
 
                   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     
-                    <h4> Send SMS</h4>
+                    <h4> Send Message</h4>
 
                     <div id="notif-tab-1" class="notif-tab px-3 py-3">
-                      <div class="d-flex justify-content-between">
-    
-                        <div>
-                          <label for="sms-subjet-name"> Subject: </label>
-                          <input id="sms-subjet-name" class="form-control" type="text">
-                        </div>
-    
-                        <div>
-                          <button class="btn btn-primary">Social</button>
-                          <button class="btn btn-primary">Emergency</button>
-                        </div>
-    
+                      <div id="selected-clients-container">
+                        <input id="selected-clients-id-array" type="hidden"> 
                       </div>
+
+                      <div class="d-flex flex-row justify-content-between">
+                        <div class="w-50">
+                          <div>
+                            <label for="sms-subjet-name"> Subject: </label>
+                            <input id="sms-subjet-name" class="form-control" type="text">
+                          </div>
+
+                          <div>
+                            <label for="sms-message-inp"> Message: </label>
+                            <textarea id="sms-message-inp" class="form-control" type="text-area">  </textarea> 
+                          </div>
+
+                        </div>
+
+                        <div>
+                          
+                          <label for="sel-msg-type"> Message Type: </label>
+                          <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
+                            <option value="def-select-opt" selected> Select a Message Type </option>
+                              <option value="send-sms"> Send SMS </option>
+                              <option value="send-email">Send Email </option>
+                              <option value="send-email">Send Email and SMS </option>
+                          </select>
+
+                          <label for="sel-msg-priority"> Message Priority: </label>
+                          <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
+                            <option value="def-select-opt" selected> Select a Message Priority </option>
+                              <option value="send-sms"> Send Emergency Message</option>
+                              <option value="send-email">Send Social Message</option>
+                          </select>
+
+                        </div>
     
-                      <div class="message-div">
-                        <label for="sms-message-inp"> Message: </label>
-                        <input id="sms-message-inp" class="form-control" type="text">   
                       </div>
 
                       <div class="d-flex flex-row-reverse">
                         <button class="btn btn-primary">Send Message</button>
-                   </div>
+                      </div>
+
                     </div>
                   </div>
 
-                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <h4> Send Email</h4>
-                    <div id="notif-tab-1" class="notif-tab px-3 py-3">
-                      <div class="d-flex justify-content-between">
-    
-                        <div>
-                          <label for="sms-subjet-name"> Subject: </label>
-                          <input id="sms-subjet-name" class="form-control" type="text">
-                        </div>
-    
-                        <div>
-                          <button class="btn btn-primary">Social</button>
-                          <button class="btn btn-primary">Emergency</button>
-                        </div>
-    
-                      </div>
-    
-                      <div class="message-div">
-                        <label for="sms-message-inp"> Message: </label>
-                        <input id="sms-message-inp" class="form-control" type="text">   
-                      </div>
-
-                      <div class="d-flex flex-row-reverse">
-                           <button class="btn btn-primary">Send Message</button>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
                 
 
@@ -276,6 +265,7 @@
   </div>
 
 
+  <div
   <!--
     Use this area to store elements that dont rely on document positioning to decide their position in the document
   -->

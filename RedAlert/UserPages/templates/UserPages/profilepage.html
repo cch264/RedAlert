@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+  {% block head_title %}
+    <title>Profile Page</title>
+  {% endblock %}  
+
+  <meta name="description" content="User profile page">
+
+  {% block css_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'UserPages/css/userpages.css' %}">
+
+  {% endblock %}
+
+  <!-- CONSIDER USING BOOTSTRAP FLOATING FORM LABELS FOR A BETTER LOOK -->
+  {% block content %}
+    <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
+        <div clas="w-75">
+            <h1> Profile Page </h1>
+
+            <label for="user-email-input">Email: </label>
+            <input id="user-email-input" class="form-control" value="{{ userAuthObj.email }}" disabled></input>
+
+            <label for="email-input">First Name: </label>
+            <input id="first-name-input" class="form-control" value="{{ userAuthObj.first_name }}" disabled>
+
+            <label for="last-name-input">Last Name: </label>
+            <input id="last-name-input" class="form-control" value="{{ userAuthObj.last_name }}" disabled>
+
+            <label for="birthdate-input">Birthdate: </label>
+            <input id="birthdate-input" class="form-control" value="{{ userInfoObj.birthdate }}" disabled>
+
+            <label for="agent-code-input">Agent Code: </label>
+            <input id="agent-code-input" class="form-control" value="{{ userInfoObj.agent_code }}" disabled>
+
+            <label for="phone-number-input">Phone Number: </label>
+            <input id="phone-number-input" class="form-control" value="{{ userInfoObj.agent_phone_number }}" disabled>
+
+            <label for="address-input">Address: </label>
+            <input id="address-input" class="form-control" value="{{ userInfoObj.agent_address }}" disabled>
+
+            <label for="account-creation-input">Account Creation Date: </label>
+            <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
+        </div>
+        
+
+    </div>
+
+  {% endblock %}
+
+
+{% block js_links %}
+    <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
+  {% endblock %}

@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include( 'userLoginApp.urls' ) ),
     path('tech_demo/', include('redAlertSite.urls') ),
     path('dashboard/', include('dashboard.urls') ),
+    path('user_pages/', include('UserPages.urls') ),
 ]

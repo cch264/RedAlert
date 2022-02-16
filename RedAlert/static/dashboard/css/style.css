@@ -14,11 +14,29 @@
 }
 
 
-.w-21{
-    width: 21%;
-}
-
-
 .message-div{
     width: 35%;
+}
+
+.box-with-header{
+    border-radius: 10px;
+    width: 100%;
+    border: 1px solid rgba(0,0,0,.125);
+
+}
+
+.bwh-header{
+    border: 2px solid;
+    border-radius: 6px;
+    background-color: #0d6efd;
+    color: white;
+}
+
+.bootstrap-grey-border{
+    border-top: 2px solid rgba(0,0,0,.125);
+    border-bottom: 2px solid rgba(0,0,0,.125);
+}
+
+.bootstrap-grey-bottom{
+    border-bottom: 1px solid rgba(0,0,0,.125);
 }
