@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+  {% block head_title %}
+    <title>FAQ</title>
+  {% endblock %}  
+
+  <meta name="description" content="Website Facts">
+
+  {% block css_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'UserPages/css/style.css' %}">
+
+  {% endblock %}
+
+  <!-- CONSIDER USING BOOTSTRAP FLOATING FORM LABELS FOR A BETTER LOOK -->
+  {% block content %}
+    <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
+        <div class="w-50">
+            <h1 class=" border-bottom border-secondary" >  Site FAQ </h1> 
+
+            
+
+        </div>
+
+    </div>
+
+  {% endblock %}
+
+
+{% block js_links %}
+    <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
+  {% endblock %}

@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import mimetypes
+import environ
+
+env = environ.Env()
+
+# reading .env file, this line must be here for the env variable to work, not sure why.
+environ.Env.read_env()
 
 mimetypes.add_type("text/js", ".js", True)
 
@@ -24,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4)q0epoetdbhhkgkm2-igij7z-+3&m%*pgiluc5*(o7_x)_$i5'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +43,7 @@ ALLOWED_HOSTS = ['*','127.0.0.1','localhost']
 INSTALLED_APPS = [
     'redAlertSite.apps.RedalertsiteConfig', # redAlertSite folder app.py file, inside here there is the name of a func called RedalertsiteConfig.
     'userLoginApp.apps.UserLoginAppConfig',
+    'UserPages.apps.UserpagesConfig',
     'dashboard.apps.DashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,7 +92,7 @@ WSGI_APPLICATION = 'RedAlert.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'red_alert_db_development',
+        'NAME': 'red_alert_db_development'
     }
 }
 
@@ -153,8 +160,12 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Settings
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'RedAlertTester@gmail.com'
-EMAIL_HOST_PASSWORD = 'CS486RedAlert'
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST_USER = env("EMAIL_ADDRESS")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASS")
 EMAIL_USE_TLS = True
+
+SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
+TWILIO_ACCOUNT_SID = env("TWILIO_SID")
+TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_KEY")
