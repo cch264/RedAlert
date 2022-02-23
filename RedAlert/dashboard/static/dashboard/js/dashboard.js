@@ -161,8 +161,11 @@ function executeFuseSearch( user_pattern )
 
       //console.log(`JSON  ${ JSON.parse( $('#client-json-input').val()) }`);
 
+      // Get the json from the input element and parse it to convert it to a json.
+      // This json has an entry for EVERY single client in the DB.
       search_data_json = JSON.parse( $('#client-json-input').val());
 
+      // pass the client json to the search function.
       const fuse = new Fuse( search_data_json, options);
       
       // Change the pattern
