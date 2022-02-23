@@ -177,6 +177,7 @@ function executeFuseSearch( user_pattern )
 // This method called when the dashboard page loads. Put event listeners in here.
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
+
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').on('submit', function(event)
         {
@@ -199,14 +200,15 @@ function fill_client_results_box( client_list )
   // Remove previous search results
   $('#search-results-container').empty();
 
-
+  // Iterate through each result from the users search and create each client element to be dispalyed to the user. Also assign click listeners to each search result so we can keep track of which clients
+  // have been selected.
   client_list.forEach( ( result ) => {
 
 
 
   let element_to_append = `
     <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
-                <input type="checkbox" class="me-5 ms-3" >
+                <span class="glyphicon glyphicon-plus"></span>
                   
                 <div class="container">
 
@@ -232,47 +234,29 @@ function fill_client_results_box( client_list )
     </div>
     `;
 
-    /*
-  let element_to_append = 
-            "<div class=\"client-sr\"  data-client-id=\"" + result.item.id + "\" class=\"bootstrap-grey-bottom my-1 me-1 ms-5\">
-              <input type=\"checkbox\" class=\"me-5 ms-3\" >
-                 <span class=\"mx-5\"> Name: " + result.item.name +
-                "</span> <span class=\"mx-5\"> Address:"+ result.item.unit_num+ " " + result.item.street +" " + result.item.city  
-                    + ", " + result.item.state+", " +result.item.zip_code +"</span> 
-                <span class=\"mx-5\"> Policies: " + result.item.polcies +"</span></div>";
-    */
-
     $('#search-results-container').append( element_to_append );
 
     // Get the div that contains the search result.
     $(`#sr-${result.item.id}`).on('click', (event) => {
 
       
-
+      // If the client search result already exist in the selected clients container, remove it.
+      // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
       if( $(`#selected-sr-${result.item.id}`).length )
       {
         $(`#selected-sr-${result.item.id}`).remove();
+
+        refreshSelectedClientsString();
       }
       else
       {
         $("#selected-clients-container").append( $(`#sr-${result.item.id}`).clone().attr('id', `selected-sr-${result.item.id}` ) );
-        // Remove all ids from the container
-        $("#selected-clients-id-array").val("");
 
-        let clientIdString = "";
+        $(`#selected-sr-${result.item.id} > input`).remove();
 
-        $("#selected-clients-container").children().each( function(index) {
-          // Ignore index 0 as it is the input we are storing client ids in so it is not needed
-          if( index > 0)
-          {
-            console.log(`ID OF CHILD ${ $(this).attr('id')}`);
-  
-            clientIdString += $( this ).data("clientId") + " ";
-          }
-        })
-
-        $("#selected-clients-id-array").val(clientIdString);
-        
+        $(`#selected-sr-${result.item.id}`).on('click', function(event){ $(event.currentTarget).remove(); refreshSelectedClientsString(); });
+       
+        refreshSelectedClientsString();
       }
 
     })
@@ -284,6 +268,26 @@ function fill_client_results_box( client_list )
     //console.log(`age ${ result.item.age }`);
 
 });
+}
+
+function refreshSelectedClientsString()
+{
+  let clientIdString = "";
+  // Remove all ids from the container
+  $("#selected-clients-id-array").val("");
+
+  $("#selected-clients-container").children().each( function(index) {
+    // Ignore index 0 as it is the input we are storing client ids in so it is not needed
+    if( index > 0)
+    {
+      console.log(`ID OF CHILD ${ $(this).attr('id')}`);
+
+      clientIdString += $( this ).data("clientId") + " ";
+    }
+  })
+
+
+  $("#selected-clients-id-array").val(clientIdString);
 }
 
 
