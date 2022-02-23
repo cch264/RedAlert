@@ -93,7 +93,8 @@ def createNewUserForm( request ):
             new_user_info.agent_code = cd['agent_code']
             new_user_info.agent_phone_number = cd['agent_phone_number']
             new_user_info.agent_address = cd['agent_address']
-            new_user_info.user_id = new_user.id
+            new_user_info.user_id = new_user
+            
 
             # Save the user to the db.
             new_user_info.save()
