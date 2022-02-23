@@ -176,6 +176,7 @@ function executeFuseSearch( user_pattern )
 
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
+
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').on('submit', function(e)
         {
@@ -206,7 +207,7 @@ function fill_client_results_box( client_list )
 
   let element_to_append = `
     <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
-                <input type="checkbox" class="me-5 ms-3" >
+                <span class="glyphicon glyphicon-plus"></span>
                   
                 <div class="container">
 
@@ -238,31 +239,23 @@ function fill_client_results_box( client_list )
     $(`#sr-${result.item.id}`).on('click', (event) => {
 
       
-
+      // If the client search result already exist in the selected clients container, remove it.
+      // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
       if( $(`#selected-sr-${result.item.id}`).length )
       {
         $(`#selected-sr-${result.item.id}`).remove();
+
+        refreshSelectedClientsString();
       }
       else
       {
         $("#selected-clients-container").append( $(`#sr-${result.item.id}`).clone().attr('id', `selected-sr-${result.item.id}` ) );
-        // Remove all ids from the container
-        $("#selected-clients-id-array").val("");
 
-        let clientIdString = "";
+        $(`#selected-sr-${result.item.id} > input`).remove();
 
-        $("#selected-clients-container").children().each( function(index) {
-          // Ignore index 0 as it is the input we are storing client ids in so it is not needed
-          if( index > 0)
-          {
-            console.log(`ID OF CHILD ${ $(this).attr('id')}`);
-  
-            clientIdString += $( this ).data("clientId") + " ";
-          }
-        })
-
-        $("#selected-clients-id-array").val(clientIdString);
-        
+        $(`#selected-sr-${result.item.id}`).on('click', function(event){ $(event.currentTarget).remove(); refreshSelectedClientsString(); });
+       
+        refreshSelectedClientsString();
       }
 
     })
@@ -274,6 +267,26 @@ function fill_client_results_box( client_list )
     //console.log(`age ${ result.item.age }`);
 
 });
+}
+
+function refreshSelectedClientsString()
+{
+  let clientIdString = "";
+  // Remove all ids from the container
+  $("#selected-clients-id-array").val("");
+
+  $("#selected-clients-container").children().each( function(index) {
+    // Ignore index 0 as it is the input we are storing client ids in so it is not needed
+    if( index > 0)
+    {
+      console.log(`ID OF CHILD ${ $(this).attr('id')}`);
+
+      clientIdString += $( this ).data("clientId") + " ";
+    }
+  })
+
+
+  $("#selected-clients-id-array").val(clientIdString);
 }
 
 function executeSearchAjax() {
