@@ -35,6 +35,7 @@
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
 
+                  <!-- This is where the json from our django backend is stored until a javascript function grabs the data to search through it. -->
                   <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
 
                   <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">

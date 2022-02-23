@@ -198,7 +198,8 @@ function fill_client_results_box( client_list )
   // Remove previous search results
   $('#search-results-container').empty();
 
-
+  // Iterate through each result from the users search and create each client element to be dispalyed to the user. Also assign click listeners to each search result so we can keep track of which clients
+  // have been selected.
   client_list.forEach( ( result ) => {
 
 
@@ -230,16 +231,6 @@ function fill_client_results_box( client_list )
                 </div>
     </div>
     `;
-
-    /*
-  let element_to_append = 
-            "<div class=\"client-sr\"  data-client-id=\"" + result.item.id + "\" class=\"bootstrap-grey-bottom my-1 me-1 ms-5\">
-              <input type=\"checkbox\" class=\"me-5 ms-3\" >
-                 <span class=\"mx-5\"> Name: " + result.item.name +
-                "</span> <span class=\"mx-5\"> Address:"+ result.item.unit_num+ " " + result.item.street +" " + result.item.city  
-                    + ", " + result.item.state+", " +result.item.zip_code +"</span> 
-                <span class=\"mx-5\"> Policies: " + result.item.polcies +"</span></div>";
-    */
 
     $('#search-results-container').append( element_to_append );
 
