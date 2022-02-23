@@ -1,4 +1,4 @@
-from attr import attr 
+#from attr import attr 
 from cProfile import label
 from django import forms
 from django.core.exceptions import ValidationError
