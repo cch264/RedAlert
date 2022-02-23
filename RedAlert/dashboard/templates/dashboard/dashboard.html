@@ -13,10 +13,10 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
       {% block css_links %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/styles/style.css' %}">
-        {% endblock %}
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/style.css' %}">
         <!-- Leaflet css -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+      {% endblock %}
   
 
   {% block content %}
@@ -300,8 +300,12 @@
 
 
   {% block js_links %}
-    <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script> 
+
+    <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
+    
     <!-- Map js scripts -->
-    {% endblock %}
-    <script src="/RedAlert/dashboard/static/dashboard/js/map.js"></script>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{% static 'dashboard/js/map.js' %}"></script>
+
+  {% endblock %}
