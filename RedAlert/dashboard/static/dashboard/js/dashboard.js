@@ -204,39 +204,17 @@ function fill_client_results_box( client_list )
   client_list.forEach( ( result ) => {
 
 
-
-  let element_to_append = `
-    <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
-                <span class="glyphicon glyphicon-plus"></span>
-                  
-                <div class="container">
-
-                  <div class="row mb-1">
-                    <div class="col"> Name: ${result.item.name} </div>
-                    <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
-                    <div class="col"> Policies: ${result.item.polcies}</div>
-                  </div>
-
-                  <div class="row mb-1">
-                    <div class="col"> Age: ${result.item.age}</div>
-                    <div class="col"> Birthdate: ${result.item.birthdate}</div>
-                    <div class="col"> Gender: ${result.item.gender}</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col"> Notification Status: ${result.item.notification_status}</div>
-                    <div class="col"> License Number: ${result.item.license_num}</div>
-                    <div class="col"> Phone Number: ${result.item.phone}</div>
-                  </div>
-
-                </div>
-    </div>
-    `;
+  // Create html element for each search result returned from search.
+  let element_to_append = generateSearchElement(result);
 
     $('#search-results-container').append( element_to_append );
 
     // Get the div that contains the search result.
-    $(`#sr-${result.item.id}`).on('click', (event) => {
+    $(`#sr-btn-${result.item.id}`).on('click', (event) => {
+
+      $(`#sr-${result.item.id}`).addClass('sel-sr-color');
+
+      invertPlusBtn( `#sr-btn-${result.item.id}` );
 
       
       // If the client search result already exist in the selected clients container, remove it.
@@ -244,16 +222,20 @@ function fill_client_results_box( client_list )
       if( $(`#selected-sr-${result.item.id}`).length )
       {
         $(`#selected-sr-${result.item.id}`).remove();
+        $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
 
         refreshSelectedClientsString();
       }
       else
       {
-        $("#selected-clients-container").append( $(`#sr-${result.item.id}`).clone().attr('id', `selected-sr-${result.item.id}` ) );
+        // Create html element for each search result the user clicks.
+        let selected_search_result = generateSelectedSearchElement(result);
 
-        $(`#selected-sr-${result.item.id} > input`).remove();
+        // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
+        $("#selected-clients-container").append( selected_search_result );
 
-        $(`#selected-sr-${result.item.id}`).on('click', function(event){ $(event.currentTarget).remove(); refreshSelectedClientsString(); });
+
+        $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
        
         refreshSelectedClientsString();
       }
@@ -267,6 +249,97 @@ function fill_client_results_box( client_list )
     //console.log(`age ${ result.item.age }`);
 
 });
+}
+
+// Create html element for each search result returned from search.
+function generateSelectedSearchElement(result)
+{
+
+  return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+            <div class="d-flex flex-column justify-content-center ps-2">
+              <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div> 
+            </div>
+              
+            <div class="container">
+
+              <div class="row mb-1">
+                <div class="col"> Name: ${result.item.name} </div>
+                <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                <div class="col"> Policies: ${result.item.polcies}</div>
+              </div>
+
+              <div class="row mb-1">
+                <div class="col"> Age: ${result.item.age}</div>
+                <div class="col"> Birthdate: ${result.item.birthdate}</div>
+                <div class="col"> Gender: ${result.item.gender}</div>
+              </div>
+
+              <div class="row">
+                <div class="col"> Notification Status: ${result.item.notification_status}</div>
+                <div class="col"> License Number: ${result.item.license_num}</div>
+                <div class="col"> Phone Number: ${result.item.phone}</div>
+              </div>
+
+            </div>
+          </div>
+          `;
+
+}
+
+// Create html element for each search result returned from search.
+function generateSearchElement(result)
+{
+  return `<div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+              <div class="d-flex flex-column justify-content-center ps-2">
+                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
+              </div>
+                
+              <div class="container">
+
+                <div class="row mb-1">
+                  <div class="col"> Name: ${result.item.name} </div>
+                  <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                  <div class="col"> Policies: ${result.item.polcies}</div>
+                </div>
+
+                <div class="row mb-1">
+                  <div class="col"> Age: ${result.item.age}</div>
+                  <div class="col"> Birthdate: ${result.item.birthdate}</div>
+                  <div class="col"> Gender: ${result.item.gender}</div>
+                </div>
+
+                <div class="row">
+                  <div class="col"> Notification Status: ${result.item.notification_status}</div>
+                  <div class="col"> License Number: ${result.item.license_num}</div>
+                  <div class="col"> Phone Number: ${result.item.phone}</div>
+                </div>
+
+              </div>
+          </div>
+          `;
+}
+
+function invertPlusBtn( elementID)
+{
+
+  if($( elementID ).hasClass('plus-btn')  )
+      {
+        // Remove plus icon from search result
+        $(elementID).empty();
+        $(elementID).removeClass('select-client-btn');
+        $(elementID).removeClass('plus-btn');
+        $(elementID).addClass('remove-sr-btn');
+        $(elementID).append(` Remove <i class="px-2 fa-solid fa-xmark"></i>`);
+      }
+      else
+      {
+        // Remove x icon from search result and replace with plus. Replace classes so the plus button is styled properly.
+        $(elementID).empty();
+        $(elementID).removeClass('remove-sr-btn');
+        $(elementID).addClass('plus-btn');
+        $(elementID).addClass('select-client-btn');
+        $(elementID).append(` Select <i class="fa-solid fa-plus"></i> `);
+      }
 }
 
 function refreshSelectedClientsString()
