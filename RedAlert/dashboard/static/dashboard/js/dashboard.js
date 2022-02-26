@@ -72,14 +72,15 @@ function executeFuseSearch( user_pattern, useUserInput = false )
 }
 
 
+// This method called when the dashboard page loads. Put event listeners in here.
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
 
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
-    $('#user-search-box-form').on('submit', function(e)
+    $('#user-search-box-form').on('submit', function(event)
         {
             // PREVENT the default behavior of the form. Without this line, ajax wont work right or FUSE.js.
-            e.preventDefault();
+            event.preventDefault();
 
             executeSearch();
 
@@ -351,6 +352,7 @@ function refreshSelectedClientsString()
   $("#selected-clients-id-array").val(clientIdString);
 }
 
+
 function executeSearchAjax() {
     $.ajax({
 
@@ -361,6 +363,7 @@ function executeSearchAjax() {
         // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
         // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
         headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
         data: {user_query: $('#user-search-input').val() },
 
         // Function to call when to django returns a response to our ajax request.
