@@ -1,127 +1,29 @@
 
-list = [
-    {
-      "title": "The DaVinci Code",
-      "author": {
-        "firstName": "Dan",
-        "lastName": "Brown"
-      }
-    },
-    {
-      "title": "Angels & Demons",
-      "author": {
-        "firstName": "Dan",
-        "lastName": "Brown"
-      }
-    },
-    {
-      "title": "The Silmarillion",
-      "author": {
-        "firstName": "J.R.R",
-        "lastName": "Tolkien"
-      }
-    },
-    {
-      "title": "Syrup",
-      "author": {
-        "firstName": "Max",
-        "lastName": "Barry"
-      }
-    },
-    {
-      "title": "The Lost Symbol",
-      "author": {
-        "firstName": "Dan",
-        "lastName": "Brown"
-      }
-    },
-    {
-      "title": "The Book of Lies",
-      "author": {
-        "firstName": "Brad",
-        "lastName": "Meltzer"
-      }
-    },
-    {
-      "title": "Lamb",
-      "author": {
-        "firstName": "Christopher",
-        "lastName": "Moore"
-      }
-    },
-    {
-      "title": "Fool",
-      "author": {
-        "firstName": "Christopher",
-        "lastName": "Moore"
-      }
-    },
-    {
-      "title": "Incompetence",
-      "author": {
-        "firstName": "Rob",
-        "lastName": "Grant"
-      }
-    },
-    {
-      "title": "Fat",
-      "author": {
-        "firstName": "Rob",
-        "lastName": "Grant"
-      }
-    },
-    {
-      "title": "Colony",
-      "author": {
-        "firstName": "Rob",
-        "lastName": "Grant"
-      }
-    },
-    {
-      "title": "Backwards, Red Dwarf",
-      "author": {
-        "firstName": "Rob",
-        "lastName": "Grant"
-      }
-    },
-    {
-      "title": "The Grand Design",
-      "author": {
-        "firstName": "Stephen",
-        "lastName": "Hawking"
-      }
-    },
-    {
-      "title": "The Book of Samson",
-      "author": {
-        "firstName": "David",
-        "lastName": "Maine"
-      }
-    },
-    {
-      "title": "The Preservationist",
-      "author": {
-        "firstName": "David",
-        "lastName": "Maine"
-      }
-    },
-    {
-      "title": "Fallen",
-      "author": {
-        "firstName": "David",
-        "lastName": "Maine"
-      }
-    },
-    {
-      "title": "Monster 1959",
-      "author": {
-        "firstName": "David",
-        "lastName": "Maine"
-      }
-    }
-  ]
 
-function executeFuseSearch( user_pattern )
+
+var search_all_keys = [
+  "id",
+  "name",
+  "unit_num",
+  "street",
+  "city",
+  "zip_code",
+  "state",
+  "license_num",
+  "policies",
+  "age",
+  "birthdate",
+  "gender",
+  "notificatoin_status",
+  "email"
+]
+
+var search_keys = search_all_keys;
+
+var search_pattern = "";
+
+
+function executeFuseSearch( user_pattern, useUserInput = false )
 {
     const options = {
         // isCaseSensitive: false,
@@ -139,29 +41,18 @@ function executeFuseSearch( user_pattern )
         // fieldNormWeight: 1,
 
         // Specifies keys in your json to search by.
-        keys: [
-          "id",
-          "name",
-          "unit_num",
-          "street",
-          "city",
-          "zip_code",
-          "state",
-          "license_num",
-          "policies",
-          "age",
-          "birthdate",
-          "gender",
-          "notificatoin_status",
-          "email"
-        ]
+        keys: search_keys
       };
     
       //console.log(`JSON STRING ${ $('#client-json-input').val() }`);
 
       //console.log(`JSON  ${ JSON.parse( $('#client-json-input').val()) }`);
 
+      // Only use user input if we are supposed to. If user is using filters we may not want to use their input.
+     
       search_data_json = JSON.parse( $('#client-json-input').val());
+      
+     
 
       const fuse = new Fuse( search_data_json, options);
       
@@ -169,8 +60,15 @@ function executeFuseSearch( user_pattern )
       const pattern = ""
 
       //console.log( fuse.search( user_pattern ) )
-      
-      return fuse.search( user_pattern )
+      if(!useUserInput )
+      {
+        return fuse.search( user_pattern )
+      }
+      else
+      {
+        return fuse.search( search_pattern  );
+      }
+     
 }
 
 
@@ -183,16 +81,107 @@ window.addEventListener('load', (event) => {
             // PREVENT the default behavior of the form. Without this line, ajax wont work right or FUSE.js.
             e.preventDefault();
 
-            //executeSearchAjax();
+            executeSearch();
 
-            search_result_object = executeFuseSearch(  $('#user-search-input').val() );
-
-            console.log(`Search result leng ${search_result_object.length }`);
-
-            fill_client_results_box( search_result_object );
         })
+
+    assignSearchFilterListeners();
   });
 
+  function assignSearchFilterListeners()
+  {
+    $(`#city-filter-dd`).children().each( function(  )
+    {
+      if( $(this).hasClass('search-pattern') )
+      {
+        $(this).on('click', function(event){
+          // Disable search bar while a search pattern filter is selected.
+          search_keys = ['city'];
+          search_pattern = $(this).data('filterQuery');
+
+          $(`#user-search-input`).prop('disabled', true);
+          $(`#search-input-label`).text('Remove Search Only by Category to type a search query!');
+
+          filterName = $(this).data('filterQuery').charAt(0).toUpperCase() + $(this).data('filterQuery').slice(1);
+
+          // Change select button to display text correctly.
+          $('#city-filter-btn-txt').text(`City - ${filterName} Only`);
+
+          // Show filters that were previously selected and hidden
+          showHiddenFilters( `#city-filter-dd` );
+
+          $(this).toggle();
+
+          //removeFiltersForCategory();
+  
+          // Execute search since user is not allowed to enter a search query here 
+          // Use custom search pattern instead of user entered one.
+          executeSearch(true);
+        })
+      }
+      else if( $(this).hasClass('city-only-filter') )
+      {
+        $(this).on('click', function(event){
+
+          $(`#user-search-input`).prop('disabled', false);
+          $(`#search-input-label`).text(' Search: ');
+
+          showHiddenFilters( `#city-filter-dd` );
+
+          $(this).toggle();
+
+          // City is the only field we want to search by in this case.
+          search_keys = ['city'];
+
+          $('#city-filter-btn-txt').text(`Search City Names Only`);
+        })
+        
+      }
+      else if( $(this).hasClass('city-all-filter') )
+      {
+        $(this).on('click', function(event){
+          $(`#user-search-input`).prop('disabled', false);
+          $(`#search-input-label`).text(' Search: ');
+
+          showHiddenFilters( `#city-filter-dd` );
+
+          $(this).toggle();
+
+          search_keys = search_all_keys;
+
+          $('#city-filter-btn-txt').text(`City - All`);
+        })
+      }
+    })
+  }
+
+function removeFiltersForCategory()
+{
+
+}
+
+function showHiddenFilters( filterParentID )
+{
+  $(filterParentID).children().each( function(  )
+  {
+    // If a filter element is hidden, show it
+    if( $(this).is(":hidden"))
+    {
+      $(this).toggle();
+    }
+  });
+
+}
+
+function executeSearch( useUserInput = false)
+{
+
+  console.log("Search keys is " + search_keys);
+  search_result_object = executeFuseSearch(  $('#user-search-input').val(), useUserInput );
+
+  fill_client_results_box( search_result_object );
+
+}
 
 function fill_client_results_box( client_list )
 {
