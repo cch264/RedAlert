@@ -56,6 +56,87 @@
                   <label id="search-input-label" for="user-search-input"> Search: </label>
                 </form>
 
+                  <div class="container">
+                    <div class="row">
+                      <div class="col">
+                        <h4> Filters: </h4>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col d-flex flex-column">
+                        <h5 class="filter-pattern-category" >City</h5>
+
+                        <div>
+                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                          <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
+                          <label for="mesa-filter-pattern"> - Mesa </label>
+                        </div>
+
+                        <div>
+                          <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
+                          <label for="phoenix-filter-pattern" > - Phoenix </label>
+                        </div>
+
+                        <div>
+                          <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
+                          <label for="scottsdale-filter-pattern" > - Scottsdale </label>
+                        </div>
+
+                        <div>
+                          <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
+                          <label for="flagstaff-filter-pattern" > - Flagstaff </label>
+                        </div>
+
+                      </div>
+
+                      <div class="col d-flex flex-column">
+                        <h5 class="filter-pattern-category" >Policy</h5>
+
+                        <div>
+                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                          <input id="fire-filter-pattern" type="checkbox" data-query-key="policy" data-query-pattern="fire">
+                          <label for="fire-filter-pattern"> - Fire </label>
+                        </div>
+
+                        <div>
+                          <input id="home-filter-pattern" type="checkbox" data-query-key="policy" data-query-pattern="home" >
+                          <label for="home-filter-pattern" > - Home </label>
+                        </div>
+
+                        <div>
+                          <input id="pet-filter-pattern" type="checkbox" data-query-key="policy" data-query-pattern="pet">
+                          <label for="pet-filter-pattern" > - Pet </label>
+                        </div>
+
+                        <div>
+                          <input id="boat-filter-pattern" type="checkbox" data-query-key="policy" data-query-pattern="boat">
+                          <label for="boat-filter-pattern" > - Boat </label>
+                        </div>
+
+                      </div>
+
+
+                      
+
+                      <div class="col d-flex flex-column">
+                        <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
+
+                        <div> Enter Range of Ages </div>
+                        <div>
+                          <input id="age-filter-range-pattern-1" type="text" data-query-key="age" data-query-pattern="lower-range">
+                          <input id="age-filter-range-pattern-2" type="text" data-query-pattern="upper-range">
+                        </div>
+                      </div>
+                      
+
+                    </div>
+
+                  </div>
+
+                    
+
+
                   <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle me-1 ms-1" data-bs-toggle="dropdown" aria-expanded="false">
                       <span id="city-filter-btn-txt"> City - All </span>
@@ -106,6 +187,7 @@
                   </div>
 
                   <button class="btn btn-info w-6">
+
                     <!-- Button with magnifying glass icon. -->
                     <span class="gg-search center-inline-elem"> </span>
                   </button>

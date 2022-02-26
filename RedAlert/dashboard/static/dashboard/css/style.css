@@ -71,3 +71,12 @@
     cursor: pointer;
     background-color: rgb(217, 229, 235);
 }
+
+
+.invalid-age-range{
+    border: 2px solid red;
+}
+
+.valid-age-range{
+    border: 2px solid green;
+}

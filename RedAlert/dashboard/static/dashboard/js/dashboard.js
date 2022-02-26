@@ -20,10 +20,13 @@ var search_all_keys = [
 
 var search_keys = search_all_keys;
 
-var search_pattern = "";
+// Array that holds the users selected filters.
+var searchKeysAndPatterns = [false];
+
+var searchKeysAndRangePatterns = [false];
 
 
-function executeFuseSearch( user_pattern, useUserInput = false )
+function executeFuseSearch( user_pattern)
 {
     const options = {
         // isCaseSensitive: false,
@@ -60,14 +63,8 @@ function executeFuseSearch( user_pattern, useUserInput = false )
       const pattern = ""
 
       //console.log( fuse.search( user_pattern ) )
-      if(!useUserInput )
-      {
-        return fuse.search( user_pattern )
-      }
-      else
-      {
-        return fuse.search( search_pattern  );
-      }
+      
+      return fuse.search( user_pattern )
      
 }
 
@@ -86,99 +83,259 @@ window.addEventListener('load', (event) => {
 
         })
 
-    assignSearchFilterListeners();
+        createSearchKeyCategoryArray();
+
+        assignSearchFilterListeners();
+
+        createSearchKeyRangeArray();
+
+        // Filters that take a range are assigned listeners here.
+        assignSearchFilterRangeListeners();
+
+
   });
 
   function assignSearchFilterListeners()
   {
-    $(`#city-filter-dd`).children().each( function(  )
+
+    $("[id$='-filter-pattern']").each( function()
     {
-      if( $(this).hasClass('search-pattern') )
+      console.log(`Data is ${$(this).data('queryPattern') }`);
+
+      //console.log(`Data is a range: ${ $(this).data('isRange') }`);
+
+      $(this).on('click',function()
       {
-        $(this).on('click', function(event){
-          // Disable search bar while a search pattern filter is selected.
-          search_keys = ['city'];
-          search_pattern = $(this).data('filterQuery');
 
-          $(`#user-search-input`).prop('disabled', true);
-          $(`#search-input-label`).text('Remove Search Only by Category to type a search query!');
+        // Check if user selected or deselected the filter
+        if( $(this).is(":checked") )
+        {
+          console.log('Input checked, input is checked');
 
-          filterName = $(this).data('filterQuery').charAt(0).toUpperCase() + $(this).data('filterQuery').slice(1);
+           // if they selected it, add the search key to the array if it does not exist already, and add the search key within that array.
+          // If the filter key array has first element set to false, set it to true, else do nothing.
+          updateFilterArray( addFilter=true, $(this).data('queryKey'), $(this).data('queryPattern'));
 
-          // Change select button to display text correctly.
-          $('#city-filter-btn-txt').text(`City - ${filterName} Only`);
+        }
+        else
+        {
+          console.log('Input unchecked, input is unchecked');
 
-          // Show filters that were previously selected and hidden
-          showHiddenFilters( `#city-filter-dd` );
+          // If user deselected the filter, remove the filter pattern from the array. Check if any other filters are selected based on selected inputs on the page, do not use array to confirm this.
+          updateFilterArray( addFilter=false, $(this).data('queryKey'), $(this).data('queryPattern'));
 
-          $(this).toggle();
+        }
+      });
+    });
 
-          //removeFiltersForCategory();
-  
-          // Execute search since user is not allowed to enter a search query here 
-          // Use custom search pattern instead of user entered one.
-          executeSearch(true);
-        })
-      }
-      else if( $(this).hasClass('city-only-filter') )
-      {
-        $(this).on('click', function(event){
-
-          $(`#user-search-input`).prop('disabled', false);
-          $(`#search-input-label`).text(' Search: ');
-
-          showHiddenFilters( `#city-filter-dd` );
-
-          $(this).toggle();
-
-          // City is the only field we want to search by in this case.
-          search_keys = ['city'];
-
-          $('#city-filter-btn-txt').text(`Search City Names Only`);
-        })
-        
-      }
-      else if( $(this).hasClass('city-all-filter') )
-      {
-        $(this).on('click', function(event){
-          $(`#user-search-input`).prop('disabled', false);
-          $(`#search-input-label`).text(' Search: ');
-
-          showHiddenFilters( `#city-filter-dd` );
-
-          $(this).toggle();
-
-          search_keys = search_all_keys;
-
-          $('#city-filter-btn-txt').text(`City - All`);
-        })
-      }
-    })
   }
 
-function removeFiltersForCategory()
-{
-
-}
-
-function showHiddenFilters( filterParentID )
-{
-  $(filterParentID).children().each( function(  )
+  function assignSearchFilterRangeListeners()
   {
-    // If a filter element is hidden, show it
-    if( $(this).is(":hidden"))
+     // When user lifts up key check inputs.
+     $( '#age-filter-range-pattern-1,#age-filter-range-pattern-2' ).keyup( function( event )
+     {
+       console.log(`range value ${event.target.value}`);
+ 
+       // Check the two range elements to see if they match up
+       let rangeIsGood = checkRange( $( '#age-filter-range-pattern-1' ), $( '#age-filter-range-pattern-2' ));
+ 
+       if( rangeIsGood === 1 )
+       {
+         searchKeysAndRangePatterns[0] = true;
+
+         let rangeToPush = $('#age-filter-range-pattern-1').val() + '-' + $('#age-filter-range-pattern-2').val();
+
+         searchKeysAndRangePatterns[1] = ['age', rangeToPush ];
+
+         console.log(`New range key array is ${searchKeysAndRangePatterns}`);
+ 
+       }
+       // If user clears array or enters bad input, clear the array
+       else if( rangeIsGood === 3 || rangeIsGood === 0)
+       {
+         searchKeysAndRangePatterns[0] = false;
+         searchKeysAndRangePatterns[1] = ['age'];
+         console.log(`New range key array is ${searchKeysAndRangePatterns}`);
+       }
+     })
+
+  }
+
+
+  // Iterate through each pair of range elements, if any of the ranges are incomplete, add text describing issue.
+  // Returns 0 for bad inputs, returns 1 for good inputs, and returns 3 for cleared inputs.
+  function checkRange( rangeElem1, rangeElem2 )
+  {
+
+    // Reg exp that checks to see if the string contains all numbers
+    var reg = new RegExp('^[0-9]+$');
+
+    let range1IsAllNums = reg.test( $(rangeElem1).val() );
+    let range2IsAllNums = reg.test( $(rangeElem2).val() );
+    console.log(`Range 1 valid nums: ${range1IsAllNums}`);
+    console.log(`Range 2 valid nums: ${range2IsAllNums}`);
+
+    if( !range1IsAllNums )
     {
-      $(this).toggle();
+      
+      $(rangeElem1).attr('class', 'invalid-age-range');
+      console.log("Range 1 invalid cus letter")
     }
-  });
+    if( !range2IsAllNums)
+    {
+      $(rangeElem2).attr('class', 'invalid-age-range');
+      console.log("Range 2 invalid cus letter");
+    }
 
-}
+    if( $(rangeElem1).val() === '' && $(rangeElem2).val() === '' )
+    {
+      $(rangeElem1).attr('class', 'valid-age-range');
+      $(rangeElem2).attr('class', 'valid-age-range');
+      return 3;
+    }
 
-function executeSearch( useUserInput = false)
+
+    if( range1IsAllNums && range2IsAllNums)
+    {
+      validLowerUpper = parseInt( $(rangeElem1).val() ) <= parseInt( $(rangeElem2).val() );
+
+      if( !validLowerUpper )
+      {
+        $(rangeElem1).attr('class', 'invalid-age-range');
+        $(rangeElem2).attr('class', 'invalid-age-range');
+        console.log("Ranges invalid lower and upper")
+      }
+      else if( validLowerUpper )
+      {
+        $(rangeElem1).attr('class', 'valid-age-range');
+        $(rangeElem2).attr('class', 'valid-age-range');
+
+        return 1;
+      }
+    }
+
+    return 0;
+
+
+  }
+
+  function updateFilterArray( addFilter, queryKey, queryPattern )
+  {
+
+    if( addFilter )
+    {
+      // first make sure that the filter array first element is set to true, as this indicates filters are being used.
+      searchKeysAndPatterns[0] = true;
+
+      // Start 1 because index 0 just holds a boolean
+      for( let filterIndex = 1; filterIndex < searchKeysAndPatterns.length; filterIndex++ )
+      {
+        // each inner array represents a search key and pattersn to match. ie city could be search key and pattersn to match would be 'mesa' or 'phoenix'
+        searchKeyInnerArray = searchKeysAndPatterns[filterIndex];
+
+        console.log(`Search key inner array: ${searchKeyInnerArray}`);
+
+        if( searchKeyInnerArray[0] === queryKey )
+        {
+          searchKeyInnerArray.push(queryPattern);
+
+          console.log(`Filter array after adding new filter: ${searchKeysAndPatterns}`);
+
+          // We added the filter, break out of the function.
+          return;
+        }
+      }
+    }
+
+    else
+    {
+      
+      // Start 1 because index 0 just holds a boolean
+      // Remove applied filters.
+      for( let filterIndex = 1; filterIndex < searchKeysAndPatterns.length; filterIndex++ )
+      {
+        // each inner array represents a search key and pattersn to match. ie city could be search key and pattersn to match would be 'mesa' or 'phoenix'
+        searchKeyInnerArray = searchKeysAndPatterns[filterIndex];
+
+        console.log(`Inner array when removing filter: ${searchKeyInnerArray}`);
+
+        if( searchKeyInnerArray[0] === queryKey )
+        {
+          // Use filter to remove any elements that are equal to the query pattern. 
+          searchKeysAndPatterns[filterIndex] = searchKeyInnerArray.filter( currentFilter => {
+                return currentFilter != queryPattern;
+              }
+            );
+
+          console.log(`Inner array after remove filter ${searchKeysAndPatterns[filterIndex] }`);
+
+          // Break out of the loop. A while loop would have been more appropraite here.
+          filterIndex = searchKeysAndPatterns.length;
+        }
+      }
+
+
+      console.log(`Filter array before checking for no filters: ${searchKeysAndPatterns}`);
+      // After removing the element from the search pattern array, we need to check if the array is empty and if we should not apply any filters
+      // If there are not selected filters set the first element of searchKeysAndPatterns to false else break the loop and do nothing.
+      // Start 1 because index 0 just holds a boolean
+      for( let filterIndex = 1; filterIndex < searchKeysAndPatterns.length; filterIndex++ )
+      {
+        // each inner array represents a search key and pattersn to match. ie city could be search key and pattersn to match would be 'mesa' or 'phoenix'
+        searchKeyInnerArray = searchKeysAndPatterns[filterIndex];
+
+        console.log(`Search key inner array: ${searchKeyInnerArray}`);
+
+        // If one of the search key inner arrays has length greater than 1, that means there are still selected filters on the page.
+        // Break loop were done.
+        if( searchKeyInnerArray.length > 1)
+        {
+          console.log(`Filter array has filters still, leave first elem true: ${searchKeysAndPatterns}`);
+          return;
+        }
+      }
+
+      // If we dont return that means there are not applied filters. Set the first elem of the searchKeysAndPatterns Array to false.
+      searchKeysAndPatterns[0] = false;
+
+      console.log(`No filter selected. Setting first elem to false: ${searchKeysAndPatterns}`);
+    }
+
+  }
+
+  // Initialize the array that will hold search key categories and selected filters.
+  function createSearchKeyCategoryArray()
+  {
+    $('.filter-pattern-category').each(function()
+    {
+      searchKeysAndPatterns.push( [ $(this).text().toLowerCase() ] );
+    })
+
+    console.log(`Search key array is ${searchKeysAndPatterns}`);
+  }
+
+
+  // Initialize the array that will hold search key categories that take ranges as inputs.
+  function createSearchKeyRangeArray()
+  {
+    $('.filter-range-pattern-category').each(function()
+    {
+      searchKeysAndRangePatterns.push( [ $(this).text().toLowerCase() ] );
+    })
+
+    console.log(`Search key range array is ${searchKeysAndRangePatterns}`);
+  }
+
+  
+
+
+function executeSearch(  ) 
 {
+  console.log("Search keys is " + search_keys); 
 
-  console.log("Search keys is " + search_keys);
-  search_result_object = executeFuseSearch(  $('#user-search-input').val(), useUserInput );
+
+  search_result_object = executeFuseSearch(  $('#user-search-input').val());
 
   fill_client_results_box( search_result_object );
 
