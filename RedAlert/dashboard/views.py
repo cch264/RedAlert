@@ -41,20 +41,20 @@ def show_dashboard( request ):
         a_client_dict["notification_status"] = client.notification_status
         a_client_dict["email"] = client.email
         a_client_dict["phone"] = client.phone
-        
+
 
         json_array.append( a_client_dict )
 
     #print( len( json_array ) )
     #print( str(json_array) )
 
-    
+
     client_json = json.dumps( json_array )
 
     response = {
         'client_json' : client_json
     }
-        
+
     return render(request, 'dashboard/dashboard.html', response)
 
 
@@ -73,7 +73,16 @@ def create_client_list():
     "Noel Thompson",
     "Kenny Quinn",
     "Jovanny Carrillo",
-    "Miracle Patterson"]
+    "Miracle Patterson",
+    "Fanni Azzurra",
+    "Britt Peta",
+    "Neema Marian",
+    "Magomed Aldegar",
+    "Cirino Tayla",
+    "Nkechi Priya",
+    "Nayden Urszula",
+    "Alkmene Phokas",
+    "Berrak Mauro"]
 
     #unit_num, street, City, State, Zip Code
     addresses = ["3908,E Bronco Trl,Phoenix,Arizona,85044 ".split(','),
@@ -89,16 +98,25 @@ def create_client_list():
      "919,E Aire Libre Ave,Phoenix,Arizona,85022".split(','),
      "830,E Lawrence Rd,Phoenix,Arizona,85014".split(','),
      "8628,W Pima St,Phoenix,Arizona,85003".split(','),
-     "723,E Roosevelt St,Phoenix,Arizona,85006".split(',') ]
+     "723,E Roosevelt St,Phoenix,Arizona,85006".split(','),
+     "901,S Country Club Dr,Mesa,Arizona,85210".split(','),
+     "9233,E Neville Ave,Mesa,Arizona,85208".split(','),
+     "9804,E Knowles Ave,Mesa,Arizona,85208".split(','),
+     "3390,E Lockett Rd,Flagstaff,Arizona,86004".split(','),
+     "3300,S Gila Dr,Flagstaff,Arizona,86001".split(','),
+     "1830,S Milton Rd,Flagstaff,Arizona,86001".split(','),
+     "8961,E Meadow Hill Dr,Scottsdale,Arizona,85260".split(','),
+     "9494,E Redfield Rd,Scottsdale,Arizona,85260".split(','),
+     "9848,E Thomas Rd,Scottsdale,Arizona,85256".split(',') ]
 
-    policies = ['fire auto', 'fire', 'fire boat home', 'home', 'auto fire home', 'auto', 'boat home', 'home fire boat', 'pet home fire', 'pet', 'pet fire','boat fire']
+    policies = ['fire auto', 'fire', 'fire boat home', 'home', 'auto fire home', 'auto', 'boat home', 'home fire boat', 'pet home fire', 'pet', 'pet fire','boat fire', 'boat']
     gender = ["M","F"]
     notification_status =['all','emergency','none']
     emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
 
-    
 
-    for index in range(14):
+
+    for index in range( len(addresses) ):
         a_client = Client()
         a_client.name = names[index]
         a_client.unit_num = addresses[index][0]
@@ -114,9 +132,9 @@ def create_client_list():
         a_client.gender = gender[ random.randint(0,1)]
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
         a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        #a_client.phone = "4803690030"
+        a_client.phone = "4803690030"
         a_client.save()
-    
+
     print("LENG OF CLIENTS COLLECTION IS: {}".format( len( Client.objects.all()) ) )
 
 
@@ -125,15 +143,15 @@ def delete_all_clients():
 
     for client in client_list:
         client.delete()
-    
-
-    
 
 
 
 
 
-    
+
+
+
+
 
 # EXAMPLE AJAX REQUEST RESPONSE METHOD.
 # @csrf_exempt
@@ -142,13 +160,44 @@ def execute_search( request ):
     if request.is_ajax():
         print("IN EXECUTE SEARCH AJAX SECTION")
         # GEt the users query from the ajax request params
-        user_query = request.POST.get('user_query', None) 
+        user_query = request.POST.get('user_query', None)
 
         response_str = "The users query was {}".format( user_query )
 
-        response = [ 
+        response = [
             {'msg': response_str, 'amsg': "hello"},
             {'obj2': "val", "objTwo": "hello"}
                    ]
 
         return JsonResponse(response) # return response as JSON
+
+# email sending method
+def send_email( request ):
+    if request.method == "POST":
+        subject = request.POST['email-subject']
+        message = request.POST['email-message']
+        # The recipient must be a tuple or list.
+        recipients = (request.POST['recipient-email'], )
+
+        for recipientIndex in recipients:
+            send_mail(subject, message, "RedAlertTester@gmail.com", recipientIndex)
+
+        return render(request, 'redAlertSite/send_email.html')
+
+    else:
+        return render(request, 'redAlertSite/send_email.html')
+
+# SMS sending method
+def send_sms_message( request ):
+    if request.method =="POST":
+        message = request.POST['sms-message']
+        sender = '+19087749012'
+        recipients = [request.POST['recipient-phone']]
+
+        for recipientIndex in recipients:
+            send_sms( message, sender, recipientIndex, fail_silently=False )
+
+        return render(request, 'redAlertSite/send_email.html')
+
+    else:
+        return render(request, 'redAlertSite/send_email.html')
