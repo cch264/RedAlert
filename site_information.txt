@@ -176,6 +176,15 @@ Start Stop or Restart mongodb local server
 	sudo systemctl start mongodb
 	sudo systemctl restart mongodb
 	
+UNMASK MONGODB service. If your system says mongodb service not found do this.
+	sudo service mongod start
+	
+	
+Meeting Notes:
+	Dont need agent birthday or address. Change agent address to Agency Address. Just remove it from the sign up page.
+	Move filters to the left side of search bar. 
+	Combine filters into a single drop down.
+	
 	
 	
 	
