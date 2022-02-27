@@ -41,8 +41,6 @@
               </div>
               
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                
-
                 <form id="user-search-box-form" class="form-floating w-100" method="post">
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
@@ -175,6 +173,7 @@
 
                 <div class="bootstrap-grey-border pb-2 sr-scroll-box" id="search-results-container">
                     
+
                 </div>
 
                 <div class="float-end">
@@ -198,7 +197,7 @@
                 <div class="tab-content" id="myTabContent">
 
                   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    
+
                     <h4> Send Message</h4>
 
                     <div id="notif-tab-1" class="notif-tab px-3 py-3">
@@ -206,19 +205,19 @@
                       <div class="d-flex flex-row justify-content-between">
                         <div class="w-50">
                           <div>
-                            <label for="sms-subjet-name"> Subject: </label>
-                            <input id="sms-subjet-name" class="form-control" type="text">
+                            <label for="message-subject-name"> Subject: </label>
+                            <input id="message-subject-name" class="form-control" type="text">
                           </div>
 
                           <div>
-                            <label for="sms-message-inp"> Message: </label>
-                            <textarea id="sms-message-inp" class="form-control" type="text-area">  </textarea> 
+                            <label for="message-inp"> Message: </label>
+                            <textarea id="message-inp" class="form-control" type="text-area">  </textarea>
                           </div>
 
                         </div>
 
                         <div>
-                          
+
                           <label for="sel-msg-type"> Message Type: </label>
                           <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
                             <option value="def-select-opt" selected> Select a Message Type </option>
@@ -235,7 +234,7 @@
                           </select>
 
                         </div>
-    
+
                       </div>
 
                       <div class="d-flex flex-row-reverse">
@@ -250,9 +249,9 @@
                     </div>
                   </div>
 
-                  
+
                 </div>
-                
+
 
 
               </div>
@@ -267,13 +266,13 @@
         <div class= "container-fluid px-0">
           <div class="row" >
             <div class="col">
-              
+
 
               <div class="box-with-header mb-5">
                 <div class="bwh-header d-flex justify-content-center px-1 py-1">
                   <h4> Saved Searches</h4>
                 </div>
-                
+
                 <div class="bwh-content px-2 pb-2">
                   <ul class="list-group">
                     <li class="list-group-item">An active item</li>
@@ -291,12 +290,12 @@
 
           <div class="row" >
             <div class="col">
-              
+
                <div class="box-with-header">
                 <div class="bwh-header d-flex justify-content-center px-1 py-1">
                   <h4> Saved Subsets</h4>
                 </div>
-                
+
                 <div class="bwh-content px-2 pb-2">
                   <ul class="list-group">
                     <li class="list-group-item">An active item</li>
