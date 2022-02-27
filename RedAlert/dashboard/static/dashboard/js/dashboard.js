@@ -31,7 +31,7 @@ function executeFuseSearch( user_pattern)
     const options = {
         // isCaseSensitive: false,
         // includeScore: false,
-        // shouldSort: true,
+        shouldSort: true,
         // includeMatches: false,
         // findAllMatches: false,
         // minMatchCharLength: 1,
@@ -54,8 +54,8 @@ function executeFuseSearch( user_pattern)
       // Only use user input if we are supposed to. If user is using filters we may not want to use their input.
      
       search_data_json = JSON.parse( $('#client-json-input').val());
+
       
-     
 
       const fuse = new Fuse( search_data_json, options);
       
@@ -64,8 +64,102 @@ function executeFuseSearch( user_pattern)
 
       //console.log( fuse.search( user_pattern ) )
       
-      return fuse.search( user_pattern )
+      // Filter the results using the first paramter json array thingy.
+
+      unfiltered_search_results = fuse.search( user_pattern );
+
+      filtered_search = filterSearchResults(unfiltered_search_results);
+
+      return filtered_search;
      
+}
+
+function filterSearchResults( searchResultJSON )
+{
+  //[true, ['city','mesa','chandler'], ['policy','home','fire']]
+
+  // If there are filters selected and present in the array filter with them.
+  if( searchKeysAndPatterns[0] )
+  {
+    // Iterate through each pattern in the array
+    for(let index = 1; index < searchKeysAndPatterns.length; index++)
+    {
+      let innerArray = searchKeysAndPatterns[index];
+
+      // Only iterate through inner array if length > 1 because that means filters are present.
+      if( innerArray.length > 1)
+      {
+        // Get key name from array.
+        let keyName = innerArray[0];
+
+        console.log(`Filtering: Key name is: ${keyName}`)
+
+        // Filter our results json.
+        searchResultJSON = searchResultJSON.filter( result =>
+          {
+            let matchesFilter = [];
+
+            for(let innerIndex = 1; innerIndex < innerArray.length; innerIndex++)
+            {
+              let pattern = innerArray[ innerIndex ];
+
+              console.log(`Matching pattern: ${pattern} against result city name ${result.item[keyName]}`)
+
+              // Create array of booleans, if the result contains the pattern, push true to the array.
+              // If the filters are city: mesa, chandler then we need to check each search result for mesa OR chandler so we create an array that checks .
+              matchesFilter.push( result.item[keyName].toLowerCase().includes(pattern).toString() );
+            }
+
+            console.log(`matches filter arrary ${matchesFilter}`);
+
+            return matchesFilter.includes('true');
+          })
+      }
+
+    }
+
+  }
+
+  if( searchKeysAndRangePatterns[0] )
+  {
+    // Iterate through each pattern in the array
+    for(let index = 1; index < searchKeysAndRangePatterns.length; index++)
+    {
+      let innerArray = searchKeysAndRangePatterns[index];
+
+      // Only iterate through inner array if length > 1 because that means filters are present.
+      if( innerArray.length > 1)
+      {
+        // Get key name from array.
+        let keyName = innerArray[0];
+
+        console.log(`Filtering: Key name is: ${keyName}`)
+
+        // Filter our results json.
+        // The searchKeysAndRangePatterns Array currently will only even contain one range, the age range so we dont need a loop here.
+        searchResultJSON = searchResultJSON.filter( result =>
+          {
+         
+            let lowerUpperArray= innerArray[1].split('-');
+
+            let lowerBound = parseInt(lowerUpperArray[0]);
+            let upperBound = parseInt(lowerUpperArray[1]);
+
+            console.log(`Lower bound: ${lowerBound} Upper bound ${upperBound}`);
+
+
+            let searchResultAge = parseInt(result.item.age);
+
+            return ( lowerBound <= searchResultAge ) && ( searchResultAge <= upperBound );
+          })
+      }
+
+    }
+  }
+  
+
+
+  return searchResultJSON;
 }
 
 
@@ -412,7 +506,7 @@ function generateSelectedSearchElement(result)
               <div class="row mb-1">
                 <div class="col"> Name: ${result.item.name} </div>
                 <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
-                <div class="col"> Policies: ${result.item.polcies}</div>
+                <div class="col"> Policies: ${result.item.policies}</div>
               </div>
 
               <div class="row mb-1">
@@ -446,7 +540,7 @@ function generateSearchElement(result)
                 <div class="row mb-1">
                   <div class="col"> Name: ${result.item.name} </div>
                   <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
-                  <div class="col"> Policies: ${result.item.polcies}</div>
+                  <div class="col"> Policies: ${result.item.policies}</div>
                 </div>
 
                 <div class="row mb-1">

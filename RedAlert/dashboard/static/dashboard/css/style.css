@@ -80,3 +80,18 @@
 .valid-age-range{
     border: 2px solid green;
 }
+
+#filter-container{
+    width: 40%;
+    border: 3px solid #0d6efd;
+    border-radius: 8px;
+    margin-left: 5px;
+    padding: 10px;
+    
+}
+
+.age-filter-input{
+    width: 35%;
+    display: inline;
+
+}
