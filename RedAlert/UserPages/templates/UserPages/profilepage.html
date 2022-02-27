@@ -19,29 +19,79 @@
         <div clas="w-75">
             <h1> Profile Page </h1>
 
-            <label for="user-email-input">Email: </label>
-            <input id="user-email-input" class="form-control" value="{{ userAuthObj.email }}" disabled></input>
+            <form id="user-profile-display-form">
 
-            <label for="email-input">First Name: </label>
-            <input id="first-name-input" class="form-control" value="{{ userAuthObj.first_name }}" disabled>
+              <label for="user-email-input">Email: </label>
+              <input id="user-email-input" class="form-control" value="{{ userAuthObj.email }}" disabled></input>
 
-            <label for="last-name-input">Last Name: </label>
-            <input id="last-name-input" class="form-control" value="{{ userAuthObj.last_name }}" disabled>
+              <label for="email-input">First Name: </label>
+              <input id="first-name-input" class="form-control" value="{{ userAuthObj.first_name }}" disabled>
 
-            <label for="birthdate-input">Birthdate: </label>
-            <input id="birthdate-input" class="form-control" value="{{ userInfoObj.birthdate }}" disabled>
+              <label for="last-name-input">Last Name: </label>
+              <input id="last-name-input" class="form-control" value="{{ userAuthObj.last_name }}" disabled>
 
-            <label for="agent-code-input">Agent Code: </label>
-            <input id="agent-code-input" class="form-control" value="{{ userInfoObj.agent_code }}" disabled>
+              <label for="birthdate-input">Birthdate: </label>
+              <input id="birthdate-input" class="form-control" value="{{ userInfoObj.birthdate }}" disabled>
 
-            <label for="phone-number-input">Phone Number: </label>
-            <input id="phone-number-input" class="form-control" value="{{ userInfoObj.agent_phone_number }}" disabled>
+              <label for="agent-code-input">Agent Code: </label>
+              <input id="agent-code-input" class="form-control" value="{{ userInfoObj.agent_code }}" disabled>
 
-            <label for="address-input">Address: </label>
-            <input id="address-input" class="form-control" value="{{ userInfoObj.agent_address }}" disabled>
+              <label for="phone-number-input">Phone Number: </label>
+              <input id="phone-number-input" class="form-control" value="{{ userInfoObj.agent_phone_number }}" disabled>
 
-            <label for="account-creation-input">Account Creation Date: </label>
-            <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
+              <label for="address-input">Address: </label>
+              <input id="address-input" class="form-control" value="{{ userInfoObj.agent_address }}" disabled>
+
+              <label for="account-creation-input">Account Creation Date: </label>
+              <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
+
+              <button id="edit-user-profile" type="button" class="btn btn-primary">Edit Profile</button>
+
+            </form>
+
+
+            <form id="user-profile-edit-form" action="{% url 'user_pages_urls:update_user_profile' %}" method="post" >
+              <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
+              {% csrf_token %}
+
+              <label for="user-email-input">Email: </label>
+              <input id="user-email-input" name="email" class="form-control" value="{{ userAuthObj.email }}" disabled ></input>
+
+              <label for="email-input">First Name: </label>
+              <input id="first-name-input" name="first_name" class="form-control" value="{{ userAuthObj.first_name }}" >
+
+              <label for="last-name-input">Last Name: </label>
+              <input id="last-name-input" name="last_name" class="form-control" value="{{ userAuthObj.last_name }}" >
+
+              <label for="birthdate-input">Birthdate: </label>
+              <input id="birthdate-input" name="birthdate" class="form-control" value="{{ userInfoObj.birthdate }}" disabled>
+
+              <label for="agent-code-input">Agent Code: </label>
+              <input id="agent-code-input" name="agent_code" class="form-control" value="{{ userInfoObj.agent_code }}" >
+
+              <label for="phone-number-input">Phone Number: </label>
+              <input id="phone-number-input" name="agent_phone_number" class="form-control" value="{{ userInfoObj.agent_phone_number }}" >
+
+              <label for="address-input">Address: </label>
+              <input id="address-input" name="agent_address" class="form-control" value="{{ userInfoObj.agent_address }}" >
+
+              <label for="account-creation-input">Account Creation Date: </label>
+              <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
+
+              <h4> Edit Password </h4>
+
+              <label for="update-pass-input-1"> Enter New Password </label>
+              <input id="update-pass-input-1" name="pass-1" class="form-control" type="text" disabled>
+
+              <label for="update-pass-input-2"> Repeat New Password </label>
+              <input id="update-pass-input-2"  name="pass-2" class="form-control" type="text" disabled>
+
+              <input id="user-changed-password"  class="form-control" type="hidden" name="changed-password" value="false">
+
+              <button id="submit-user-profile-changes" type="submit" class="btn btn-success">Submit Changes</button>
+              <button id="discard-user-profile-changes" type="button" class="btn btn-danger">Discard Changes</button>
+            </form>
+            
         </div>
         
 
