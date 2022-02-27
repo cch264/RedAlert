@@ -93,5 +93,14 @@
 .age-filter-input{
     width: 35%;
     display: inline;
+}
 
+.sr-scroll-box{
+  height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#expand-sr-btn{
+    margin-top: 10px;
 }
