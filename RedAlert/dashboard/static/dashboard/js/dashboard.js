@@ -118,7 +118,7 @@ function filterSearchResults( searchResultJSON )
               //console.log(`Matching pattern: ${pattern} against result city name ${result.item[keyName]}`)
 
               // Create array of booleans, if the result contains the pattern, push true to the array.
-              // If the filters are city: mesa, chandler then we need to check each search result for mesa OR chandler so we create an array that checks .
+              // If the filters are city: mesa, chandler then we need to check each search result for mesa OR chandler so we create an array that checks.
               matchesFilter.push( result.item[keyName].toLowerCase().includes(pattern).toString() );
             }
 
