@@ -26,7 +26,7 @@ var searchKeysAndPatterns = [false];
 var searchKeysAndRangePatterns = [false];
 
 
-function executeFuseSearch( user_pattern)
+function executeFuseSearch( user_pattern, showAllResults=false )
 {
     const options = {
         // isCaseSensitive: false,
@@ -62,15 +62,27 @@ function executeFuseSearch( user_pattern)
       // Change the pattern
       const pattern = ""
 
-      //console.log( fuse.search( user_pattern ) )
+      // We show all results on page load, and when the user selects new filters.
+      if( showAllResults)
+      {
+        console.log("Showing all");
+        unfiltered_search_results = fuse.search(" ");
+  
+        filtered_search = filterSearchResults(unfiltered_search_results);
+
+        // Filter the entire array and do not use a query to search.
+        return filtered_search;
+      }
+      else // else search like normal.
+      {
+        // Filter the results using the json array as the first paramter.
+        unfiltered_search_results = fuse.search( user_pattern );
+  
+        filtered_search = filterSearchResults(unfiltered_search_results);
+  
+        return filtered_search;
+      }
       
-      // Filter the results using the first paramter json array thingy.
-
-      unfiltered_search_results = fuse.search( user_pattern );
-
-      filtered_search = filterSearchResults(unfiltered_search_results);
-
-      return filtered_search;
      
 }
 
@@ -167,8 +179,10 @@ function filterSearchResults( searchResultJSON )
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
 
+    executeSearch(true);
+
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
-    $('#user-search-box-form').on('submit', function(event)
+    $('#user-search-box-form').keyup(function(event)
         {
             // PREVENT the default behavior of the form. Without this line, ajax wont work right or FUSE.js.
             event.preventDefault();
@@ -194,7 +208,6 @@ window.addEventListener('load', (event) => {
 
     $("[id$='-filter-pattern']").each( function()
     {
-      console.log(`Data is ${$(this).data('queryPattern') }`);
 
       //console.log(`Data is a range: ${ $(this).data('isRange') }`);
 
@@ -204,19 +217,21 @@ window.addEventListener('load', (event) => {
         // Check if user selected or deselected the filter
         if( $(this).is(":checked") )
         {
-          console.log('Input checked, input is checked');
-
            // if they selected it, add the search key to the array if it does not exist already, and add the search key within that array.
           // If the filter key array has first element set to false, set it to true, else do nothing.
           updateFilterArray( addFilter=true, $(this).data('queryKey'), $(this).data('queryPattern'));
 
+          // Execute a search for all clients but filter the results according to the filter.
+          executeSearch(true);
+
         }
         else
         {
-          console.log('Input unchecked, input is unchecked');
-
           // If user deselected the filter, remove the filter pattern from the array. Check if any other filters are selected based on selected inputs on the page, do not use array to confirm this.
           updateFilterArray( addFilter=false, $(this).data('queryKey'), $(this).data('queryPattern'));
+
+          // Execute a search for all clients but filter the results according to the filter that was removed.
+          executeSearch(true);
 
         }
       });
@@ -229,7 +244,7 @@ window.addEventListener('load', (event) => {
      // When user lifts up key check inputs.
      $( '#age-filter-range-pattern-1,#age-filter-range-pattern-2' ).keyup( function( event )
      {
-       console.log(`range value ${event.target.value}`);
+       //console.log(`range value ${event.target.value}`);
  
        // Check the two range elements to see if they match up
        let rangeIsGood = checkRange( $( '#age-filter-range-pattern-1' ), $( '#age-filter-range-pattern-2' ));
@@ -242,15 +257,22 @@ window.addEventListener('load', (event) => {
 
          searchKeysAndRangePatterns[1] = ['age', rangeToPush ];
 
-         console.log(`New range key array is ${searchKeysAndRangePatterns}`);
+         // Execute a search for all clients but filter the results according to the filter removed.
+         executeSearch(true);
+
+         //console.log(`New range key array is ${searchKeysAndRangePatterns}`);
  
        }
-       // If user clears array or enters bad input, clear the array
+       // If user clears array or enters bad input, clear the array and execute a search again since our filter have changed.
+       // If user clears age range or enters bad range, remove the age range filter and rexecute search.
        else if( rangeIsGood === 3 || rangeIsGood === 0)
        {
          searchKeysAndRangePatterns[0] = false;
          searchKeysAndRangePatterns[1] = ['age'];
-         console.log(`New range key array is ${searchKeysAndRangePatterns}`);
+
+         //console.log(`New range key array is ${searchKeysAndRangePatterns}`);
+         // Execute a search for all clients but filter the results according to the filter removed.
+         executeSearch(true);
        }
      })
 
@@ -273,19 +295,19 @@ window.addEventListener('load', (event) => {
     if( !range1IsAllNums )
     {
       
-      $(rangeElem1).attr('class', 'invalid-age-range');
+      $(rangeElem1).attr('class', 'invalid-age-range age-filter-input');
       console.log("Range 1 invalid cus letter")
     }
     if( !range2IsAllNums)
     {
-      $(rangeElem2).attr('class', 'invalid-age-range');
+      $(rangeElem2).attr('class', 'invalid-age-range age-filter-input');
       console.log("Range 2 invalid cus letter");
     }
 
     if( $(rangeElem1).val() === '' && $(rangeElem2).val() === '' )
     {
-      $(rangeElem1).attr('class', 'valid-age-range');
-      $(rangeElem2).attr('class', 'valid-age-range');
+      $(rangeElem1).attr('class', 'valid-age-range age-filter-input');
+      $(rangeElem2).attr('class', 'valid-age-range age-filter-input');
       return 3;
     }
 
@@ -296,14 +318,14 @@ window.addEventListener('load', (event) => {
 
       if( !validLowerUpper )
       {
-        $(rangeElem1).attr('class', 'invalid-age-range');
-        $(rangeElem2).attr('class', 'invalid-age-range');
+        $(rangeElem1).attr('class', 'invalid-age-range age-filter-input');
+        $(rangeElem2).attr('class', 'invalid-age-range age-filter-input');
         console.log("Ranges invalid lower and upper")
       }
       else if( validLowerUpper )
       {
-        $(rangeElem1).attr('class', 'valid-age-range');
-        $(rangeElem2).attr('class', 'valid-age-range');
+        $(rangeElem1).attr('class', 'valid-age-range age-filter-input');
+        $(rangeElem2).attr('class', 'valid-age-range age-filter-input');
 
         return 1;
       }
@@ -406,7 +428,6 @@ window.addEventListener('load', (event) => {
       searchKeysAndPatterns.push( [ $(this).text().toLowerCase() ] );
     })
 
-    console.log(`Search key array is ${searchKeysAndPatterns}`);
   }
 
 
@@ -424,12 +445,12 @@ window.addEventListener('load', (event) => {
   
 
 
-function executeSearch(  ) 
+function executeSearch( showAllResults=false ) 
 {
   console.log("Search keys is " + search_keys); 
 
 
-  search_result_object = executeFuseSearch(  $('#user-search-input').val());
+  search_result_object = executeFuseSearch(  $('#user-search-input').val(), showAllResults );
 
   fill_client_results_box( search_result_object );
 
@@ -437,12 +458,15 @@ function executeSearch(  )
 
 function fill_client_results_box( client_list )
 {
+  let client_count = 0;
   // Remove previous search results
   $('#search-results-container').empty();
 
   // Iterate through each result from the users search and create each client element to be dispalyed to the user. Also assign click listeners to each search result so we can keep track of which clients
   // have been selected.
   client_list.forEach( ( result ) => {
+
+    client_count++;
 
 
   // Create html element for each search result returned from search.
@@ -482,14 +506,15 @@ function fill_client_results_box( client_list )
       }
 
     })
-
-    console.log(`The result: ${JSON.stringify(result.item) }`);
+    //console.log(`The result: ${JSON.stringify(result.item) }`);
     //console.log(`id ${ result.item.id }`);
     //console.log(`name ${ result.item.name }`);
     //console.log(`email ${ result.item.email }`);
     //console.log(`age ${ result.item.age }`);
 
 });
+
+  console.log(`TOTAL CLIENTS IN SR: ${client_count}`);
 }
 
 // Create html element for each search result returned from search.
@@ -530,6 +555,7 @@ function generateSelectedSearchElement(result)
 // Create html element for each search result returned from search.
 function generateSearchElement(result)
 {
+  
   return `<div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
               <div class="d-flex flex-column justify-content-center ps-2">
                 <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
