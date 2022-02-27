@@ -11,6 +11,7 @@ urlpatterns = [
     path('profile_page/', views.show_profile_page, name='show_profile_page' ),
     path('automation_page/', views.show_automations, name='automation_page'),
     path('faq_page/', views.show_faq, name='faq_page'),
+    path('update_user_profile/', views.update_user_profile, name='update_user_profile'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 #print(include( 'dashboard.urls'))

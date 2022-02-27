@@ -1,9 +1,14 @@
 from django.shortcuts import render
 # Import the userinfo model object so we can use it here.
 from userLoginApp.models import UserInfo
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Get the User Auth object and the UserInfo Object
 def show_profile_page( request ):
+
+    print("Ran show profile page view")
 
     # .get is used to retrieve a singel obj from the db, .filter is the equivalent to using 
     # .where and allows you to retreive a subset of objects from the db.
@@ -19,3 +24,54 @@ def show_automations( request ):
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
+
+
+def update_user_profile( request ):
+
+    # Get the user info object
+    userInfoObj = UserInfo.objects.get( user_id=request.user.id )
+
+    # Get the user auth object
+    userAuthObj = User.objects.get( id=request.user.id )
+
+
+    userAuthObj.first_name = request.POST['first_name']
+    userAuthObj.last_name = request.POST['last_name']
+
+
+    # turn the filtered array into a dictionary, filter returns an iterator. .items() turns the dictionary into an array of tuples
+    postRequestFiltered = dict( filter( removeUserAuthData, request.POST.items() ) )
+
+    print("Unfiltered POST is {}".format( request.POST ) )
+    print("Filtered POST is {}".format( postRequestFiltered) )
+
+    # Get user object
+    for key, value in postRequestFiltered.items():
+       setattr(userInfoObj, key, value)
+
+    userInfoObj.save()
+
+
+
+    if( request.POST['changed-password'] == "true"):
+        print("Changed password")
+
+    userAuthObj.save()
+
+    return HttpResponseRedirect( reverse('user_pages_urls:show_profile_page') )
+
+# Removes userAuth info from the post request dictionary so we can iterate through the post request array without worrying about data that doesnt belong in the userInfo model.
+def removeUserAuthData( dictTuple ):
+
+    dictKeyName = dictTuple[0]
+    print("Array item is: {}".format( dictKeyName ))
+    # Func returns true, element stays in array
+    if( dictKeyName == "pass-1" or dictKeyName == "pass-2" or dictKeyName == "email" or dictKeyName == "first_name" or dictKeyName == "last_name" or dictKeyName == "csrfmiddlewaretoken" or dictKeyName == "changed-password"):
+        return False
+    else:
+        return True
+
+
+
+
+
