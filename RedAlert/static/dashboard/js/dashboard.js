@@ -199,6 +199,7 @@ function fill_client_results_box( client_list )
   // Remove previous search results
   $('#search-results-container').empty();
 
+
   // Iterate through each result from the users search and create each client element to be dispalyed to the user. Also assign click listeners to each search result so we can keep track of which clients
   // have been selected.
   client_list.forEach( ( result ) => {
@@ -207,6 +208,7 @@ function fill_client_results_box( client_list )
 
   let element_to_append = `
     <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+
                 <i class="fa-solid fa-plus"></i>
                   
                 <div class="container">
@@ -233,6 +235,7 @@ function fill_client_results_box( client_list )
     </div>
     `;
 
+
     $('#search-results-container').append( element_to_append );
 
     // Get the div that contains the search result.
@@ -248,6 +251,7 @@ function fill_client_results_box( client_list )
         $(`#selected-sr-${result.item.id}`).remove();
 
         refreshSelectedClientsString();
+
       }
       else
       {
@@ -270,6 +274,7 @@ function fill_client_results_box( client_list )
 
 });
 }
+
 
 function refreshSelectedClientsString()
 {
