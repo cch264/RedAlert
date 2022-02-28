@@ -34,6 +34,9 @@ def update_user_profile( request ):
     # Get the user auth object
     userAuthObj = User.objects.get( id=request.user.id )
 
+    if( request.POST['changed-password'] == "true"):
+        userAuthObj.set_password( request.POST['pass-1'] )
+
 
     userAuthObj.first_name = request.POST['first_name']
     userAuthObj.last_name = request.POST['last_name']
@@ -50,11 +53,6 @@ def update_user_profile( request ):
        setattr(userInfoObj, key, value)
 
     userInfoObj.save()
-
-
-
-    if( request.POST['changed-password'] == "true"):
-        print("Changed password")
 
     userAuthObj.save()
 

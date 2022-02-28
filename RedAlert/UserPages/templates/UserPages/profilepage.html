@@ -78,7 +78,7 @@
               <label for="account-creation-input">Account Creation Date: </label>
               <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
 
-              <h4> Edit Password </h4>
+              <h4> Edit Password <input type="checkbox" id="allow-pass-edit" class="ms-2" name="allow-pass-edit" > </h4>
 
               <label for="update-pass-input-1"> Enter New Password </label>
               <input id="update-pass-input-1" name="pass-1" class="form-control" type="text" disabled>
@@ -86,7 +86,7 @@
               <label for="update-pass-input-2"> Repeat New Password </label>
               <input id="update-pass-input-2"  name="pass-2" class="form-control" type="text" disabled>
 
-              <input id="user-changed-password"  class="form-control" type="hidden" name="changed-password" value="false">
+              <input id="user-changed-password" type="hidden" name="changed-password" value="false">
 
               <button id="submit-user-profile-changes" type="submit" class="btn btn-success">Submit Changes</button>
               <button id="discard-user-profile-changes" type="button" class="btn btn-danger">Discard Changes</button>
