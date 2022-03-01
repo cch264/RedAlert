@@ -36,6 +36,9 @@ def update_user_profile( request ):
 
     if( request.POST['changed-password'] == "true"):
         userAuthObj.set_password( request.POST['pass-1'] )
+        userChangedPass = True
+    else:
+        userChangedPass = False
 
 
     userAuthObj.first_name = request.POST['first_name']
@@ -56,7 +59,12 @@ def update_user_profile( request ):
 
     userAuthObj.save()
 
-    return HttpResponseRedirect( reverse('user_pages_urls:show_profile_page') )
+    # If user did not change their password redirect back to profile page.
+    if not userChangedPass:
+        return HttpResponseRedirect( reverse('user_pages_urls:show_profile_page') )
+
+    else:
+        return HttpResponseRedirect( reverse('loginAppUrls:login_after_pass_change', args=['pass_change']) )
 
 # Removes userAuth info from the post request dictionary so we can iterate through the post request array without worrying about data that doesnt belong in the userInfo model.
 def removeUserAuthData( dictTuple ):
