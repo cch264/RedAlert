@@ -157,16 +157,16 @@
 
                       <div class="d-flex flex-row justify-content-between">
                         <div class="w-50">
-                          <div>
-                            <label for="message-subject-name"> Subject: </label>
-                            <input id="message-subject-name" class="form-control" type="text">
-                          </div>
 
-                          <div>
-                            <label for="message-inp"> Message: </label>
-                            <textarea id="message-inp" class="form-control" type="text-area">  </textarea>
-                          </div>
+                            <div>
+                              <label for="message-subject"> Subject: </label>
+                              <input id="message-subject" class="form-control" type="subject" name="subject">
+                            </div>
 
+                            <div>
+                              <label for="message-body"> Message: </label>
+                              <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
+                            </div>
                         </div>
 
                         <div>
@@ -176,14 +176,14 @@
                             <option value="def-select-opt" selected> Select a Message Type </option>
                               <option value="send-sms"> Send SMS </option>
                               <option value="send-email">Send Email </option>
-                              <option value="send-email">Send Email and SMS </option>
+                              <option value="send-both">Send Email and SMS </option>
                           </select>
 
                           <label for="sel-msg-priority"> Message Priority: </label>
                           <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
                             <option value="def-select-opt" selected> Select a Message Priority </option>
-                              <option value="send-sms"> Send Emergency Message</option>
-                              <option value="send-email">Send Social Message</option>
+                              <option value="send-emergency"> Send Emergency Message</option>
+                              <option value="send-social">Send Social Message</option>
                           </select>
 
                         </div>
@@ -191,7 +191,7 @@
                       </div>
 
                       <div class="d-flex flex-row-reverse">
-                        <button class="btn btn-primary">Send Message</button>
+                        <button id="send-msg" class="btn btn-primary" type="submit">Send Message</button>
                       </div>
 
                     </div>

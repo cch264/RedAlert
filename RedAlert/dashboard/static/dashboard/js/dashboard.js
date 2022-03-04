@@ -156,7 +156,7 @@ function executeFuseSearch( user_pattern )
           "email"
         ]
       };
-    
+
       //console.log(`JSON STRING ${ $('#client-json-input').val() }`);
 
       //console.log(`JSON  ${ JSON.parse( $('#client-json-input').val()) }`);
@@ -164,12 +164,12 @@ function executeFuseSearch( user_pattern )
       search_data_json = JSON.parse( $('#client-json-input').val());
 
       const fuse = new Fuse( search_data_json, options);
-      
+
       // Change the pattern
       const pattern = ""
 
       //console.log( fuse.search( user_pattern ) )
-      
+
       return fuse.search( user_pattern )
 }
 
@@ -192,6 +192,34 @@ window.addEventListener('load', (event) => {
         })
   });
 
+// Event listener for obtaining message data when a user clicks "Send Message"
+var btn = document.querySelector('#send-msg');
+
+btn.addEventListener('click', (event) => {
+  send_client_notification();
+})
+
+function send_client_notification()
+{
+  let message_subject = $('#message-subject');
+  message_subject = message_subject.val();
+
+  let message_body = $('#message-body');
+  message_body = message_body.val();
+
+  let message_type = $('#sel-msg-type option:selected');
+  message_type = message_type.val();
+
+  let message_priority = $('#sel-msg-priority option:selected');
+  message_priority = message_priority.val();
+
+  let selected_clients = $('#selected-clients-id-array');
+  selected_clients = selected_clients.val();
+
+  console.log(`Subject: ${message_subject}\n Message: ${message_body}\n
+    Message Type: ${message_type}\n Message Priority: ${message_priority}\n
+    Selected Clients: ${selected_clients}\n`);
+}
 
 function fill_client_results_box( client_list )
 {
@@ -206,12 +234,12 @@ function fill_client_results_box( client_list )
   let element_to_append = `
     <div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
                 <input type="checkbox" class="me-5 ms-3" >
-                  
+
                 <div class="container">
 
                   <div class="row mb-1">
                     <div class="col"> Name: ${result.item.name} </div>
-                    <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                    <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div>
                     <div class="col"> Policies: ${result.item.polcies}</div>
                   </div>
 
@@ -232,12 +260,12 @@ function fill_client_results_box( client_list )
     `;
 
     /*
-  let element_to_append = 
+  let element_to_append =
             "<div class=\"client-sr\"  data-client-id=\"" + result.item.id + "\" class=\"bootstrap-grey-bottom my-1 me-1 ms-5\">
               <input type=\"checkbox\" class=\"me-5 ms-3\" >
                  <span class=\"mx-5\"> Name: " + result.item.name +
-                "</span> <span class=\"mx-5\"> Address:"+ result.item.unit_num+ " " + result.item.street +" " + result.item.city  
-                    + ", " + result.item.state+", " +result.item.zip_code +"</span> 
+                "</span> <span class=\"mx-5\"> Address:"+ result.item.unit_num+ " " + result.item.street +" " + result.item.city
+                    + ", " + result.item.state+", " +result.item.zip_code +"</span>
                 <span class=\"mx-5\"> Policies: " + result.item.polcies +"</span></div>";
     */
 
@@ -246,7 +274,7 @@ function fill_client_results_box( client_list )
     // Get the div that contains the search result.
     $(`#sr-${result.item.id}`).on('click', (event) => {
 
-      
+
 
       if( $(`#selected-sr-${result.item.id}`).length )
       {
@@ -265,13 +293,13 @@ function fill_client_results_box( client_list )
           if( index > 0)
           {
             console.log(`ID OF CHILD ${ $(this).attr('id')}`);
-  
+
             clientIdString += $( this ).data("clientId") + " ";
           }
         })
 
         $("#selected-clients-id-array").val(clientIdString);
-        
+
       }
 
     })
@@ -288,7 +316,7 @@ function fill_client_results_box( client_list )
 function executeSearchAjax() {
     $.ajax({
 
-        
+
         url:'/dashboard/execute_search/',
         // Type of Request
         method: "POST",

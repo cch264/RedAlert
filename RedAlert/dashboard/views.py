@@ -156,30 +156,30 @@ def execute_search( request ):
 # email sending method
 def send_email( request ):
     if request.method == "POST":
-        subject = request.POST['email-subject']
-        message = request.POST['email-message']
+        subject = request.POST['message-subject-name']
+        message = request.POST['message-inp']
         # The recipient must be a tuple or list.
-        recipients = (request.POST['recipient-email'], )
+        recipients = [request.POST['selected-clients-id-array']]
 
         for recipientIndex in recipients:
             send_mail(subject, message, "RedAlertTester@gmail.com", recipientIndex)
 
-        return render(request, 'redAlertSite/send_email.html')
+        return render(request, 'dashboard/dashboard.html')
 
     else:
-        return render(request, 'redAlertSite/send_email.html')
+        return render(request, 'dashboard/dashboard.html')
 
 # SMS sending method
 def send_sms_message( request ):
     if request.method =="POST":
-        message = request.POST['sms-message']
+        message = request.POST['message-inp']
         sender = '+19087749012'
-        recipients = [request.POST['recipient-phone']]
+        recipients = [request.POST['selected-clients-id-array']]
 
         for recipientIndex in recipients:
             send_sms( message, sender, recipientIndex, fail_silently=False )
 
-        return render(request, 'redAlertSite/send_email.html')
+        return render(request, 'dashboard/dashboard.html')
 
     else:
-        return render(request, 'redAlertSite/send_email.html')
+        return render(request, 'dashboard/dashboard.html')
