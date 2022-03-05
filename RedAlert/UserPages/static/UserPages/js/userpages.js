@@ -219,7 +219,6 @@ function togglePasswordEdit()
         $('#user-changed-password').val('false');
 
         // Clear the pass validation list and hide it when user hits the check box to disable password editing.
-        $('#pass-validation-alert-list').empty();
         $('#pass-validation-alert-list').hide();
 
         // Enable submit button when user disables password editing
