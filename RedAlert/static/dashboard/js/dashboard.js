@@ -618,9 +618,7 @@ function fill_client_results_box( client_list )
       }
       else
       {
-
         selectClientSearchResult( result );
-        toggleSelected
 
         /*
         // Create html element for each search result the user clicks.
@@ -639,11 +637,6 @@ function fill_client_results_box( client_list )
       }
 
     })
-    //console.log(`The result: ${JSON.stringify(result.item) }`);
-    //console.log(`id ${ result.item.id }`);
-    //console.log(`name ${ result.item.name }`);
-    //console.log(`email ${ result.item.email }`);
-    //console.log(`age ${ result.item.age }`);
 
 });
 
@@ -653,7 +646,7 @@ function fill_client_results_box( client_list )
 // Takes a result item, toggles the result from selected to unselected or vice versa.
 function toggleClientSelection( client_result )
 {
-  console.log(`In toggle`);
+  //console.log(`In toggle`);
   // Check search results div for selected element
   let resultIsSelected = false;
   // Get client id as string to compare to data-client-id  attribute on sr elements.
@@ -667,7 +660,7 @@ function toggleClientSelection( client_result )
       if( $(this).data('clientId').toString() === clientID )
       {
 
-        //console.log(`Found matching element. Client selected : ${ $(this).attr('data-selected-client') } Element id is ${$(this).attr('id') } Client ID is: ${$(this).data('clientId')}`);
+        //console.log(`Found matching element. Client selected: ${ $(this).attr('data-selected-client') } Element id is ${$(this).attr('id') } Client ID is: ${$(this).data('clientId')}`);
 
         // If client is already selected, deselect it.
         if( $(this).attr('data-selected-client') === "true")
@@ -693,6 +686,7 @@ function deselectClientSearchResult( result )
   $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
   invertPlusBtn( `#sr-btn-${result.item.id}` );
   $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
+  toggleSpecificPin( result.item.id.toString() );
 
   refreshSelectedClientsString();
 }
@@ -703,6 +697,8 @@ function selectClientSearchResult( result )
 
    invertPlusBtn( `#sr-btn-${result.item.id}` );
 
+   toggleSpecificPin( result.item.id.toString() );
+
    // Create html element for each search result the user clicks.
    let selected_search_result = generateSelectedSearchElement(result);
 
@@ -710,7 +706,15 @@ function selectClientSearchResult( result )
    $("#selected-clients-container").append( selected_search_result );
 
 
-   $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
+   // This is the remove button that is located on the element appened to the selected clients container at the bottom of the page.
+   $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){
+      $(`#selected-sr-${result.item.id}`).remove();
+      invertPlusBtn( `#sr-btn-${result.item.id}`);
+      $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
+      toggleSpecificPin( result.item.id.toString() );
+      refreshSelectedClientsString();
+
+         });
 
    $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
   
