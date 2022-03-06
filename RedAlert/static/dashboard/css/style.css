@@ -39,11 +39,78 @@
 
 .bootstrap-grey-bottom{
     border-bottom: 1px solid rgba(0,0,0,.125);
-    background-color: #0062ff;
 }
 
 
 .sel-sr-color{
-    background-color: #0062ff;
-    color: blue;
+    background-color: #f1f1f1;
+}
+
+.remove-sr-btn{
+    border: 2px solid rgb(216, 49, 49);
+    border-radius: 5px;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.remove-sr-btn:hover{
+    background-color: #f57d7d;
+}
+
+.select-client-btn{
+    border: 2px solid rgb(124, 174, 216);
+    border-radius: 5px;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.select-client-btn:hover{
+    border: 2px solid rgb(124, 174, 216);
+    border-radius: 5px;
+    padding: 3px;
+    cursor: pointer;
+    background-color: rgb(217, 229, 235);
+}
+
+
+.invalid-age-range{
+    border: 2px solid red;
+}
+
+.valid-age-range{
+    border: 2px solid green;
+}
+
+#filter-container{
+    width: 40%;
+    border: 3px solid #0d6efd;
+    border-radius: 8px;
+    margin-left: 5px;
+    padding: 10px;
+    
+}
+
+.age-filter-input{
+    width: 35%;
+    display: inline;
+}
+
+.sr-scroll-box{
+  height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#expand-sr-btn{
+    margin-top: 10px;
+}
+
+
+#client-map{
+    height: 700px; 
+    width: 90%; 
+    margin-left:auto; 
+    margin-right: auto;
+    border: 2px solid #0d6efd;
+    border-radius: 15px;
 }

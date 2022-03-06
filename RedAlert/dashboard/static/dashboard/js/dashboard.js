@@ -572,7 +572,11 @@ function executeSearch( showAllResults=false )
     search_result_object = executeFuseSearch(  $('#user-search-input').val(), showAllResults );
   }
 
+  console.log( JSON.stringify(search_result_object ));
+
   fill_client_results_box( search_result_object );
+
+  plotClientSearchresults( search_result_object );
 
 }
 
@@ -597,22 +601,28 @@ function fill_client_results_box( client_list )
     // Get the div that contains the search result.
     $(`#sr-btn-${result.item.id}`).on('click', (event) => {
 
-      $(`#sr-${result.item.id}`).addClass('sel-sr-color');
-
-      invertPlusBtn( `#sr-btn-${result.item.id}` );
-
       
+      // DESELECT A PREVIOUSLY SELECTED CLIENT SEARCH RESULT
       // If the client search result already exist in the selected clients container, remove it.
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
       if( $(`#selected-sr-${result.item.id}`).length )
       {
+        deselectClientSearchResult( result);
+        /*
         $(`#selected-sr-${result.item.id}`).remove();
         $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
+        $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
 
         refreshSelectedClientsString();
+        */
       }
       else
       {
+
+        selectClientSearchResult( result );
+        toggleSelected
+
+        /*
         // Create html element for each search result the user clicks.
         let selected_search_result = generateSelectedSearchElement(result);
 
@@ -621,8 +631,11 @@ function fill_client_results_box( client_list )
 
 
         $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
+
+        $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
        
         refreshSelectedClientsString();
+        */
       }
 
     })
@@ -635,6 +648,73 @@ function fill_client_results_box( client_list )
 });
 
   console.log(`TOTAL CLIENTS IN SR: ${client_count}`);
+}
+
+// Takes a result item, toggles the result from selected to unselected or vice versa.
+function toggleClientSelection( client_result )
+{
+  console.log(`In toggle`);
+  // Check search results div for selected element
+  let resultIsSelected = false;
+  // Get client id as string to compare to data-client-id  attribute on sr elements.
+  let clientID = client_result.item.id.toString();
+
+  $('#search-results-container').children().each( function(){
+
+      console.log(`Elements client ID:${$(this).data('clientId')}, Result ID:${clientID}: Comparison: ${ $(this).data('clientId').toString() === clientID }`);
+
+      // Get the client search result element that has the same client id as the client we are selected or deselecting.
+      if( $(this).data('clientId').toString() === clientID )
+      {
+
+        console.log(`Found matching element. Client selected: ${ $(this).attr('data-selected-client') } Element id is ${$(this).attr('id') } Client ID is: ${$(this).data('clientId')}`);
+
+        // If client is already selected, deselect it.
+        if( $(this).attr('data-selected-client') === "true")
+        {
+          console.log("Deselecting result");
+          deselectClientSearchResult( client_result );
+        }
+        else // If client is not selected, select them.
+        {
+          console.log("Selecting result");
+          selectClientSearchResult( client_result );
+        }
+      }
+  });
+  // Check selected clients div for selected element
+
+}
+
+// Deselects a client search result but does not affect the map.
+function deselectClientSearchResult( result )
+{
+  $(`#selected-sr-${result.item.id}`).remove();
+  $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
+  invertPlusBtn( `#sr-btn-${result.item.id}` );
+  $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
+
+  refreshSelectedClientsString();
+}
+
+function selectClientSearchResult( result )
+{
+    $(`#sr-${result.item.id}`).addClass('sel-sr-color');
+
+   invertPlusBtn( `#sr-btn-${result.item.id}` );
+
+   // Create html element for each search result the user clicks.
+   let selected_search_result = generateSelectedSearchElement(result);
+
+   // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
+   $("#selected-clients-container").append( selected_search_result );
+
+
+   $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
+
+   $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
+  
+   refreshSelectedClientsString();
 }
 
 // Create html element for each search result returned from search.
@@ -676,7 +756,7 @@ function generateSelectedSearchElement(result)
 function generateSearchElement(result)
 {
   
-  return `<div id="sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+  return `<div id="sr-${result.item.id}" data-selected-client="false" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
               <div class="d-flex flex-column justify-content-center ps-2">
                 <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
               </div>
@@ -706,6 +786,7 @@ function generateSearchElement(result)
           `;
 }
 
+// Toggles select button on client search results.
 function invertPlusBtn( elementID)
 {
 
