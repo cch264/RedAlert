@@ -78,7 +78,7 @@
               <label for="account-creation-input">Account Creation Date: </label>
               <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
 
-              <h4> Edit Password </h4>
+              <h4> Edit Password <input type="checkbox" id="allow-pass-edit" class="ms-2" name="allow-pass-edit" > </h4>
 
               <label for="update-pass-input-1"> Enter New Password </label>
               <input id="update-pass-input-1" name="pass-1" class="form-control" type="text" disabled>
@@ -86,7 +86,30 @@
               <label for="update-pass-input-2"> Repeat New Password </label>
               <input id="update-pass-input-2"  name="pass-2" class="form-control" type="text" disabled>
 
-              <input id="user-changed-password"  class="form-control" type="hidden" name="changed-password" value="false">
+              
+              <ul id="pass-validation-alert-list" class="fa-ul">
+                <li id='needs-upper-case-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must contain 1 upper case letter. </span></li>
+                <li id='needs-upper-case-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 upper case letter. </span></li>
+
+                <li id='needs-lower-case-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span > <span class='red-text-color'>Password must contain 1 lower case letter.</span></li>
+                <li id='needs-lower-case-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 lower case letter.</span></li>
+
+                <li id='needs-digit-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must contain 1 digit.</span></li>
+                <li id='needs-digit-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 digit.</span></li>
+
+                <li id='needs-special-char-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span > <span class='red-text-color'>Password must contain 1 special character.</span></li>
+                <li id='needs-special-char-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 special character</span></li>
+
+                <li id='needs-length-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must be at least 8 characters long.</span></li>
+                <li id='needs-length-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must be at least 8 characters long.</span></li>
+
+                <li id='needs-to-match' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Passwords must match before you can submit! </span></li>
+                <li id='pass-match' class="display-none"> <span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'> Passwords match! You may submit now! </span> </li>
+                
+              </ul>
+              
+
+              <input id="user-changed-password" type="hidden" name="changed-password" value="false">
 
               <button id="submit-user-profile-changes" type="submit" class="btn btn-success">Submit Changes</button>
               <button id="discard-user-profile-changes" type="button" class="btn btn-danger">Discard Changes</button>

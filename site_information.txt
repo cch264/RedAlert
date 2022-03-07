@@ -1,3 +1,8 @@
+Logging into NAU CEFNS to update team website ( must be connected to nau wifi )
+	ssh cch264@linux.cefns.nau
+Directory where our website folder is stored
+	/www/ceias.nau.edu/capstone/projects/CS/2022/RedAlert
+
 PROGRAM VERSIONS:
 	Django==3.2.8
 	djongo==1.3.6
