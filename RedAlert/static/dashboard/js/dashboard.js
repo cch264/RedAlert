@@ -187,6 +187,9 @@ window.addEventListener('load', (event) => {
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
+
+    console.log( `Point in poly ${ robustPointInPolygon([[1,0],[1,5], [8,0]], [2,1] ) } ` );
+
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {

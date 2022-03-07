@@ -25,6 +25,9 @@ var startDrawingIcon = L.icon({
 
 var startingLine = true;
 var latlngs = [];
+var drawStartPoint;
+// a polyline object that is the user drawn shape on the map.
+var userShape;
 
 function onMapClick( event ) {
 
@@ -34,7 +37,9 @@ function onMapClick( event ) {
   {
     latlngs.push([event.latlng.lat, event.latlng.lng]);
 
-    var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+
+    drawStartPoint = L.marker([event.latlng.lat, event.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
 
     startingLine = false;
   }
@@ -42,7 +47,7 @@ function onMapClick( event ) {
   {
     latlngs.push([event.latlng.lat, event.latlng.lng]);
 
-    var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
   }
 
 
@@ -176,3 +181,28 @@ var clientMarkerArray = [];
 window.addEventListener('load', (event) => {
   console.log("Found map js file!");
 }); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
