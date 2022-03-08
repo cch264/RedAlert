@@ -237,6 +237,34 @@ function send_client_notification()
   console.log(`Subject: ${message_subject}\n Message: ${message_body}\n
     Message Type: ${message_type}\n Message Priority: ${message_priority}\n
     Selected Clients: ${selected_clients}\n`);
+
+  $.ajax({
+
+
+      url:'/dashboard/send_message/',
+      // Type of Request
+      method: "POST",
+      // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+      // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+      headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+      // Pass data to the django function
+      data: {message_subject: message_subject,
+      message_body: message_body, message_type: message_type, message_priority: message_priority,
+      selected_clients: selected_clients },
+
+      // Function to call when to django returns a response to our ajax request.
+      success: function (data) {
+          //var x = JSON.stringify(data);
+          console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
+      },
+      // Error handling LOWKEY USELESS
+      error: function ( jqXHR, textStatus, errorThrown ) {
+          console.log(`Error WITH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+          var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+          console.log('Error - ' + errorMessage);
+      }
+  });
 }
 
 function assignSearchFilterListeners()
