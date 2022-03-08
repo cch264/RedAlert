@@ -51,12 +51,11 @@ function executeFuseSearch( user_pattern, showAllResults=false )
 
       //console.log(`JSON  ${ JSON.parse( $('#client-json-input').val()) }`);
 
-      // Only use user input if we are supposed to. If user is using filters we may not want to use their input.
-
+      // Get the json from the input element and parse it to convert it to a json.
+      // This json has an entry for EVERY single client in the DB.
       search_data_json = JSON.parse( $('#client-json-input').val());
 
-
-
+      // pass the client json to the search function.
       const fuse = new Fuse( search_data_json, options);
 
       // Change the pattern
@@ -118,7 +117,7 @@ function filterSearchResults( searchResultJSON )
               //console.log(`Matching pattern: ${pattern} against result city name ${result.item[keyName]}`)
 
               // Create array of booleans, if the result contains the pattern, push true to the array.
-              // If the filters are city: mesa, chandler then we need to check each search result for mesa OR chandler so we create an array that checks .
+              // If the filters are city: mesa, chandler then we need to check each search result for mesa OR chandler so we create an array that checks.
               matchesFilter.push( result.item[keyName].toLowerCase().includes(pattern).toString() );
             }
 

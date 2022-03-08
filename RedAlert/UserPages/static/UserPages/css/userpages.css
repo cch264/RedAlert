@@ -1,0 +1,14 @@
+
+
+.css-var-test{
+    color: var(--blue-var);
+}
+
+
+#user-profile-edit-form{
+    display: none;
+}
+
+#pass-validation-alert-list{
+    display: none;
+}

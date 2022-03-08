@@ -146,6 +146,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# Auto logs out user at browser close.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# user this to set amount of time for user login session to expire, will auto log out user in seconds.
+# Not sure what happens when the session expires except that page access fails.
+#SESSION_COOKIE_AGE
+
 # Define directories where static files are located so django can find them.
 # Without the path to static_assets, the files in static_assets would not be added to /RedAlert/static which is
 # where our production http server, NGINX finds files to serve our site with.
@@ -158,6 +165,7 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#id = models.BigAutoField(primary_key=True)
 
 # Email Settings
 EMAIL_HOST = env("EMAIL_HOST")

@@ -18,6 +18,10 @@
     <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
 
       <div class="w-25">
+
+        {% if changed_pass %}
+          <div> You successfully changed your password! </div>
+        {% endif %}
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
           <!-- Protects against Cross Site Request Forgeries -->
