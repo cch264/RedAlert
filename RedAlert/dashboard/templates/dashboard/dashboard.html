@@ -15,6 +15,10 @@
       {% block css_links %}
         <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/style.css' %}">
 
+        <!-- Font awesome cdn so we can use their icons. -->
+        <script src="https://kit.fontawesome.com/6cf6986f3d.js" crossorigin="anonymous"></script>
+
+
         <!-- Leaflet css -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
@@ -34,19 +38,19 @@
 
 
               <div class="d-flex flex-row">
-                <h4 id="appl-filters-display"> Applied Filters: None</h4> 
+                <h4 id="appl-filters-display"> Applied Filters: None</h4>
 
                 <div class="display-filters-container">
-                  
+
                 </div>
 
               </div>
-              
+
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
                 <form id="user-search-box-form" class="form-floating w-100" method="post">
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
-                  
+
 
                   <!-- This is where the json from our django backend is stored until a javascript function grabs the data to search through it. -->
                   <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
@@ -122,7 +126,7 @@
                       </div>
 
 
-                      
+
 
                       <div class="col-4 d-flex flex-column px-1">
                         <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
@@ -134,7 +138,7 @@
                           <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
                         </div>
                       </div>
-                      
+
 
                     </div>
 
@@ -174,7 +178,7 @@
                 </ul>
 
                 <div class="bootstrap-grey-border pb-2 sr-scroll-box" id="search-results-container">
-                    
+
 
                 </div>
 
@@ -206,16 +210,16 @@
 
                       <div class="d-flex flex-row justify-content-between">
                         <div class="w-50">
-                          <div>
-                            <label for="message-subject-name"> Subject: </label>
-                            <input id="message-subject-name" class="form-control" type="text">
-                          </div>
 
-                          <div>
-                            <label for="message-inp"> Message: </label>
-                            <textarea id="message-inp" class="form-control" type="text-area">  </textarea>
-                          </div>
+                            <div>
+                              <label for="message-subject"> Subject: </label>
+                              <input id="message-subject" class="form-control" type="subject" name="subject">
+                            </div>
 
+                            <div>
+                              <label for="message-body"> Message: </label>
+                              <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
+                            </div>
                         </div>
 
                         <div>
@@ -225,14 +229,14 @@
                             <option value="def-select-opt" selected> Select a Message Type </option>
                               <option value="send-sms"> Send SMS </option>
                               <option value="send-email">Send Email </option>
-                              <option value="send-email">Send Email and SMS </option>
+                              <option value="send-both">Send Email and SMS </option>
                           </select>
 
                           <label for="sel-msg-priority"> Message Priority: </label>
                           <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
                             <option value="def-select-opt" selected> Select a Message Priority </option>
-                              <option value="send-sms"> Send Emergency Message</option>
-                              <option value="send-email">Send Social Message</option>
+                              <option value="send-emergency"> Send Emergency Message</option>
+                              <option value="send-social">Send Social Message</option>
                           </select>
 
                         </div>
@@ -240,12 +244,12 @@
                       </div>
 
                       <div class="d-flex flex-row-reverse">
-                        <button class="btn btn-primary"> Send Message </button>
+                        <button id="send-msg" class="btn btn-primary"> Send Message </button>
                       </div>
-                      
+
                       <h3> Selected Clients </h3>
                       <div id="selected-clients-container">
-                        <input id="selected-clients-id-array" type="hidden"> 
+                        <input id="selected-clients-id-array" type="hidden">
                       </div>
 
                     </div>
@@ -318,7 +322,7 @@
     </div>
   </div>
 
-  
+
 
   <a href='/tech_demo/send_email'></a>
 
