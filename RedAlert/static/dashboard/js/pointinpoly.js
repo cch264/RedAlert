@@ -259,7 +259,7 @@ function robustPointInPolygon(vs, point) {
 
 
 window.robustPointInPolygon = function( poly, point ){
-  robustPointInPolygon(poly, point);
+  return robustPointInPolygon(poly, point);
 };
 },{"robust-orientation":1}],3:[function(require,module,exports){
 "use strict"

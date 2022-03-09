@@ -18,7 +18,7 @@
 });
 
 var startDrawingIcon = L.icon({
-  iconUrl: '/static/dashboard/images/blackOutlineFlag.png',  
+  iconUrl: '/static/dashboard/images/redFlag.png',  
   iconSize: [51, 51],
   iconAnchor: [5, 51],
 });
@@ -31,39 +31,17 @@ var userShape;
 
 function onMapClick( event ) {
 
-  console.log(`Event lat ${event.latlng.lat} Event long ${event.latlng.lng}`);
-
-  if( startingLine )
-  {
-    latlngs.push([event.latlng.lat, event.latlng.lng]);
-
-    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
-
-    drawStartPoint = L.marker([event.latlng.lat, event.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
-
-    startingLine = false;
-  }
-  else
-  {
-    latlngs.push([event.latlng.lat, event.latlng.lng]);
-
-    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
-  }
-
+  drawPolygonOnMap( event );
 
 }
  
  map.on('click', onMapClick);
  
 
- 
- // Note: geocoding all of the adressess in a certain area and comparing those adresses to our client database would be incredibly
- // expensive and resource heavy.
- // create a red polygon from an array of LatLng points
-
  // Creates a layer group. Basically a container of all of our plotted addresses.
 var clientLayerGroup = L.layerGroup();
 
+// Array that holds all client marker objects that are visible on the map
 var clientMarkerArray = [];
 
  function plotClientSearchresults( resultsObj )
@@ -94,7 +72,7 @@ var clientMarkerArray = [];
 
       //toggleClientSelection( result );
       
-      togglePinSelect( result );
+      togglePinSelect( result.item.id );
       
     
       
@@ -103,6 +81,7 @@ var clientMarkerArray = [];
       
     })
 
+    // Current clients on the map.
     clientMarkerArray.push( {markerObj: clientAddress, selected: false, clientID: result.item.id.toString() } );
 
   })
@@ -114,26 +93,27 @@ var clientMarkerArray = [];
  }
 
  // Toggles a pins icon and also toggles search results elements when a pin is clicked.
- function togglePinSelect( clientResultObj )
+ function togglePinSelect( clientIDInt )
  {
 
-   let markerObj = getMarkerFromArray( clientResultObj.item.id.toString() );
+   let markerObj = getMarkerFromArray( clientIDInt.toString() );
 
    console.log(`Marker info. Marker OBJ: ${markerObj.markerObj} Selected: ${markerObj.selected} Client ID: ${markerObj.clientID}`)
 
     if(markerObj.selected)
     {
       markerObj.selected = false;
-      toggleClientSelection( clientResultObj ); // located in dashboard.js, pin icon toggled in here. We make a call to toggleSpecificPin in this func
+      toggleClientSelection( clientIDInt ); // located in dashboard.js, pin icon toggled in here. We make a call to toggleSpecificPin in this func
     }
     else
     {
       markerObj.selected = true;
-      toggleClientSelection( clientResultObj );
+      toggleClientSelection( clientIDInt );
     }
   
  }
 
+ // Toggles a pin from selected to desected or vice versa.
  function toggleSpecificPin( clientIDString )
  {
    console.log(`Toggle specific pin.`);
@@ -160,6 +140,21 @@ var clientMarkerArray = [];
 
  }
 
+ function selectSpecificPin( clientIDString )
+ {
+  let markerObj = getMarkerFromArray( clientIDString );
+
+   console.log(`Marker info. Marker OBJ: ${markerObj.markerObj} Selected: ${markerObj.selected} Client ID: ${markerObj.clientID}`)
+
+    if( !markerObj.selected )
+    {
+      markerObj.selected = true;
+      toggleClientSelection( parseInt(clientIDString) );// located in dashboard.js, pin icon toggled in here. We make a call to toggleSpecificPin in this func
+    }
+
+
+ }
+
  function getMarkerFromArray( clientIDString )
  {
    let markerObjToReturn;
@@ -177,6 +172,110 @@ var clientMarkerArray = [];
   return markerObjToReturn;
  }
 
+
+ /*
+ var drawMode = false;
+ var startingLine = true;
+  var latlngs = [];
+
+  // Current Marker
+  var drawStartPoint;
+  // a polyline object that is the user drawn shape on the map.
+  // Current shape.
+  var userShape;
+ */
+ function drawPolygonOnMap( clickEvent )
+ {
+    console.log(`Event lat ${clickEvent.latlng.lat} Event long ${clickEvent.latlng.lng}`);
+
+    if( true )
+    {
+      if( startingLine )
+      {
+        latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
+  
+        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+  
+        drawStartPoint = L.marker([clickEvent.latlng.lat, clickEvent.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
+        
+        drawStartPoint.on('click', (drawStartPoint) => completeShape(drawStartPoint, userShape ) );
+  
+        startingLine = false;
+      }
+      else
+      {
+        latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
+  
+        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+      }
+
+    }
+ }
+
+ // Change color of marker icon, to green for complete shape.
+ // remove click listener from polyStartMarker 
+ function completeShape( polyStartMarker, polyLine )
+ {
+  calculatePointsInPoly();
+
+  latlngs = [];// reset coordinate array.
+
+  drawMode = false;
+
+  startingLine = true;
+
+  polyStartMarker.setStyle( {color: 'green'} );
+
+ }
+
+ function calculatePointsInPoly()
+ {
+
+  // Push first point onto end of array to compelte the polygon for drawing purposes.
+  latlngs.push(latlngs[0])
+
+  console.log(`LATLGNS AFTER PUSH ${latlngs}`);
+  
+  // this gets called when the user completes their shape, so complete the last line of their shape for them.
+  // Push the first point onto the array so we have a complete polygon.
+  L.polyline(latlngs, {color: 'red'}).addTo(map);
+
+  latlngs.pop()
+
+  //robustPointInPolygon
+
+  let clientIDsInShape = [];
+
+  for( let index = 0; index < clientMarkerArray.length; index++ )
+  {
+    let clientMarkerInfo = clientMarkerArray[index];
+    let clientMarkerObj = clientMarkerInfo.markerObj;
+    let clientLatLong = clientMarkerObj.getLatLng();
+
+    let clientIsInShape = robustPointInPolygon(latlngs, [ clientLatLong.lat, clientLatLong.lng] );
+    console.log(`Client ID: ${ clientMarkerInfo.clientID} In user poly ${clientIsInShape } `)
+    
+
+    // Robust point in polygon returns a -1 if the point is in the polygon, 0 if the point is on the polygon boundry, and 1 if the point is outside the shape.
+    if( clientIsInShape < 0)
+    {
+      clientIDsInShape.push( clientMarkerInfo.clientID );
+    }
+    
+  }
+
+  selectAllPinsInShape(clientIDsInShape);
+
+ }
+
+ // Checks an array of client ids that are inside a user drawn shape. Selects the client pins if they are in the shape.
+ function selectAllPinsInShape( clientIDStrArray )
+ {
+   for( let index = 0; index < clientIDStrArray.length; index++ )
+    {
+      selectSpecificPin( clientIDStrArray[index] );
+    }
+ }
 
 window.addEventListener('load', (event) => {
   console.log("Found map js file!");

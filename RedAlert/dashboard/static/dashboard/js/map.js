@@ -18,11 +18,18 @@
 });
 
 var startDrawingIcon = L.icon({
-  iconUrl: '/static/dashboard/images/blackOutlineFlag.png',  
+  iconUrl: '/static/dashboard/images/redFlag.png',  
   iconSize: [51, 51],
   iconAnchor: [5, 51],
 });
 
+var finDrawingIcon = L.icon({
+  iconUrl: '/static/dashboard/images/greenFlag.png',  
+  iconSize: [51, 51],
+  iconAnchor: [5, 51],
+});
+
+var drawMode = true;
 var startingLine = true;
 var latlngs = [];
 var drawStartPoint;
@@ -31,40 +38,17 @@ var userShape;
 
 function onMapClick( event ) {
 
-  console.log(`Event lat ${event.latlng.lat} Event long ${event.latlng.lng}`);
-
-  if( startingLine )
-  {
-    latlngs.push([event.latlng.lat, event.latlng.lng]);
-
-    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
-
-    drawStartPoint = L.marker([event.latlng.lat, event.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
-    
-    drawStartPoint.on('click', calculatePointsInPoly );
-
-    startingLine = false;
-  }
-  else
-  {
-    latlngs.push([event.latlng.lat, event.latlng.lng]);
-
-    userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
-  }
+  drawPolygonOnMap( event );
 
 }
  
  map.on('click', onMapClick);
  
 
- 
- // Note: geocoding all of the adressess in a certain area and comparing those adresses to our client database would be incredibly
- // expensive and resource heavy.
- // create a red polygon from an array of LatLng points
-
  // Creates a layer group. Basically a container of all of our plotted addresses.
 var clientLayerGroup = L.layerGroup();
 
+// Array that holds all client marker objects that are visible on the map
 var clientMarkerArray = [];
 
  function plotClientSearchresults( resultsObj )
@@ -195,19 +179,84 @@ var clientMarkerArray = [];
   return markerObjToReturn;
  }
 
+
+ /*
+ var drawMode = false;
+ var startingLine = true;
+  var latlngs = [];
+
+  // Current Marker
+  var drawStartPoint;
+  // a polyline object that is the user drawn shape on the map.
+  // Current shape.
+  var userShape;
+ */
+ function drawPolygonOnMap( clickEvent )
+ {
+    console.log(`Event lat ${clickEvent.latlng.lat} Event long ${clickEvent.latlng.lng}`);
+
+    if( drawMode )
+    {
+      if( startingLine )
+      {
+        latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
+
+        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+  
+        drawStartPoint = L.marker([clickEvent.latlng.lat, clickEvent.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
+        
+        drawStartPoint.on('click', () => { userShape.remove(); completeShape(drawStartPoint, userShape ) });
+  
+        startingLine = false;
+      }
+      else
+      {
+        latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
+
+        // remove old line since were gonna draw a new one.
+        userShape.remove()
+  
+        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+      }
+
+    }
+ }
+
+ // Change color of marker icon, to green for complete shape.
+ // remove click listener from polyStartMarker 
+ function completeShape( polyStartMarker, polyLine )
+ {
+  // Push first point onto end of array to compelte the polygon for drawing purposes.
+  latlngs.push(latlngs[0])
+
+  console.log(`LATLGNS AFTER PUSH ${latlngs}`);
+
+  // this gets called when the user completes their shape, so complete the last line of their shape for them.
+  // Push the first point onto the array so we have a complete polygon.
+  L.polyline(latlngs, {color: 'green'}).addTo(map);
+
+  polyStartMarker.setIcon( finDrawingIcon );
+
+  polyStartMarker.off();
+
+  latlngs.pop()
+   
+  calculatePointsInPoly();
+
+   
+
+  //latlngs = [];// reset coordinate array.
+
+  drawMode = false;
+
+  startingLine = true;
+
+  
+
+ }
+
  function calculatePointsInPoly()
  {
-
-   // Push first point onto end of array to compelte the polygon for drawing purposes.
-   latlngs.push(latlngs[0])
-
-   console.log(`LATLGNS AFTER PUSH ${latlngs}`);
-   
-   // this gets called when the user completes their shape, so complete the last line of their shape for them.
-   // Push the first point onto the array so we have a complete polygon.
-   L.polyline(latlngs, {color: 'red'}).addTo(map);
-
-   latlngs.pop()
 
   //robustPointInPolygon
 
@@ -235,6 +284,7 @@ var clientMarkerArray = [];
 
  }
 
+ // Checks an array of client ids that are inside a user drawn shape. Selects the client pins if they are in the shape.
  function selectAllPinsInShape( clientIDStrArray )
  {
    for( let index = 0; index < clientIDStrArray.length; index++ )
