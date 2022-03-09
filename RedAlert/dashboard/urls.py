@@ -8,5 +8,5 @@ urlpatterns = [
     # When user goes to localhost:8000/ run the landing_page view.
     path('', views.show_dashboard, name='dashboard_page' ),
     path('execute_search/', views.execute_search, name='execute_search'),
-
+    path('send_message/', views.send_message, name='send_message'),
 ]

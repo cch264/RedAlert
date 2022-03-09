@@ -9,6 +9,8 @@ import json
 import random
 import string
 import datetime
+from sms import send_sms
+from django.core.mail import send_mail
 
 # Create your views here.
 # Do not show the dashboard if the user isnt logged in!
@@ -161,11 +163,16 @@ def create_client_list():
         a_client.age = 2022 - a_client.birthdate.year
         a_client.gender = gender[ random.randint(0,1)]
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
-        a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        a_client.phone = "4803690030"
         a_client.lat = longLat[index][0]
         a_client.long = longLat[index][1]
+        #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
+        a_client.email = "npn24@nau.edu"
+        #a_client.phone = "4803690030"
+        a_client.phone = "13096202335"
+
         a_client.save()
+
+
 
     print("LENG OF CLIENTS COLLECTION IS: {}".format( len( Client.objects.all()) ) )
 
@@ -203,33 +210,74 @@ def execute_search( request ):
 
         return JsonResponse(response) # return response as JSON
 
-# email sending method
-def send_email( request ):
-    if request.method == "POST":
-        subject = request.POST['email-subject']
-        message = request.POST['email-message']
-        # The recipient must be a tuple or list.
-        recipients = (request.POST['recipient-email'], )
+# method for sending messages (both email and SMS) out to clients
+# Author: Nick Nannen
+def send_message( request ):
 
-        for recipientIndex in recipients:
-            send_mail(subject, message, "RedAlertTester@gmail.com", recipientIndex)
+    # define variables
+    message_subject = request.POST['message_subject']
+    message_body = request.POST['message_body']
+    message_type = request.POST['message_type']
+    message_priority = request.POST['message_priority']
+    selected_clients = request.POST['selected_clients']
+    selected_clients = selected_clients.split(" ")
+    del selected_clients[-1]
 
-        return render(request, 'redAlertSite/send_email.html')
+    # test code for ensuring correct clients are selected
+    #print( selected_clients )
 
+    # test code for ensuring all data has been recieved and is correct
+    #print("Subject: {}\n Message: {}\n Type: {}\n Priority: {}\n Selected Clients: {}\n".format(message_subject, \
+    #message_body, message_type, message_priority, selected_clients))
+
+    # query clients from database based on seleceted client's IDs
+    selected_clients_array = Client.objects.filter(id__in=selected_clients)
+
+    # define arrays for containing client's email addresses and phone numbers
+    selected_emails = []
+    selected_phones = []
+
+    # loop through selected clients and get each's contact info
+    for client_index in selected_clients_array:
+        # get email
+        selected_emails.append(client_index.email)
+        # get phone number
+        selected_phones.append(str(client_index.phone))
+
+    # test code for making sure emails and phone numbers are correctly stored
+    #print("Selected Emails: {}\n".format(selected_emails))
+    #print("Selected Phones: {}\n".format(selected_phones))
+
+    # if "Send Email" is selected, then call the send_mail function with data
+    if message_type == "send-email":
+        for email_index in selected_emails:
+            send_mail(message_subject, message_body, "RedAlertTester@gmail.com", [email_index])
+
+            # test code to make sure email is sent to the correct address
+            #print("Sent to: {}\n".format(email_index))
+
+    # if "Send SMS" is selected, then call the send_sms function with data
+    elif message_type == "send-sms":
+        for sms_index in selected_phones:
+            send_sms( message_body, "+19087749012", sms_index, fail_silently=False )
+
+            # test code to make sure sms is sent to the correct number
+            #print("Sent to: {}\n".format(sms_index))
+
+    # if "Send Email and SMS" is selected, then call both functions with data
     else:
-        return render(request, 'redAlertSite/send_email.html')
+        for email_index in selected_emails:
+            send_mail(message_subject, message_body, "RedAlertTester@gmail.com", [email_index])
 
-# SMS sending method
-def send_sms_message( request ):
-    if request.method =="POST":
-        message = request.POST['sms-message']
-        sender = '+19087749012'
-        recipients = [request.POST['recipient-phone']]
+            # test code to make sure email is sent to the correct address
+            #print("Sent to: {}\n".format(email_index))
 
-        for recipientIndex in recipients:
-            send_sms( message, sender, recipientIndex, fail_silently=False )
+        for sms_index in selected_phones:
+            send_sms( message_body, "+19087749012", sms_index, fail_silently=False )
 
-        return render(request, 'redAlertSite/send_email.html')
+            # test code to make sure sms is sent to the correct number
+            #print("Sent to: {}\n".format(sms_index))
 
-    else:
-        return render(request, 'redAlertSite/send_email.html')
+    # send json response back
+    response = {'Success': 'True'}
+    return JsonResponse(response)
