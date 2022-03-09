@@ -159,8 +159,11 @@
 
 
           <div class="row">
-            <div style="background-color:aqua" class="col" id="map">
-              Map Section
+            <!-- Map needs to be inside a NON FLEX box element inorder to change the width. -->
+            <div >
+              <div class="col" id="client-map">
+                Map Section
+              </div>
             </div>
           </div>
 
@@ -340,5 +343,6 @@
     
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
+    <script src="{% static 'dashboard/js/pointinpoly.js' %}"></script>
 
   {% endblock %}

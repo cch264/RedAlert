@@ -20,6 +20,8 @@ class Client( models.Model ):
     email = models.CharField( max_length=200 )
     # Added my number as default for now for testing. Change this number and makemigrations to change to a diff number.
     phone = models.IntegerField( default=43803690030 )
+    lat = models.FloatField()
+    long = models.FloatField()
 
     def __str__(self):
         return self.name

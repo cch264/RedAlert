@@ -43,6 +43,8 @@ def show_dashboard( request ):
         a_client_dict["notification_status"] = client.notification_status
         a_client_dict["email"] = client.email
         a_client_dict["phone"] = client.phone
+        a_client_dict["lat"] = client.lat
+        a_client_dict["long"] = client.long
 
 
         json_array.append( a_client_dict )
@@ -111,6 +113,34 @@ def create_client_list():
      "9494,E Redfield Rd,Scottsdale,Arizona,85260".split(','),
      "9848,E Thomas Rd,Scottsdale,Arizona,85256".split(',') ]
 
+    # These correspond to the addresses above.
+    longLat = [
+        # Order is lat, long contrary to the name lol
+        [33.3409064444445,	-111.998838666667],
+        [33.3451534769561,	-111.974255629502],
+        [33.348566684932,	-111.992154585402],
+        [33.3776073884457,	-112.086657159916],
+        [33.56969965,	-112.103388108672],
+        [33.5061482222222,	-112.099985833333],
+        [33.5361629115168,	-112.123175020013],
+        [33.512979,	-112.06271],
+        [33.4985806510067,	-112.085733496644],
+        [33.3649547680338,	-111.971815911598],
+        [33.63604865,	-112.061387013499],
+        [33.5356290909091,	-112.062408121212],
+        [33.4330644,	-112.1008284],
+        [33.4586047664523,	-112.064775064221],
+        [33.398806,	-111.839312],
+        [33.36724975,	-111.6336074689],
+        [33.3784966969697,	-111.623984090909],
+        [35.21868855,	-111.597247788542],
+        [35.1666589,	-111.658973392651],
+        [35.1815828,	-111.65844995],
+        [33.6137616,	-111.8453885],
+        [33.615277,	-111.876497411765],
+        [33.4803402,	-111.9094363],
+     ]
+
     policies = ['fire auto', 'fire', 'fire boat home', 'home', 'auto fire home', 'auto', 'boat home', 'home fire boat', 'pet home fire', 'pet', 'pet fire','boat fire', 'boat']
     gender = ["M","F"]
     notification_status =['all','emergency','none']
@@ -133,10 +163,13 @@ def create_client_list():
         a_client.age = 2022 - a_client.birthdate.year
         a_client.gender = gender[ random.randint(0,1)]
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
+        a_client.lat = longLat[index][0]
+        a_client.long = longLat[index][1]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
         a_client.email = "npn24@nau.edu"
         #a_client.phone = "4803690030"
         a_client.phone = "13096202335"
+
         a_client.save()
 
 
