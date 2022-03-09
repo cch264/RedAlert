@@ -220,8 +220,17 @@ def send_message( request ):
     message_type = request.POST['message_type']
     message_priority = request.POST['message_priority']
     selected_clients = request.POST['selected_clients']
+
+    # define constants
+    EMERGENCY_MSG = "EMERGENCY ALERT FROM STATE FARM: "
+    END_MSG = "Do not reply to this alert"
+
+    # correctly format selected clients array
     selected_clients = selected_clients.split(" ")
     del selected_clients[-1]
+
+    # correctly format message body
+    message_body = message_body.strip()
 
     # test code for ensuring correct clients are selected
     #print( selected_clients )
@@ -233,16 +242,13 @@ def send_message( request ):
     # query clients from database based on seleceted client's IDs
     selected_clients_array = Client.objects.filter(id__in=selected_clients)
 
-    # define arrays for containing client's email addresses and phone numbers
-    selected_emails = []
-    selected_phones = []
+    # define array for containing client's names, email addresses, and phone numbers
+    selected_client_info = []
 
     # loop through selected clients and get each's contact info
     for client_index in selected_clients_array:
-        # get email
-        selected_emails.append(client_index.email)
-        # get phone number
-        selected_phones.append(str(client_index.phone))
+        # get client name, email, and phone and store in array
+        selected_client_info.append([client_index.name, client_index.email, str(client_index.phone)])
 
     # test code for making sure emails and phone numbers are correctly stored
     #print("Selected Emails: {}\n".format(selected_emails))
@@ -250,30 +256,73 @@ def send_message( request ):
 
     # if "Send Email" is selected, then call the send_mail function with data
     if message_type == "send-email":
-        for email_index in selected_emails:
-            send_mail(message_subject, message_body, "RedAlertTester@gmail.com", [email_index])
+        for client_index in selected_client_info:
+            # if the alert is marked as an emergency, format as such
+            if message_priority == "send-emergency":
+                subject_temp = EMERGENCY_MSG + message_subject
+                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                + "\n\n" + END_MSG
+            # otherwise, format as a social alert
+            else:
+                subject_temp = "State Farm alert system - " + message_subject
+                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+
+            # send the email to the client
+            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
             # test code to make sure email is sent to the correct address
             #print("Sent to: {}\n".format(email_index))
 
     # if "Send SMS" is selected, then call the send_sms function with data
     elif message_type == "send-sms":
-        for sms_index in selected_phones:
-            send_sms( message_body, "+19087749012", sms_index, fail_silently=False )
+        for client_index in selected_client_info:
+            # if the alert is marked as an emergency, format as such
+            if message_priority == "send-emergency":
+                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                "\n\n" + message_body + "\n\n" + END_MSG
+            # otherwise, format as a social alert
+            else:
+                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
+                + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+
+            # send the SMS message to the client
+            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
             # test code to make sure sms is sent to the correct number
             #print("Sent to: {}\n".format(sms_index))
 
     # if "Send Email and SMS" is selected, then call both functions with data
     else:
-        for email_index in selected_emails:
-            send_mail(message_subject, message_body, "RedAlertTester@gmail.com", [email_index])
+        for client_index in selected_client_info:
+            # formatting for SMS
+            # if the alert is marked as an emergency, format as such
+            if message_priority == "send-emergency":
+                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                "\n\n" + message_body + "\n\n"  + END_MSG
+            # otherwise, format as a social alert
+            else:
+                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
+                + "\n\n" + message_body + "\n\n"  + END_MSG
+
+            # send the SMS message to the client
+            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+            # formatting for email
+            # if the alert is marked as an emergency, format as such
+            if message_priority == "send-emergency":
+                subject_temp = EMERGENCY_MSG + message_subject
+                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                + "\n\n"  + END_MSG
+            # otherwise, format as a social alert
+            else:
+                subject_temp = "State Farm alert system - " + message_subject
+                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+
+            # send the email to the client
+            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
             # test code to make sure email is sent to the correct address
             #print("Sent to: {}\n".format(email_index))
-
-        for sms_index in selected_phones:
-            send_sms( message_body, "+19087749012", sms_index, fail_silently=False )
 
             # test code to make sure sms is sent to the correct number
             #print("Sent to: {}\n".format(sms_index))
