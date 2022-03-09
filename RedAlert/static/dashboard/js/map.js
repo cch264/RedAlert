@@ -72,7 +72,7 @@ var clientMarkerArray = [];
 
       //toggleClientSelection( result );
       
-      togglePinSelect( result.item.id );
+      toggleAnyClient( result.item.id );
       
     
       
@@ -93,7 +93,7 @@ var clientMarkerArray = [];
  }
 
  // Toggles a pins icon and also toggles search results elements when a pin is clicked.
- function togglePinSelect( clientIDInt )
+ function toggleAnyClient( clientIDInt )
  {
 
    let markerObj = getMarkerFromArray( clientIDInt.toString() );

@@ -668,7 +668,7 @@ function fill_client_results_box( client_list )
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
       if( $(`#selected-sr-${clientID}`).length )
       {
-        deselectClientSearchResult( clientID);
+        toggleAnyClient( clientID );
         /*
         $(`#selected-sr-${result.item.id}`).remove();
         $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
@@ -679,7 +679,7 @@ function fill_client_results_box( client_list )
       }
       else
       {
-        selectClientSearchResult( clientID );
+        toggleAnyClient( clientID );
 
         /*
         // Create html element for each search result the user clicks.
@@ -710,6 +710,7 @@ function toggleClientSelection( clientIDInt )
   //console.log(`In toggle`);
   // Check search results div for selected element
   let resultIsSelected = false;
+
   // Get client id as string to compare to data-client-id  attribute on sr elements.
   let clientIDStr = clientIDInt.toString();
 
