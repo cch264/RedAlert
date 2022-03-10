@@ -20,11 +20,14 @@
             <h1> Your Automations </h1> 
 
             <ul id="automation-list" class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
+
+              {% for oneTimeAuto in oneTimeAutos%}
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
+              {% endfor %}
+
+              {% for recurringAuto in recurringAutos %}
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
+              {% endfor %}
             </ul>
 
         
@@ -56,6 +59,218 @@
         </div>
 
     </div>
+
+    {% for oneTimeAuto in oneTimeAutos %}
+
+    <div class="modal fade one-time-auto-modal" id="one-time-auto-{{oneTimeAuto.id}}" data-auto-id="{{oneTimeAuto.id}}" data-selected-clients="{{oneTimeAuto.selected_clients}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit This Automation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+  
+            <div class="d-flex flex-row justify-content-between">
+              <div class="w-50">  
+                  <div>
+                    <label for="auto-name-{{oneTimeAuto.id}}"> Automation Name: </label>
+                    <input id="auto-name-{{oneTimeAuto.id}}" class="form-control" type="subject" name="subject" value="{{oneTimeAuto.name}}" >
+                  </div>
+  
+                  <div>
+                    <label for="auto-message-subject-{{oneTimeAuto.id}}"> Subject: </label>
+                    <input id="auto-message-subject-{{oneTimeAuto.id}}" class="form-control" type="subject" name="subject" value="{{oneTimeAuto.msg_sub}}">
+                  </div>
+  
+                  <div>
+                    <label for="auto-message-body-{{oneTimeAuto.id}}"> Message: </label>
+                    <textarea id="auto-message-body-{{oneTimeAuto.id}}" class="form-control" type="text-area" name="message" > {{oneTimeAuto.msg_body}} </textarea>
+                  </div>
+              </div>
+  
+              <div>
+  
+                <label for="auto-sel-msg-type-{{oneTimeAuto.id}}"> Message Type: </label>
+                <input type="hidden" id="auto-sel-msg-type-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_type}}">
+
+                <select id="auto-sel-msg-type-{{oneTimeAuto.id}}" class="form-select mb-2" aria-label="Select message type">
+                  <option value="auto-def-select-opt"> Select a Message Type </option>
+                    <option value="sms"> Send SMS </option>
+                    <option value="email">Send Email </option>
+                    <option value="both">Send Email and SMS </option>
+                </select>
+  
+                <label for="auto-sel-msg-priority-{{oneTimeAuto.id}}"> Message Priority: </label>
+
+                <input type="hidden" id="auto-sel-msg-priority-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_priority}}">
+
+                <select id="auto-sel-msg-priority-{{oneTimeAuto.id}}" class="form-select" aria-label="Select message priority" value="{{oneTimeAuto.msg_priority}}">
+                  <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                    <option value="emergency"> Send Emergency Message</option>
+                    <option value="social">Send Social Message</option>
+                </select>
+  
+              </div>
+  
+            </div>
+  
+            <div class="d-flex flex-row justify-content-between">
+              <div>
+                <label for="auto-sel-msg-frequency-{{oneTimeAuto.id}}"> Message Frequency: </label>
+
+                <input type="hidden" id="auto-sel-msg-frequency-val-{{oneTimeAuto.id}}" value="once">
+
+                <select id="auto-sel-msg-frequency-{{oneTimeAuto.id}}" class="form-select" aria-label="Select Message Frequency">
+                    <option value="auto-def-select-opt"> Select Message Frequency </option>
+                    <option value="once"> One Time </option>
+                    <option value="many"> Recurring </option>
+                </select>
+              </div>
+  
+              <div id="auto-send-msg-once-inputs-{{oneTimeAuto.id}}" class="display-none">
+                <label for="auto-send-once-date-{{oneTimeAuto.id}}">Send Message On: </label>
+
+                <input type="hidden" id="auto-send-once-date-val-{{oneTimeAuto.id}}" value="{{ oneTimeAuto.date_str }}">
+
+                <input id="auto-send-once-date-{{oneTimeAuto.id}}" class="form-control" type="date" >     
+              </div>
+  
+              <div id="auto-send-msg-many-inputs-{{oneTimeAuto.id}}" class="display-none">
+  
+                <label for="auto-send-many-date-{{oneTimeAuto.id}}">Start Recurring Automation Date: </label>
+                <input id="auto-send-many-date-{{oneTimeAuto.id}}" class="form-control" type="date" />   
+  
+                <label for="auto-send-freq-{{oneTimeAuto.id}}">Message Frequency: </label>
+                <input id="auto-send-freq-{{oneTimeAuto.id}}" class="form-control" type="number" value="1" disabled/>  
+  
+                <label for="auto-send-freq-unit-{{oneTimeAuto.id}}"> Every: </label>
+                <select id="auto-send-freq-unit-{{oneTimeAuto.id}}" class="form-select" aria-label="Select Message Frequency">
+                    <option value="day" selected> Day </option>
+                    <option value="week"> Week </option>
+                    <option value="month"> Month </option>
+                    <option value="year"> Year </option>
+                </select>
+              </div>
+  
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button id="auto-modal-cancel-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="auto-send-msg-{{oneTimeAuto.id}}" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+
+
+    {% for recurringAuto in recurringAutos %}
+
+    <div class="modal fade recurring-auto-modal" id="recurring-auto-{{recurringAuto.id}}" data-auto-id="{{recurringAuto.id}}" data-selected-clients="{{recurringAuto.selected_clients}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit This Automation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>-{{oneTimeAuto.id}}
+          <div class="modal-body">
+  
+            <div class="d-flex flex-row justify-content-between">
+              <div class="w-50">  
+                  <div>
+                    <label for="auto-many-name-{{recurringAuto.id}}"> Automation Name: </label>
+                    <input id="auto-many-name-{{recurringAuto.id}}" class="form-control" type="subject" name="subject" value="{{recurringAuto.name}}" >
+                  </div>
+  
+                  <div>
+                    <label for="auto-many-message-subject-{{recurringAuto.id}}"> Subject: </label>
+                    <input id="auto-many-message-subject-{{recurringAuto.id}}" class="form-control" type="subject" name="subject" value="{{recurringAuto.msg_sub}}">
+                  </div>
+  
+                  <div>
+                    <label for="auto-many-message-body-{{recurringAuto.id}}"> Message: </label>
+                    <textarea id="auto-many-message-body-{{recurringAuto.id}}" class="form-control" type="text-area" name="message" > {{recurringAuto.msg_body}} </textarea>
+                  </div>
+              </div>
+  
+              <div>
+  
+                <label for="auto-many-sel-msg-type-{{recurringAuto.id}}"> Message Type: </label>
+                <input type="hidden" id="auto-many-sel-msg-type-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_type}}">
+
+                <select id="auto-many-sel-msg-type-{{recurringAuto.id}}" class="form-select mb-2" aria-label="Select message type">
+                  <option value="auto-many-def-select-opt"> Select a Message Type </option>
+                    <option value="sms"> Send SMS </option>
+                    <option value="email">Send Email </option>
+                    <option value="both">Send Email and SMS </option>
+                </select>
+  
+                <label for="auto-many-sel-msg-priority-{{recurringAuto.id}}"> Message Priority: </label>
+
+                <input type="hidden" id="auto-many-sel-msg-priority-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_priority}}">
+
+                <select id="auto-many-sel-msg-priority-{{recurringAuto.id}}" class="form-select" aria-label="Select message priority" value="{{recurringAuto.msg_priority}}">
+                  <option value="auto-many-def-select-opt" selected> Select a Message Priority </option>
+                    <option value="emergency"> Send Emergency Message</option>
+                    <option value="social">Send Social Message</option>
+                </select>
+  
+              </div>
+  
+            </div>
+  
+            <div class="d-flex flex-row justify-content-between">
+              <div>
+                <label for="auto-many-sel-msg-frequency-{{recurringAuto.id}}"> Message Frequency: </label>
+
+                <input type="hidden" id="auto-many-sel-msg-frequency-val-{{recurringAuto.id}}" value="many">
+
+                <select id="auto-many-sel-msg-frequency-{{recurringAuto.id}}" class="form-select" aria-label="Select Message Frequency">
+                    <option value="auto-many-def-select-opt"> Select Message Frequency </option>
+                    <option value="once"> One Time </option>
+                    <option value="many"> Recurring </option>
+                </select>
+              </div>
+  
+              <div id="auto-many-send-msg-once-inputs-{{recurringAuto.id}}" class="display-none">
+                <label for="auto-many-send-once-date-{{recurringAuto.id}}">Send Message On: </label>
+                <input id="auto-many-send-once-date-{{recurringAuto.id}}" class="form-control" type="date" >     
+              </div>
+  
+              <div id="auto-many-send-msg-many-inputs-{{recurringAuto.id}}" class="display-none">
+                
+                <input type="hidden" id="auto-many-send-many-date-val-{{recurringAuto.id}}" value="{{recurringAuto.start_date_str}}">
+                <label for="auto-many-send-many-date-{{recurringAuto.id}}">Start Recurring Automation Date: </label>
+                <input id="auto-many-send-many-date-{{recurringAuto.id}}" class="form-control" type="date" />   
+  
+                <label for="auto-many-send-freq-{{recurringAuto.id}}">Message Frequency: </label>
+                <input id="auto-many-send-freq-{{recurringAuto.id}}" class="form-control" type="number" value="1" disabled/>  
+  
+                <input type="hidden" id="auto-many-send-freq-unit-val-{{recurringAuto.id}}" value="{{recurringAuto.send_msg_freq_unit}}">
+                <label for="auto-many-send-freq-unit-{{recurringAuto.id}}"> Every: </label>
+                <select id="auto-many-send-freq-unit-{{recurringAuto.id}}" class="form-select" aria-label="Select Message Frequency">
+                    <option value="day" selected> Day </option>
+                    <option value="week"> Week </option>
+                    <option value="month"> Month </option>
+                    <option value="year"> Year </option>
+                </select>
+              </div>
+  
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button id="auto-many-modal-cancel-{{recurringAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="auto-many-send-msg-{{recurringAuto.id}}" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
 
   {% endblock %}
 

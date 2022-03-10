@@ -4,6 +4,8 @@ from userLoginApp.models import UserInfo
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.urls import reverse
+from dashboard.models import OneTimeAutomation
+from dashboard.models import RecurringAutomation
 
 # Get the User Auth object and the UserInfo Object
 def show_profile_page( request ):
@@ -20,7 +22,12 @@ def show_profile_page( request ):
 
 
 def show_automations( request ):
-    return render(request, 'UserPages/automationpage.html')    
+    oneTimeAutos = OneTimeAutomation.objects.all()
+    recurringAutos = RecurringAutomation.objects.all()
+
+    context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos}
+
+    return render(request, 'UserPages/automationpage.html', context)    
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
