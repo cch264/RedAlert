@@ -126,6 +126,7 @@ var clientMarkerArray = [];
    console.log(`Toggle specific pin.`);
   let markerObj = getMarkerFromArray( clientIDString );
 
+ 
   if(markerObj.selected)
   {
     markerObj.selected = false;
@@ -144,6 +145,8 @@ var clientMarkerArray = [];
   {
     markerObj.markerObj.setIcon( L.Marker.prototype.options.icon  );
   }
+  
+
 
  }
 
@@ -173,6 +176,7 @@ var clientMarkerArray = [];
     {
       //console.log(`resturning markerObj`)
       markerObjToReturn = result;
+      return markerObjToReturn;
     }
   });
 
