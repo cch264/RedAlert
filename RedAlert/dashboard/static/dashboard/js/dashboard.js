@@ -1,3 +1,7 @@
+// GLOBALS
+var selected_client_id_array = [];
+
+var all_clients = JSON.parse( $('#client-json-input').val() );
 
 
 
@@ -188,16 +192,23 @@ window.addEventListener('load', (event) => {
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
+    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
+
 
   
 
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {
+          if( !$('#no-selections-showing').hasClass('display-none') )
+          {
+            $('#no-selections-showing').addClass('display-none');
+          }
             // PREVENT the default behavior of the form. Without this line, ajax wont work right or FUSE.js.
             event.preventDefault();
 
             executeSearch();
+
 
         })
 
@@ -632,11 +643,13 @@ function executeSearch( showAllResults=false )
     search_result_object = executeFuseSearch(  $('#user-search-input').val(), showAllResults );
   }
 
-  console.log( JSON.stringify(search_result_object ));
+  //console.log( JSON.stringify(search_result_object ));
 
   fill_client_results_box( search_result_object );
 
   plotClientSearchresults( search_result_object );
+
+  refreshSelectedClientsAfterSearch(); // after making a search, clients that were selected are not anymore, call this function to select them.
 
 }
 
@@ -668,33 +681,13 @@ function fill_client_results_box( client_list )
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
       if( $(`#selected-sr-${clientID}`).length )
       {
-        deselectClientSearchResult( clientID);
-        /*
-        $(`#selected-sr-${result.item.id}`).remove();
-        $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
-        $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
-
-        refreshSelectedClientsString();
-        */
+        toggleAnyClient( clientID );
       }
       else
       {
-        selectClientSearchResult( clientID );
+        toggleAnyClient( clientID );
 
-        /*
-        // Create html element for each search result the user clicks.
-        let selected_search_result = generateSelectedSearchElement(result);
-
-        // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
-        $("#selected-clients-container").append( selected_search_result );
-
-
-        $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
-
-        $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
-       
-        refreshSelectedClientsString();
-        */
+    
       }
 
     })
@@ -710,6 +703,7 @@ function toggleClientSelection( clientIDInt )
   //console.log(`In toggle`);
   // Check search results div for selected element
   let resultIsSelected = false;
+
   // Get client id as string to compare to data-client-id  attribute on sr elements.
   let clientIDStr = clientIDInt.toString();
 
@@ -726,12 +720,12 @@ function toggleClientSelection( clientIDInt )
         // If client is already selected, deselect it.
         if( $(this).attr('data-selected-client') === "true")
         {
-          //console.log("Deselecting result");
+          console.log("Deselecting result");
           deselectClientSearchResult( clientIDInt );
         }
         else // If client is not selected, select them.
         {
-          //console.log("Selecting result");
+          console.log("Selecting result");
           selectClientSearchResult( clientIDInt );
         }
       }
@@ -749,7 +743,7 @@ function deselectClientSearchResult( clientIDInt )
   $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
   toggleSpecificPin( clientIDInt.toString() );
 
-  refreshSelectedClientsString();
+  refreshSelectedClientsString(clientIDInt, false);
 }
 
 function selectClientSearchResult( clientIDInt )
@@ -774,34 +768,86 @@ function selectClientSearchResult( clientIDInt )
       $(`#sr-${clientIDInt}`).removeClass('sel-sr-color');
       toggleSpecificPin( clientIDInt.toString() );
       $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
-      refreshSelectedClientsString();
+      refreshSelectedClientsString(clientIDInt, false);
 
          });
 
    $(`#sr-${clientIDInt}`).attr('data-selected-client', 'true');
   
-   refreshSelectedClientsString();
+   refreshSelectedClientsString(clientIDInt, true);
 }
 
 function getClientSearchResultObjByID( clientIDInt )
 {
+  console.log(`SEARCHING FOR CLIENT ID IS ${parseInt(clientIDInt)}`);
 
   for( let index = 0; index < search_result_object.length; index++ )
   {
-    if(search_result_object[index].item.id === clientIDInt)
+    if(search_result_object[index].item.id === parseInt(clientIDInt) )
     {
-
       return search_result_object[index];
     }
   }
+  return false;
 
+}
+
+function getClientFromAllClients( clientID )
+{
+  all_clients
+
+  for( let index = 0; index < all_clients.length; index++ )
+  {
+    if(all_clients[index].id === parseInt(clientID) )
+    {
+      return all_clients[index];
+    }
+  }
+  return false;
+}
+
+function refreshSelectedClientsAfterSearch()
+{
+  $('.selected-sr').remove(); // remove all previous search results. 
+
+  let selectedClientID = $("#selected-clients-id-array").val();
+
+  let selectedClientIDArray = selectedClientID.split(",");
+
+  for( let index = 0; index < selectedClientIDArray; index++ )
+  {
+    selectedClientIDArray[index] = parseInt(selectedClientIDArray[index]);
+  }
+
+  //console.log(`SSSelected clients array ${selectedClientIDArray} length is ${selectedClientIDArray.length}`);
+
+  for( let index = 0; index < selectedClientIDArray.length; index++ )
+  {
+    let clientID = selectedClientIDArray[index];
+
+    //console.log(`Searching for client with id ${clientID} `)
+    // Only toggle the client if their element exists on the page.
+    if( getClientSearchResultObjByID(clientID) != false )
+    {
+      toggleAnyClient( parseInt(clientID) );
+    }
+    else
+    {
+      //console.log(`Client not found`)
+    }
+  }
+
+  if(  $('.selected-sr').length != selected_client_id_array.length)
+  {
+    $('#no-selections-showing').removeClass('display-none');
+  }
 }
 
 // Create html element for each search result returned from search.
 function generateSelectedSearchElement(result)
 {
 
-  return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+  return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr selected-sr">
             <div class="d-flex flex-column justify-content-center ps-2">
               <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div>
             </div>
@@ -889,24 +935,41 @@ function invertPlusBtn( elementID)
       }
 }
 
-function refreshSelectedClientsString()
+function refreshSelectedClientsString( clientID, add=true)
 {
-  let clientIdString = "";
-  // Remove all ids from the container
-  $("#selected-clients-id-array").val("");
 
-  $("#selected-clients-container").children().each( function(index) {
-    // Ignore index 0 as it is the input we are storing client ids in so it is not needed
-    if( index > 0)
+  if( add )
+  {
+    // Dont add the selected client if the array already includes the id.
+    if( !selected_client_id_array.includes( clientID.toString() ) )
     {
-      console.log(`ID OF CHILD ${ $(this).attr('id')}`);
-
-      clientIdString += $( this ).data("clientId") + " ";
+      selected_client_id_array.push( clientID.toString() );
     }
-  })
+  }
+  else
+  {
+    if( selected_client_id_array.includes( clientID.toString() ))
+    {
+      let indexOfID = selected_client_id_array.indexOf( clientID.toString() );
+
+      if( indexOfID !== -1)
+      {
+        selected_client_id_array.splice(indexOfID, 1);
+      }
+    }
+  }
+
+  let client_name_str = "";
+
+  for(let index = 0; index < selected_client_id_array.length; index++ )
+  {
+    client_name_str += getClientFromAllClients(selected_client_id_array[index]).name + ", ";
+  }
 
 
-  $("#selected-clients-id-array").val(clientIdString);
+  $('#send-message-header').html('Send Message To: ' + client_name_str);
+
+  $("#selected-clients-id-array").val(selected_client_id_array.toString());
 }
 
 function addListenerToSearchResultScrollBox()

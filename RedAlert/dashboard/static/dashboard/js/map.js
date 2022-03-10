@@ -29,12 +29,11 @@ var finDrawingIcon = L.icon({
   iconAnchor: [5, 51],
 });
 
-var drawMode = true;
-var startingLine = true;
-var latlngs = [];
-var drawStartPoint;
-// a polyline object that is the user drawn shape on the map.
-var userShape;
+
+window.addEventListener('load', (event) => {
+
+  initializeMapControls();
+});
 
 function onMapClick( event ) {
 
@@ -43,7 +42,8 @@ function onMapClick( event ) {
 }
  
  map.on('click', onMapClick);
- 
+
+ https://leafletjs.com/examples/extending/extending-3-controls.html
 
  // Creates a layer group. Basically a container of all of our plotted addresses.
 var clientLayerGroup = L.layerGroup();
@@ -79,7 +79,7 @@ var clientMarkerArray = [];
 
       //toggleClientSelection( result );
       
-      togglePinSelect( result.item.id );
+      toggleAnyClient( result.item.id );
       
     
       
@@ -100,7 +100,7 @@ var clientMarkerArray = [];
  }
 
  // Toggles a pins icon and also toggles search results elements when a pin is clicked.
- function togglePinSelect( clientIDInt )
+ function toggleAnyClient( clientIDInt )
  {
 
    let markerObj = getMarkerFromArray( clientIDInt.toString() );
@@ -126,6 +126,7 @@ var clientMarkerArray = [];
    console.log(`Toggle specific pin.`);
   let markerObj = getMarkerFromArray( clientIDString );
 
+ 
   if(markerObj.selected)
   {
     markerObj.selected = false;
@@ -144,6 +145,8 @@ var clientMarkerArray = [];
   {
     markerObj.markerObj.setIcon( L.Marker.prototype.options.icon  );
   }
+  
+
 
  }
 
@@ -173,12 +176,65 @@ var clientMarkerArray = [];
     {
       //console.log(`resturning markerObj`)
       markerObjToReturn = result;
+      return markerObjToReturn;
     }
   });
 
   return markerObjToReturn;
  }
 
+ function initializeMapControls()
+ {
+   $('#start-drawing-btn').on('click', () => { startDrawingOnMap(); } );
+   $('#stop-drawing-btn').on('click', () => { stopDrawingOnMap(); } );
+   $('#clear-draw-btn').on('click', () => { clearMapDrawings(); })
+ }
+
+ function startDrawingOnMap()
+ {
+  $('#start-drawing-btn').addClass('display-none'); 
+
+  $('#stop-drawing-btn').removeClass('display-none'); 
+  drawMode = true;
+  startingLine = true;
+ }
+
+ function stopDrawingOnMap()
+ {
+  $('#stop-drawing-btn').addClass('display-none'); 
+
+  $('#start-drawing-btn').removeClass('display-none');
+
+  drawMode = false;
+  startingLine = true;
+
+  
+
+  latlngs = [];
+
+  if( !drawingComplete ) // If user stopped drawing mode before finishing drawing, clear polygon.
+  {
+    discardCurrentShape();
+  }
+
+  drawingComplete = false; // User si not drawing anymore, reset this var for next drawing.
+
+  currentUserShape = null;
+  drawStartPoint = null;
+ }
+
+ function clearMapDrawings()
+ {
+   for(let index = 0; index < allPolygons.length; index++)
+   {
+    allPolygons[index].remove();
+   }
+
+   for(let index = 0; index < allStartPoints.length; index++)
+   {
+    allStartPoints[index].remove();
+   }
+ }
 
  /*
  var drawMode = false;
@@ -189,8 +245,19 @@ var clientMarkerArray = [];
   var drawStartPoint;
   // a polyline object that is the user drawn shape on the map.
   // Current shape.
-  var userShape;
+  var currentUserShape;
  */
+
+  var drawMode = false;
+  var startingLine = true;
+  var drawingComplete = false;
+  var latlngs = [];
+  var drawStartPoint;
+  // a polyline object that is the user drawn shape on the map.
+  var currentUserShape;
+  var allPolygons = []; // array of poly LINE objects so we have access to them when we need to clear the map.
+  var allStartPoints = []; // array of all polygon start markers on the map
+
  function drawPolygonOnMap( clickEvent )
  {
     console.log(`Event lat ${clickEvent.latlng.lat} Event long ${clickEvent.latlng.lng}`);
@@ -201,11 +268,13 @@ var clientMarkerArray = [];
       {
         latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
 
-        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        currentUserShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
   
         drawStartPoint = L.marker([clickEvent.latlng.lat, clickEvent.latlng.lng], {icon: startDrawingIcon} ).addTo(map);
         
-        drawStartPoint.on('click', () => { userShape.remove(); completeShape(drawStartPoint, userShape ) });
+        drawStartPoint.on('click', () => { currentUserShape.remove(); completeShape(drawStartPoint, currentUserShape ) });
+
+        allStartPoints.push( drawStartPoint );
   
         startingLine = false;
       }
@@ -214,9 +283,9 @@ var clientMarkerArray = [];
         latlngs.push([clickEvent.latlng.lat, clickEvent.latlng.lng]);
 
         // remove old line since were gonna draw a new one.
-        userShape.remove()
+        currentUserShape.remove()
   
-        userShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        currentUserShape = L.polyline(latlngs, {color: 'red'}).addTo(map);
       }
 
     }
@@ -226,6 +295,10 @@ var clientMarkerArray = [];
  // remove click listener from polyStartMarker 
  function completeShape( polyStartMarker, polyLine )
  {
+  drawingComplete = true;
+
+  console.log(`IN COMPLETE SHAPE FUNC`);
+
   // Push first point onto end of array to compelte the polygon for drawing purposes.
   latlngs.push(latlngs[0])
 
@@ -233,26 +306,35 @@ var clientMarkerArray = [];
 
   // this gets called when the user completes their shape, so complete the last line of their shape for them.
   // Push the first point onto the array so we have a complete polygon.
-  L.polyline(latlngs, {color: 'green'}).addTo(map);
+  let newPolyLine = L.polyline(latlngs, {color: '#11970D78'})
+
+  newPolyLine.addTo(map);
+
+  //newPolyLine.setOpacity(0.5)
+
+  allPolygons.push(newPolyLine); // Add the new polygon to our global array.
 
   polyStartMarker.setIcon( finDrawingIcon );
 
-  polyStartMarker.off();
+  polyStartMarker.setOpacity(0.5);
+
+  polyStartMarker.clearAllEventListeners();
 
   latlngs.pop()
    
+  stopDrawingOnMap();
+
   calculatePointsInPoly();
 
-   
+ }
 
-  //latlngs = [];// reset coordinate array.
-
-  drawMode = false;
-
-  startingLine = true;
-
-  
-
+ function discardCurrentShape()
+ {
+  if( currentUserShape != null)
+  {
+    currentUserShape.remove();
+    drawStartPoint.remove();
+  }
  }
 
  function calculatePointsInPoly()
@@ -269,7 +351,7 @@ var clientMarkerArray = [];
     let clientLatLong = clientMarkerObj.getLatLng();
 
     let clientIsInShape = robustPointInPolygon(latlngs, [ clientLatLong.lat, clientLatLong.lng] );
-    console.log(`Client ID: ${ clientMarkerInfo.clientID} In user poly ${clientIsInShape } `)
+    //console.log(`Client ID: ${ clientMarkerInfo.clientID} In user poly ${clientIsInShape } `)
     
 
     // Robust point in polygon returns a -1 if the point is in the polygon, 0 if the point is on the polygon boundry, and 1 if the point is outside the shape.
@@ -296,10 +378,6 @@ var clientMarkerArray = [];
 window.addEventListener('load', (event) => {
   console.log("Found map js file!");
 }); 
-
-
-
-
 
 
 

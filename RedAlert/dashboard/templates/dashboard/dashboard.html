@@ -160,11 +160,21 @@
 
           <div class="row">
             <!-- Map needs to be inside a NON FLEX box element inorder to change the width. -->
-            <div >
+            <div>
               <div class="col" id="client-map">
                 Map Section
               </div>
             </div>
+
+            <div id="map-btn-container" class="d-flex justify-content-center">
+              <button id="start-drawing-btn" class="btn" type="button"> <i class="fa-solid fa-pencil"></i> </button>
+              
+              <button id="stop-drawing-btn" class="btn btn-primary display-none" type="button"> <i class="fa-solid fa-ban"></i></i> </button>
+
+              <button id="clear-draw-btn" class="btn btn-primary" type="button"> <i class="fa-solid fa-arrows-rotate"></i></i> </button>
+
+            </div>
+
           </div>
 
           <div class="row">
@@ -207,7 +217,7 @@
 
                   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                    <h4> Send Message</h4>
+                    <h4 id="send-message-header"> Send Message To: </h4>
 
                     <div id="notif-tab-1" class="notif-tab px-3 py-3">
 
@@ -253,6 +263,8 @@
                       <h3> Selected Clients </h3>
                       <div id="selected-clients-container">
                         <input id="selected-clients-id-array" type="hidden">
+
+                        <button id="no-selections-showing" class="btn btn-primary display-none"> Don't worry your selections are still here. Click here to show all your selections.</button>
                       </div>
 
                     </div>
@@ -341,6 +353,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
     <script src="{% static 'dashboard/js/pointinpoly.js' %}"></script>
