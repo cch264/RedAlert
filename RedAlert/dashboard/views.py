@@ -226,8 +226,7 @@ def send_message( request ):
     END_MSG = "Do not reply to this alert"
 
     # correctly format selected clients array
-    selected_clients = selected_clients.split(" ")
-    del selected_clients[-1]
+    selected_clients = selected_clients.split(",")
 
     # correctly format message body
     message_body = message_body.strip()
