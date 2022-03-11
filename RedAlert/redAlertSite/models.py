@@ -16,6 +16,7 @@ class Client( models.Model ):
     # Dont automatically assign the current date to this field apon user creation.
     birthdate = models.DateField( auto_now= False )
     gender = models.CharField( max_length=5 )
+    # Describes whether the client should receive casual or emergency notifications or all notifications.
     notification_status = models.CharField( max_length=200 )
     email = models.CharField( max_length=200 )
     # Added my number as default for now for testing. Change this number and makemigrations to change to a diff number.
