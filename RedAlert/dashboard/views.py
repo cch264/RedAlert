@@ -9,7 +9,6 @@ import json
 import random
 import string
 import datetime
-from datetime import datetime
 from sms import send_sms
 from django.core.mail import send_mail
 from .models import OneTimeAutomation
@@ -147,7 +146,8 @@ def create_client_list():
     policies = ['fire auto', 'fire', 'fire boat home', 'home', 'auto fire home', 'auto', 'boat home', 'home fire boat', 'pet home fire', 'pet', 'pet fire','boat fire', 'boat']
     gender = ["M","F"]
     notification_status =['all','emergency','none']
-    emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
+    #emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
+    emails = ["cch264@nau.edu", "npn24@nau.edu", "sng235@nau.edu", "mkd97@nau.edu"]
 
 
 
@@ -168,8 +168,9 @@ def create_client_list():
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
         a_client.lat = longLat[index][0]
         a_client.long = longLat[index][1]
+        a_client.email = emails[random.randint(0, len(emails) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        a_client.email = "npn24@nau.edu"
+       # a_client.email = "npn24@nau.edu"
         #a_client.phone = "4803690030"
         a_client.phone = "13096202335"
 
