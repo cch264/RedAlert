@@ -1,7 +1,7 @@
 from django.shortcuts import render
 # Import the userinfo model object so we can use it here.
 from userLoginApp.models import UserInfo
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
@@ -83,6 +83,45 @@ def removeUserAuthData( dictTuple ):
         return False
     else:
         return True
+
+def update_automation( request ):
+
+    print("Request Dictionary is: {}".format( request.POST ))
+    response = {'Success': 'True'}
+
+    
+
+    
+    if request.POST['message_freq'] == "many":
+        newRecurringAuto = RecurringAutomation.objects.get(id=request.POST['auto_id'] )
+        newRecurringAuto.name = request.POST['auto_name'] 
+        newRecurringAuto.start_date = request.POST['send_msg_many_start_date']
+        newRecurringAuto.start_date_str = request.POST['send_msg_many_start_date']
+        newRecurringAuto.msg_body = request.POST['message_body']
+        newRecurringAuto.msg_sub = request.POST['message_subject']
+        newRecurringAuto.msg_type = request.POST['message_type']
+        newRecurringAuto.msg_priority = request.POST['message_priority']
+        newRecurringAuto.send_msg_freq_unit = request.POST['send_msg_many_unit']
+        newRecurringAuto.save()
+
+         #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
+    else:
+
+        newOneTimeAuto = OneTimeAutomation.objects.get(id=request.POST['auto_id'] )
+
+        newOneTimeAuto.name = request.POST['auto_name'] 
+        newOneTimeAuto.date = request.POST['send_msg_once_date']
+        newOneTimeAuto.date_str = request.POST['send_msg_once_date']
+        newOneTimeAuto.msg_body = request.POST['message_body']
+        newOneTimeAuto.msg_sub = request.POST['message_subject']
+        newOneTimeAuto.msg_type = request.POST['message_type']
+        newOneTimeAuto.msg_priority =  request.POST['message_priority']
+        newOneTimeAuto.save()
+
+    
+    
+    return JsonResponse(response)
+
 
 
 

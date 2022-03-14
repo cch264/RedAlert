@@ -474,18 +474,19 @@ function restoreRecurModalInputs( autoID )
 function updateOneTimeAutomation( autoID )
 {   
     let autoData = {
-        auto_name: currentOneTimeAuto.name,
-        message_subject: currentOneTimeAuto.sub,
-        message_body: currentOneTimeAuto.msg,
-        message_type: currentOneTimeAuto.type,
-        message_priority: currentOneTimeAuto.priority
+        auto_id: autoID,
+        auto_name: $(`#auto-name-${autoID}`).val(),
+        message_subject: $(`#auto-message-subject-${autoID}`).val(),
+        message_body: $(`#auto-message-body-${autoID}`).val(),
+        message_type: $(`#auto-sel-msg-type-${autoID}`).val(),
+        message_priority: $(`#auto-sel-msg-priority-${autoID}`).val()
      }
 
   
     autoData = Object.assign(
         autoData,
         {message_freq: "once"},
-        {send_msg_once_date: send_date }
+        {send_msg_once_date: $(`#auto-send-once-date-${autoID}`).val() }
         )
 
 
@@ -493,7 +494,7 @@ function updateOneTimeAutomation( autoID )
 
 
 
-        url:'/dashboard/update_automation/',
+        url:'/user_pages/update_automation/',
         // Type of Request
         method: "POST",
         // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
@@ -516,31 +517,32 @@ function updateOneTimeAutomation( autoID )
         }
     });
 }
-
+        
 function updateRecurringAutomation( autoID )
 {   
     let autoData = {
-        auto_name:  currentRecurringAuto.name,
-        message_subject: currentRecurringAuto.sub,
-        message_body: currentRecurringAuto.msg,
-        message_type: currentRecurringAuto.type,
-        message_priority: currentRecurringAuto.priority
+        auto_id: autoID,
+        auto_name:  $(`#auto-many-name-${autoID}`).val(),
+        message_subject: $(`#auto-many-message-subject-${autoID}`).val(),
+        message_body: $(`#auto-many-message-body-${autoID}`).val(),
+        message_type: $(`#auto-many-sel-msg-type-${autoID}`).val(),
+        message_priority: $(`#auto-many-sel-msg-priority-${autoID}`).val()
      }
 
 
     autoData = Object.assign(
         autoData,
         {message_freq: "many"},
-        {send_msg_many_start_date: currentRecurringAuto.start_date },
+        {send_msg_many_start_date:  $(`#auto-many-send-many-date-${autoID}`).val() },
         {send_msg_many_freq: 1 },
-        {send_msg_many_unit:  currentRecurringAuto.unit }
+        {send_msg_many_unit: $(`#auto-many-send-freq-unit-${autoID}`).val() }
     );
        
     
 
     $.ajax({
 
-        url:'/dashboard/update_automation/',
+        url:'/user_pages/update_automation/',
         // Type of Request
         method: "POST",
         // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
