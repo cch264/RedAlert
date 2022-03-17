@@ -123,6 +123,33 @@ def update_automation( request ):
     return JsonResponse(response)
 
 
+def delete_automation( request ):
+
+    if request.POST['type'] == "many":
+        automationObj = RecurringAutomation.objects.get(id=request.POST['autoID'] )
+
+        automationObj.delete()
+
+        response = {'Success': 'Deleted recurring automation'}
+
+        return JsonResponse(response)
+
+    elif request.POST['type'] == "one":
+        oneTimeAuto = OneTimeAutomation.objects.get(id=request.POST['autoID'] )
+
+        oneTimeAuto.delete()
+
+        response = {'Success': 'Deleted One Time Automation'}
+
+        return JsonResponse(response)
+
+    else:
+        print("Delete Automation: Auto type not found.")
+
+        response = {'Failure': 'Failed to delete automation'}
+
+        return JsonResponse(response)
+
 
 
 

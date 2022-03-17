@@ -232,6 +232,7 @@ function toggleOneTimeEditButton( autoID )
 
         $(`#auto-modal-discard-changes-${autoID}`).show();
         $(`#auto-save-changes-${autoID}`).show();
+        $(`#auto-delete-${autoID}`).show();
     }
     else
     {
@@ -240,6 +241,7 @@ function toggleOneTimeEditButton( autoID )
 
         $(`#auto-modal-discard-changes-${autoID}`).hide();
         $(`#auto-save-changes-${autoID}`).hide();
+        $(`#auto-delete-${autoID}`).hide();
     }
 }
 
@@ -249,6 +251,7 @@ function assignOneTimeModalButtonListeners( autoID )
     $(`#auto-modal-edit-${autoID}`).on('click', () => { editOneTimeModal(autoID); toggleOneTimeEditButton(autoID) } );
     $(`#auto-modal-discard-changes-${autoID}`).on('click', () => { stopEditingOneTimeModal( autoID )} );
     $(`#auto-save-changes-${autoID}`).on('click', () => { updateOneTimeAutomation( autoID ) } );
+    $(`#auto-delete-${autoID}`).on('click', ()=> {deleteOneTimeAutomation(autoID)} );
 }
 
 
@@ -267,6 +270,18 @@ function restoreOneTimeModalInputs( autoID )
 
     currentOneTimeAuto = null;
 
+}
+
+function deleteOneTimeAutomation( autoID )
+{
+    let confirmDelete = confirm("Are you sure you would like to delete this automation?");
+
+    if( confirmDelete )
+    {
+        $(`#one-time-auto-${autoID}`).modal('hide');
+        $(`#one-time-auto-li-${autoID}`).remove();
+        deleteAutomation(autoID, "one");
+    }
 }
 
 
@@ -429,6 +444,7 @@ function toggleRecurrEditButton( autoID )
 
         $(`#auto-many-modal-discard-changes-${autoID}`).show();
         $(`#auto-many-save-changes-${autoID}`).show();
+        $(`#auto-many-delete-${autoID}`).show();
     }
     else
     {
@@ -437,6 +453,7 @@ function toggleRecurrEditButton( autoID )
 
         $(`#auto-many-modal-discard-changes-${autoID}`).hide();
         $(`#auto-many-save-changes-${autoID}`).hide();
+        $(`#auto-many-delete-${autoID}`).hide();
     }
 }
 
@@ -446,6 +463,7 @@ function assignRecurrModalButtonListeners( autoID )
     $(`#auto-many-edit-auto-${autoID}`).on('click', () => { editRecurModal(autoID); toggleRecurrEditButton(autoID) } );
     $(`#auto-many-modal-discard-changes-${autoID}`).on('click', () => { stopEditingRecurModal( autoID )} );
     $(`#auto-many-save-changes-${autoID}`).on('click', () => { updateRecurringAutomation( autoID ) } );
+    $(`#auto-many-delete-${autoID}`).on('click', ()=> {deleteRecurringAutomation(autoID)} );
 }
 
 
@@ -466,10 +484,48 @@ function restoreRecurModalInputs( autoID )
 
 }
 
+function deleteRecurringAutomation(autoID)
+{
+    let confirmDelete = confirm("Are you sure you would like to delete this automation?");
 
-//////////////////////////// END Editing Recurring Automation Code Below ///////////////////////////////////////
+    if( confirmDelete )
+    {
+        $(`#recurring-auto-${autoID}`).modal('hide');
+        $(`#recurring-auto-li-${autoID}`).remove();
+        deleteAutomation(autoID, "many");
+    }
+}
 
 
+//////////////////////////// END Editing Recurring Automation Code ///////////////////////////////////////
+
+// Type can be either many or one to denote what type of automation to delete.
+function deleteAutomation(autoID, type)
+{
+    $.ajax({
+        url:'/user_pages/delete_automation/',
+        // Type of Request
+        method: "POST",
+        // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+        // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+        headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
+        data: {autoID: autoID, type: type},
+
+        // Function to call when to django returns a response to our ajax request.
+        success: function (data) {
+            //var x = JSON.stringify(data);
+            console.log("AJAX DELETE AUTOMATION WAS A SUCCESS " + data['Success']);
+        },
+        // Error handling LOWKEY USELESS
+        error: function ( jqXHR, textStatus, errorThrown ) {
+            console.log(`Error WITH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+            console.log('Error - ' + errorMessage);
+        }
+    });
+}
 
 function updateOneTimeAutomation( autoID )
 {   

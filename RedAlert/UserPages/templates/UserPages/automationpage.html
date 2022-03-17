@@ -23,11 +23,11 @@
             <ul id="automation-list" class="list-group">
 
               {% for oneTimeAuto in oneTimeAutos%}
-                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
+                <li class="list-group-item" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
               {% endfor %}
 
               {% for recurringAuto in recurringAutos %}
-                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
+                <li class="list-group-item" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
               {% endfor %}
             </ul>
 
@@ -161,8 +161,16 @@
             <button id="auto-modal-close-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button id="auto-modal-edit-{{oneTimeAuto.id}}" class="btn btn-primary"> Edit </button>
 
-            <button id="auto-modal-discard-changes-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-            <button id="auto-save-changes-{{oneTimeAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+            <div class="d-flex justify-content-between w-100">
+              <div>
+                <button id="auto-delete-{{oneTimeAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+              </div>
+
+              <div>
+                <button id="auto-modal-discard-changes-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
+                <button id="auto-save-changes-{{oneTimeAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -270,8 +278,16 @@
             <button id="auto-many-modal-close-{{recurringAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button id="auto-many-edit-auto-{{recurringAuto.id}}" class="btn btn-primary"> Edit </button>
 
-            <button id="auto-many-modal-discard-changes-{{recurringAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-            <button id="auto-many-save-changes-{{recurringAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+            <div class="d-flex justify-content-between w-100">
+              <div>
+                <button id="auto-many-delete-{{recurringAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+              </div>
+
+              <div>
+                <button id="auto-many-modal-discard-changes-{{recurringAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
+                <button id="auto-many-save-changes-{{recurringAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
