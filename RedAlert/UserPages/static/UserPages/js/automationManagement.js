@@ -281,6 +281,7 @@ function deleteOneTimeAutomation( autoID )
         $(`#one-time-auto-${autoID}`).modal('hide');
         $(`#one-time-auto-li-${autoID}`).remove();
         deleteAutomation(autoID, "one");
+        createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
     }
 }
 
@@ -493,6 +494,8 @@ function deleteRecurringAutomation(autoID)
         $(`#recurring-auto-${autoID}`).modal('hide');
         $(`#recurring-auto-li-${autoID}`).remove();
         deleteAutomation(autoID, "many");
+
+        createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
     }
 }
 
@@ -525,6 +528,8 @@ function deleteAutomation(autoID, type)
             console.log('Error - ' + errorMessage);
         }
     });
+
+    
 }
 
 function updateOneTimeAutomation( autoID )
