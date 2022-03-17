@@ -1,3 +1,7 @@
+// GLOBALS
+var selected_client_id_array = [];
+
+var all_clients = JSON.parse( $('#client-json-input').val() );
 
 
 
@@ -17,6 +21,8 @@ var search_all_keys = [
   "notificatoin_status",
   "email"
 ]
+
+var search_result_object;
 
 var search_keys = search_all_keys;
 
@@ -46,7 +52,7 @@ function executeFuseSearch( user_pattern, showAllResults=false )
         // Specifies keys in your json to search by.
         keys: search_keys
       };
-    
+
       //console.log(`JSON STRING ${ $('#client-json-input').val() }`);
 
       //console.log(`JSON  ${ JSON.parse( $('#client-json-input').val()) }`);
@@ -56,9 +62,8 @@ function executeFuseSearch( user_pattern, showAllResults=false )
       search_data_json = JSON.parse( $('#client-json-input').val());
 
       // pass the client json to the search function.
-
       const fuse = new Fuse( search_data_json, options);
-      
+
       // Change the pattern
       const pattern = ""
 
@@ -67,7 +72,7 @@ function executeFuseSearch( user_pattern, showAllResults=false )
       {
         //console.log("Showing all search results");
         unfiltered_search_results = fuse.search(" ");
-  
+
         filtered_search = filterSearchResults(unfiltered_search_results);
 
         // Filter the entire array and do not use a query to search.
@@ -77,13 +82,13 @@ function executeFuseSearch( user_pattern, showAllResults=false )
       {
         // Filter the results using the json array as the first paramter.
         unfiltered_search_results = fuse.search( user_pattern );
-  
+
         filtered_search = filterSearchResults(unfiltered_search_results);
-  
+
         return filtered_search;
       }
-      
-     
+
+
 }
 
 function filterSearchResults( searchResultJSON )
@@ -151,7 +156,7 @@ function filterSearchResults( searchResultJSON )
         // The searchKeysAndRangePatterns Array currently will only even contain one range, the age range so we dont need a loop here.
         searchResultJSON = searchResultJSON.filter( result =>
           {
-         
+
             let lowerUpperArray= innerArray[1].split('-');
 
             let lowerBound = parseInt(lowerUpperArray[0]);
@@ -168,7 +173,7 @@ function filterSearchResults( searchResultJSON )
 
     }
   }
-  
+
 
 
   return searchResultJSON;
@@ -183,20 +188,27 @@ window.addEventListener('load', (event) => {
 
     // When the page loads show all search results.
     executeSearch(true);
-    
+
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
+    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
 
-    console.log( `Point in poly ${ robustPointInPolygon([[1,0],[1,5], [8,0]], [2,1] ) } ` );
+
+  
 
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {
+          if( !$('#no-selections-showing').hasClass('display-none') )
+          {
+            $('#no-selections-showing').addClass('display-none');
+          }
             // PREVENT the default behavior of the form. Without this line, ajax wont work right or FUSE.js.
             event.preventDefault();
 
             executeSearch();
+
 
         })
 
@@ -213,9 +225,65 @@ window.addEventListener('load', (event) => {
 
   });
 
-  function assignSearchFilterListeners()
-  {
+// Event listener for obtaining message data when a user clicks "Send Message"
+var btn = document.querySelector('#send-msg');
 
+btn.addEventListener('click', (event) => {
+  send_client_notification();
+})
+
+function send_client_notification()
+{
+  let message_subject = $('#message-subject');
+  message_subject = message_subject.val();
+
+  let message_body = $('#message-body');
+  message_body = message_body.val();
+
+  let message_type = $('#sel-msg-type option:selected');
+  message_type = message_type.val();
+
+  let message_priority = $('#sel-msg-priority option:selected');
+  message_priority = message_priority.val();
+
+  let selected_clients = $('#selected-clients-id-array');
+  selected_clients = selected_clients.val();
+
+  console.log(`Subject: ${message_subject}\n Message: ${message_body}\n
+    Message Type: ${message_type}\n Message Priority: ${message_priority}\n
+    Selected Clients: ${selected_clients}\n`);
+
+  $.ajax({
+
+
+      url:'/dashboard/send_message/',
+      // Type of Request
+      method: "POST",
+      // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+      // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+      headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+      // Pass data to the django function
+      data: {message_subject: message_subject,
+      message_body: message_body, message_type: message_type, message_priority: message_priority,
+      selected_clients: selected_clients },
+
+      // Function to call when to django returns a response to our ajax request.
+      success: function (data) {
+          //var x = JSON.stringify(data);
+          console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
+      },
+      // Error handling LOWKEY USELESS
+      error: function ( jqXHR, textStatus, errorThrown ) {
+          console.log(`Error WITH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+          var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+          console.log('Error - ' + errorMessage);
+      }
+  });
+}
+
+function assignSearchFilterListeners()
+{
     $("[id$='-filter-pattern']").each( function()
     {
       //console.log(`Data is a range: ${ $(this).data('isRange') }`);
@@ -228,7 +296,7 @@ window.addEventListener('load', (event) => {
   // this object auto passed by the .on method.
   function filterPatternClickEvent()
   {
-    
+
       // Check if user selected or deselected the filter
       if( $(this).is(":checked") )
       {
@@ -248,7 +316,7 @@ window.addEventListener('load', (event) => {
         //console.log("is NOT Checked");
         // If user deselected the filter, remove the filter pattern from the array. Check if any other filters are selected based on selected inputs on the page, do not use array to confirm this.
         updateFilterArray( addFilter=false, $(this).data('queryKey'), $(this).data('queryPattern'));
-        
+
         updateAppliedFiltersDisplay();
 
         // Execute a search for all clients but filter the results according to the filter that was removed.
@@ -281,7 +349,7 @@ window.addEventListener('load', (event) => {
 
         // Execute a search for all clients but filter the results according to the filter removed.
         executeSearch(true);
-        
+
         // Update the filter display since the user entered a new range
         updateAppliedFiltersDisplay();
 
@@ -321,7 +389,7 @@ window.addEventListener('load', (event) => {
 
     if( !range1IsAllNums )
     {
-      
+
       $(rangeElem1).attr('class', 'invalid-age-range age-filter-input');
       console.log("Range 1 invalid cus letter")
     }
@@ -393,7 +461,7 @@ window.addEventListener('load', (event) => {
 
     else
     {
-      
+
       // Start 1 because index 0 just holds a boolean
       // Remove applied filters.
       for( let filterIndex = 1; filterIndex < searchKeysAndPatterns.length; filterIndex++ )
@@ -405,7 +473,7 @@ window.addEventListener('load', (event) => {
 
         if( searchKeyInnerArray[0] === queryKey )
         {
-          // Use filter to remove any elements that are equal to the query pattern. 
+          // Use filter to remove any elements that are equal to the query pattern.
           searchKeysAndPatterns[filterIndex] = searchKeyInnerArray.filter( currentFilter => {
                 return currentFilter != queryPattern;
               }
@@ -488,7 +556,7 @@ window.addEventListener('load', (event) => {
           {
             console.log(`Inner filter array ${innerFilterArray}`);
             console.log(`Inner index ${innerIndex}`);
-  
+
             if( innerIndex == 0)
             {
               appliedFiltersStr += "<strong>" + innerFilterArray[innerIndex].trim().replace(/^\w/, (c) => c.toUpperCase()) + "</strong>: ";
@@ -557,12 +625,12 @@ window.addEventListener('load', (event) => {
 
   }
 
-  
 
 
-function executeSearch( showAllResults=false ) 
+
+function executeSearch( showAllResults=false )
 {
-  //console.log("Search keys is " + search_keys); 
+  //console.log("Search keys is " + search_keys);
 
   let userInput =  $('#user-search-input').val();
 
@@ -575,11 +643,13 @@ function executeSearch( showAllResults=false )
     search_result_object = executeFuseSearch(  $('#user-search-input').val(), showAllResults );
   }
 
-  console.log( JSON.stringify(search_result_object ));
+  //console.log( JSON.stringify(search_result_object ));
 
   fill_client_results_box( search_result_object );
 
   plotClientSearchresults( search_result_object );
+
+  refreshSelectedClientsAfterSearch(); // after making a search, clients that were selected are not anymore, call this function to select them.
 
 }
 
@@ -601,42 +671,23 @@ function fill_client_results_box( client_list )
 
     $('#search-results-container').append( element_to_append );
 
-    // Get the div that contains the search result.
-    $(`#sr-btn-${result.item.id}`).on('click', (event) => {
+    let clientID = result.item.id;
 
-      
+    // Get the div that contains the search result.
+    $(`#sr-btn-${clientID}`).on('click', (event) => {
+  
       // DESELECT A PREVIOUSLY SELECTED CLIENT SEARCH RESULT
       // If the client search result already exist in the selected clients container, remove it.
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
-      if( $(`#selected-sr-${result.item.id}`).length )
+      if( $(`#selected-sr-${clientID}`).length )
       {
-        deselectClientSearchResult( result);
-        /*
-        $(`#selected-sr-${result.item.id}`).remove();
-        $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
-        $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
-
-        refreshSelectedClientsString();
-        */
+        toggleAnyClient( clientID );
       }
       else
       {
-        selectClientSearchResult( result );
+        toggleAnyClient( clientID );
 
-        /*
-        // Create html element for each search result the user clicks.
-        let selected_search_result = generateSelectedSearchElement(result);
-
-        // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
-        $("#selected-clients-container").append( selected_search_result );
-
-
-        $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){ $(`#selected-sr-${result.item.id}`).remove(); invertPlusBtn( `#sr-btn-${result.item.id}`); $(`#sr-${result.item.id}`).removeClass('sel-sr-color'); refreshSelectedClientsString(); });
-
-        $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
-       
-        refreshSelectedClientsString();
-        */
+    
       }
 
     })
@@ -647,20 +698,21 @@ function fill_client_results_box( client_list )
 }
 
 // Takes a result item, toggles the result from selected to unselected or vice versa.
-function toggleClientSelection( client_result )
+function toggleClientSelection( clientIDInt )
 {
   //console.log(`In toggle`);
   // Check search results div for selected element
   let resultIsSelected = false;
+
   // Get client id as string to compare to data-client-id  attribute on sr elements.
-  let clientID = client_result.item.id.toString();
+  let clientIDStr = clientIDInt.toString();
 
   $('#search-results-container').children().each( function(){
 
       //console.log(`Elements client ID:${$(this).data('clientId')}, Result ID:${clientID}: Comparison: ${ $(this).data('clientId').toString() === clientID }`);
 
       // Get the client search result element that has the same client id as the client we are selected or deselecting.
-      if( $(this).data('clientId').toString() === clientID )
+      if( $(this).data('clientId').toString() === clientIDStr )
       {
 
         //console.log(`Found matching element. Client selected: ${ $(this).attr('data-selected-client') } Element id is ${$(this).attr('id') } Client ID is: ${$(this).data('clientId')}`);
@@ -668,13 +720,13 @@ function toggleClientSelection( client_result )
         // If client is already selected, deselect it.
         if( $(this).attr('data-selected-client') === "true")
         {
-          //console.log("Deselecting result");
-          deselectClientSearchResult( client_result );
+          console.log("Deselecting result");
+          deselectClientSearchResult( clientIDInt );
         }
         else // If client is not selected, select them.
         {
-          //console.log("Selecting result");
-          selectClientSearchResult( client_result );
+          console.log("Selecting result");
+          selectClientSearchResult( clientIDInt );
         }
       }
   });
@@ -683,61 +735,127 @@ function toggleClientSelection( client_result )
 }
 
 // Deselects a client search result but does not affect the map.
-function deselectClientSearchResult( result )
+function deselectClientSearchResult( clientIDInt )
 {
-  $(`#selected-sr-${result.item.id}`).remove();
-  $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
-  invertPlusBtn( `#sr-btn-${result.item.id}` );
-  $(`#sr-${result.item.id}`).attr('data-selected-client', 'false');
-  toggleSpecificPin( result.item.id.toString() );
+  $(`#selected-sr-${clientIDInt}`).remove();
+  $(`#sr-${clientIDInt}`).removeClass('sel-sr-color');
+  invertPlusBtn( `#sr-btn-${clientIDInt}` );
+  $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
+  toggleSpecificPin( clientIDInt.toString() );
 
-  refreshSelectedClientsString();
+  refreshSelectedClientsString(clientIDInt, false);
 }
 
-function selectClientSearchResult( result )
+function selectClientSearchResult( clientIDInt )
 {
-    $(`#sr-${result.item.id}`).addClass('sel-sr-color');
+    $(`#sr-${clientIDInt}`).addClass('sel-sr-color');
 
-   invertPlusBtn( `#sr-btn-${result.item.id}` );
+   invertPlusBtn( `#sr-btn-${clientIDInt}` );
 
-   toggleSpecificPin( result.item.id.toString() );
+   toggleSpecificPin( clientIDInt.toString() );
 
    // Create html element for each search result the user clicks.
-   let selected_search_result = generateSelectedSearchElement(result);
+   let selected_search_result = generateSelectedSearchElement( getClientSearchResultObjByID( clientIDInt ) );
 
    // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
    $("#selected-clients-container").append( selected_search_result );
 
 
    // This is the remove button that is located on the element appened to the selected clients container at the bottom of the page.
-   $(`#sel-sr-btn-${result.item.id}`).on('click', function(event){
-      $(`#selected-sr-${result.item.id}`).remove();
-      invertPlusBtn( `#sr-btn-${result.item.id}`);
-      $(`#sr-${result.item.id}`).removeClass('sel-sr-color');
-      toggleSpecificPin( result.item.id.toString() );
-      refreshSelectedClientsString();
+   $(`#sel-sr-btn-${clientIDInt}`).on('click', function(event){
+      $(`#selected-sr-${clientIDInt}`).remove();
+      invertPlusBtn( `#sr-btn-${clientIDInt}`);
+      $(`#sr-${clientIDInt}`).removeClass('sel-sr-color');
+      toggleSpecificPin( clientIDInt.toString() );
+      $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
+      refreshSelectedClientsString(clientIDInt, false);
 
          });
 
-   $(`#sr-${result.item.id}`).attr('data-selected-client', 'true');
+   $(`#sr-${clientIDInt}`).attr('data-selected-client', 'true');
   
-   refreshSelectedClientsString();
+   refreshSelectedClientsString(clientIDInt, true);
+}
+
+function getClientSearchResultObjByID( clientIDInt )
+{
+  console.log(`SEARCHING FOR CLIENT ID IS ${parseInt(clientIDInt)}`);
+
+  for( let index = 0; index < search_result_object.length; index++ )
+  {
+    if(search_result_object[index].item.id === parseInt(clientIDInt) )
+    {
+      return search_result_object[index];
+    }
+  }
+  return false;
+
+}
+
+function getClientFromAllClients( clientID )
+{
+  all_clients
+
+  for( let index = 0; index < all_clients.length; index++ )
+  {
+    if(all_clients[index].id === parseInt(clientID) )
+    {
+      return all_clients[index];
+    }
+  }
+  return false;
+}
+
+function refreshSelectedClientsAfterSearch()
+{
+  $('.selected-sr').remove(); // remove all previous search results. 
+
+  let selectedClientID = $("#selected-clients-id-array").val();
+
+  let selectedClientIDArray = selectedClientID.split(",");
+
+  for( let index = 0; index < selectedClientIDArray; index++ )
+  {
+    selectedClientIDArray[index] = parseInt(selectedClientIDArray[index]);
+  }
+
+  //console.log(`SSSelected clients array ${selectedClientIDArray} length is ${selectedClientIDArray.length}`);
+
+  for( let index = 0; index < selectedClientIDArray.length; index++ )
+  {
+    let clientID = selectedClientIDArray[index];
+
+    // Only toggle the client if their element exists on the page.
+    if( getClientSearchResultObjByID(clientID) != false )
+    {
+      toggleAnyClient( parseInt(clientID) );
+    }
+    else
+    {
+      //console.log(`Client not found`)
+    }
+  }
+
+  if(  $('.selected-sr').length != selected_client_id_array.length)
+  {
+    $('#no-selections-showing').removeClass('display-none');
+  }
 }
 
 // Create html element for each search result returned from search.
 function generateSelectedSearchElement(result)
 {
 
-  return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
+  return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr selected-sr">
             <div class="d-flex flex-column justify-content-center ps-2">
-              <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div> 
+              <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div>
             </div>
-              
+
             <div class="container">
 
               <div class="row mb-1">
                 <div class="col"> Name: ${result.item.name} </div>
-                <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                <div class="col"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div>
                 <div class="col"> Policies: ${result.item.policies}</div>
               </div>
 
@@ -762,17 +880,16 @@ function generateSelectedSearchElement(result)
 // Create html element for each search result returned from search.
 function generateSearchElement(result)
 {
-  
   return `<div id="sr-${result.item.id}" data-selected-client="false" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
               <div class="d-flex flex-column justify-content-center ps-2">
                 <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
               </div>
-                
+
               <div class="container">
 
                 <div class="row mb-1">
                   <div class="col"> Name: ${result.item.name} </div>
-                  <div class="col-6"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div> 
+                  <div class="col-6"> Address: ${result.item.unit_num} ${result.item.street} ${result.item.city}, ${result.item.state}, ${result.item.zip_code}</div>
                   <div class="col"> Policies: ${result.item.policies}</div>
                 </div>
 
@@ -817,24 +934,41 @@ function invertPlusBtn( elementID)
       }
 }
 
-function refreshSelectedClientsString()
+function refreshSelectedClientsString( clientID, add=true)
 {
-  let clientIdString = "";
-  // Remove all ids from the container
-  $("#selected-clients-id-array").val("");
 
-  $("#selected-clients-container").children().each( function(index) {
-    // Ignore index 0 as it is the input we are storing client ids in so it is not needed
-    if( index > 0)
+  if( add )
+  {
+    // Dont add the selected client if the array already includes the id.
+    if( !selected_client_id_array.includes( clientID.toString() ) )
     {
-      console.log(`ID OF CHILD ${ $(this).attr('id')}`);
-
-      clientIdString += $( this ).data("clientId") + " ";
+      selected_client_id_array.push( clientID.toString() );
     }
-  })
+  }
+  else
+  {
+    if( selected_client_id_array.includes( clientID.toString() ))
+    {
+      let indexOfID = selected_client_id_array.indexOf( clientID.toString() );
+
+      if( indexOfID !== -1)
+      {
+        selected_client_id_array.splice(indexOfID, 1);
+      }
+    }
+  }
+
+  let client_name_str = "";
+
+  for(let index = 0; index < selected_client_id_array.length; index++ )
+  {
+    client_name_str += getClientFromAllClients(selected_client_id_array[index]).name + ", ";
+  }
 
 
-  $("#selected-clients-id-array").val(clientIdString);
+  $('#send-message-header').html('Send Message To: ' + client_name_str);
+
+  $("#selected-clients-id-array").val(selected_client_id_array.toString());
 }
 
 function addListenerToSearchResultScrollBox()
@@ -859,7 +993,7 @@ function addListenerToSearchResultScrollBox()
 function executeSearchAjax() {
     $.ajax({
 
-        
+
         url:'/dashboard/execute_search/',
         // Type of Request
         method: "POST",
@@ -882,4 +1016,32 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
+}
+
+
+function createPopup( message, targetID='popup-container' )
+{
+  var opacity = 1;
+
+  $(`#${targetID}`).append(`<div class="fading-popup" style="background-color: #19E412; font-size: 30px; padding:10px; display: flex; justify-content: center;"> <div><strong>${message}</strong> </div> </div>`);
+
+
+  var timer = setInterval( ()=>{
+        if( opacity > 0)
+        {
+          console.log(`Adjusting opacity`);
+          opacity -= .03;
+          $('.fading-popup').css('opacity', opacity);
+        }
+        else
+        {
+          console.log(`Killing timer`);
+          $('.fading-popup').remove();
+          clearInterval(timer)
+        }
+      }, 100 );
+
+
+
+
 }

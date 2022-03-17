@@ -11,6 +11,8 @@ import string
 import datetime
 from sms import send_sms
 from django.core.mail import send_mail
+from .models import OneTimeAutomation
+from .models import RecurringAutomation
 
 # Create your views here.
 # Do not show the dashboard if the user isnt logged in!
@@ -144,7 +146,8 @@ def create_client_list():
     policies = ['fire auto', 'fire', 'fire boat home', 'home', 'auto fire home', 'auto', 'boat home', 'home fire boat', 'pet home fire', 'pet', 'pet fire','boat fire', 'boat']
     gender = ["M","F"]
     notification_status =['all','emergency','none']
-    emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
+    #emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
+    emails = ["cch264@nau.edu", "npn24@nau.edu", "sng235@nau.edu", "mkd97@nau.edu"]
 
 
 
@@ -165,8 +168,9 @@ def create_client_list():
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
         a_client.lat = longLat[index][0]
         a_client.long = longLat[index][1]
+        a_client.email = emails[random.randint(0, len(emails) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        a_client.email = "npn24@nau.edu"
+       # a_client.email = "npn24@nau.edu"
         #a_client.phone = "4803690030"
         a_client.phone = "13096202335"
 
@@ -329,3 +333,45 @@ def send_message( request ):
     # send json response back
     response = {'Success': 'True'}
     return JsonResponse(response)
+
+
+# Function that takes an ajax request and saves an automation.
+def save_automation( request ):
+    print("Request Dictionary is: {}".format( request.POST ))
+
+    response = {'Success': 'True'}
+
+    print("Clients array? {}".format( request.POST['selected_clients'] ) )
+
+    
+    if request.POST['message_freq'] == "many":
+        newRecurringAuto = RecurringAutomation()
+        newRecurringAuto.name = request.POST['auto_name'] 
+        newRecurringAuto.start_date = request.POST['send_msg_many_start_date']
+        newRecurringAuto.start_date_str = request.POST['send_msg_many_start_date']
+        newRecurringAuto.msg_body = request.POST['message_body']
+        newRecurringAuto.msg_sub = request.POST['message_subject']
+        newRecurringAuto.msg_type = request.POST['message_type']
+        newRecurringAuto.msg_priority = request.POST['message_priority']
+        newRecurringAuto.selected_clients = request.POST['selected_clients']
+        newRecurringAuto.send_msg_freq_unit = request.POST['send_msg_many_unit']
+        newRecurringAuto.save()
+
+         #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
+    else:
+        newOneTimeAuto = OneTimeAutomation()
+
+        newOneTimeAuto.name = request.POST['auto_name'] 
+        newOneTimeAuto.date = request.POST['send_msg_once_date']
+        newOneTimeAuto.date_str = request.POST['send_msg_once_date']
+        newOneTimeAuto.msg_body = request.POST['message_body']
+        newOneTimeAuto.msg_sub = request.POST['message_subject']
+        newOneTimeAuto.msg_type = request.POST['message_type']
+        newOneTimeAuto.msg_priority =  request.POST['message_priority']
+        newOneTimeAuto.selected_clients =  request.POST['selected_clients']
+        newOneTimeAuto.save()
+
+
+    
+    return JsonResponse(response)
+

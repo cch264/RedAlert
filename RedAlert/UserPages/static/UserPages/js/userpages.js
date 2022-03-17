@@ -236,3 +236,7 @@ function resetPassFieldsOnLoad()
     $('#update-pass-input-1').val("");
     $('#update-pass-input-2').val("");
 }
+
+
+
+

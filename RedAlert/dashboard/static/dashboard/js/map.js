@@ -217,7 +217,7 @@ var clientMarkerArray = [];
     discardCurrentShape();
   }
 
-  drawingComplete = false; // User si not drawing anymore, reset this var for next drawing.
+  drawingComplete = false; // User is not drawing anymore, reset this var for next drawing.
 
   currentUserShape = null;
   drawStartPoint = null;
@@ -322,9 +322,10 @@ var clientMarkerArray = [];
 
   latlngs.pop()
    
-  stopDrawingOnMap();
-
+  
   calculatePointsInPoly();
+
+  stopDrawingOnMap();
 
  }
 
