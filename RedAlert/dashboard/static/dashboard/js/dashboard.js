@@ -1018,30 +1018,3 @@ function executeSearchAjax() {
     });
 }
 
-
-function createPopup( message, targetID='popup-container' )
-{
-  var opacity = 1;
-
-  $(`#${targetID}`).append(`<div class="fading-popup" style="background-color: #19E412; font-size: 30px; padding:10px; display: flex; justify-content: center;"> <div><strong>${message}</strong> </div> </div>`);
-
-
-  var timer = setInterval( ()=>{
-        if( opacity > 0)
-        {
-          console.log(`Adjusting opacity`);
-          opacity -= .03;
-          $('.fading-popup').css('opacity', opacity);
-        }
-        else
-        {
-          console.log(`Killing timer`);
-          $('.fading-popup').remove();
-          clearInterval(timer)
-        }
-      }, 100 );
-
-
-
-
-}

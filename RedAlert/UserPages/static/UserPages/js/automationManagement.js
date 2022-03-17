@@ -493,6 +493,8 @@ function deleteRecurringAutomation(autoID)
         $(`#recurring-auto-${autoID}`).modal('hide');
         $(`#recurring-auto-li-${autoID}`).remove();
         deleteAutomation(autoID, "many");
+
+        createPopup('Successfully Deleted Automation', color='#71F295');
     }
 }
 
@@ -525,6 +527,8 @@ function deleteAutomation(autoID, type)
             console.log('Error - ' + errorMessage);
         }
     });
+
+    
 }
 
 function updateOneTimeAutomation( autoID )
