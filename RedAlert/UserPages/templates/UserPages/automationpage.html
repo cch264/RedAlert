@@ -28,11 +28,11 @@
             <ul id="automation-list" class="list-group">
 
               {% for oneTimeAuto in oneTimeAutos%}
-                <li class="list-group-item" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
+                <li class="list-group-item auto-li" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
               {% endfor %}
 
               {% for recurringAuto in recurringAutos %}
-                <li class="list-group-item" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
+                <li class="list-group-item auto-li" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
               {% endfor %}
             </ul>
 
@@ -76,7 +76,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-  
+
+            <div id="popup-container-onetime-modal-{{oneTimeAuto.id}}" class="d-flex flex-column align-items-center" >
+
+            </div>
+
             <div class="d-flex flex-row justify-content-between">
               <div class="w-50">  
                   <div>
@@ -101,18 +105,19 @@
                 <input type="hidden" id="auto-sel-msg-type-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_type}}">
 
                 <select id="auto-sel-msg-type-{{oneTimeAuto.id}}" class="form-select mb-2" aria-label="Select message type" disabled>
-                  <option value="auto-def-select-opt"> Select a Message Type </option>
+                  <option value="auto-many-def-select-type-opt"> Select a Message Type </option>
                     <option value="sms"> Send SMS </option>
                     <option value="email">Send Email </option>
                     <option value="both">Send Email and SMS </option>
                 </select>
-  
+
+                
                 <label for="auto-sel-msg-priority-{{oneTimeAuto.id}}"> Message Priority: </label>
 
                 <input type="hidden" id="auto-sel-msg-priority-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_priority}}">
 
                 <select id="auto-sel-msg-priority-{{oneTimeAuto.id}}" class="form-select" aria-label="Select message priority" value="{{oneTimeAuto.msg_priority}}" disabled>
-                  <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="auto-many-def-select-priority-opt" selected> Select a Message Priority </option>
                     <option value="emergency"> Send Emergency Message</option>
                     <option value="social">Send Social Message</option>
                 </select>
@@ -194,7 +199,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>-{{oneTimeAuto.id}}
           <div class="modal-body">
-  
+
+            <div id="popup-container-recurr-modal-{{recurringAuto.id}}" class="d-flex flex-column align-items-center" >
+
+            </div>
+
             <div class="d-flex flex-row justify-content-between">
               <div class="w-50">  
                   <div>
@@ -219,7 +228,7 @@
                 <input type="hidden" id="auto-many-sel-msg-type-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_type}}">
 
                 <select id="auto-many-sel-msg-type-{{recurringAuto.id}}" class="form-select mb-2" aria-label="Select message type" disabled>
-                  <option value="auto-many-def-select-opt"> Select a Message Type </option>
+                  <option value="auto-many-def-select-type-opt"> Select a Message Type </option>
                     <option value="sms"> Send SMS </option>
                     <option value="email">Send Email </option>
                     <option value="both">Send Email and SMS </option>
@@ -230,7 +239,7 @@
                 <input type="hidden" id="auto-many-sel-msg-priority-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_priority}}">
 
                 <select id="auto-many-sel-msg-priority-{{recurringAuto.id}}" class="form-select" aria-label="Select message priority" value="{{recurringAuto.msg_priority}}" disabled>
-                  <option value="auto-many-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="auto-many-def-select-priority-opt" selected> Select a Message Priority </option>
                     <option value="emergency"> Send Emergency Message</option>
                     <option value="social">Send Social Message</option>
                 </select>
@@ -241,7 +250,7 @@
   
             <div class="d-flex flex-row justify-content-between">
               <div>
-                <label for="auto-many-sel-msg-frequency-{{recurringAuto.id}}"> Message Frequency: </label>
+                <label for="auto-many-sel-msg-frequency-{{recurringAuto.id}}"> Automation Type: </label>
 
                 <input type="hidden" id="auto-many-sel-msg-frequency-val-{{recurringAuto.id}}" value="many">
 
@@ -265,7 +274,9 @@
   
                 <label for="auto-many-send-freq-{{recurringAuto.id}}">Message Frequency: </label>
                 <input id="auto-many-send-freq-{{recurringAuto.id}}" class="form-control" type="number" value="1" disabled/>  
-  
+
+
+                
                 <input type="hidden" id="auto-many-send-freq-unit-val-{{recurringAuto.id}}" value="{{recurringAuto.send_msg_freq_unit}}">
                 <label for="auto-many-send-freq-unit-{{recurringAuto.id}}"> Every: </label>
                 <select id="auto-many-send-freq-unit-{{recurringAuto.id}}" class="form-select" aria-label="Select Message Frequency" disabled>

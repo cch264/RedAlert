@@ -210,6 +210,14 @@
 
           <div class="row">
             <div class="col">
+              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center" >
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
               <div id="notif-container" class="my-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item" role="presentation">
@@ -356,6 +364,10 @@
         </div>
         <div class="modal-body">
 
+          <div id="popup-container-auto-modal" class="d-flex flex-column align-items-center" >
+
+          </div>
+
           <div class="d-flex flex-row justify-content-between">
             <div class="w-50">  
                 <div>
@@ -378,7 +390,7 @@
 
               <label for="auto-sel-msg-type"> Message Type: </label>
               <select id="auto-sel-msg-type" class="form-select mb-2" aria-label="Select message type">
-                <option value="auto-def-select-opt" selected> Select a Message Type </option>
+                <option value="auto-def-select-type-opt" selected> Select a Message Type </option>
                   <option value="sms"> Send SMS </option>
                   <option value="email">Send Email </option>
                   <option value="both">Send Email and SMS </option>
@@ -386,7 +398,7 @@
 
               <label for="auto-sel-msg-priority"> Message Priority: </label>
               <select id="auto-sel-msg-priority" class="form-select" aria-label="Select message priority">
-                <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                <option value="auto-def-select-priority-opt" selected> Select a Message Priority </option>
                   <option value="emergency"> Send Emergency Message</option>
                   <option value="social">Send Social Message</option>
               </select>
@@ -397,9 +409,9 @@
 
           <div class="d-flex flex-row justify-content-between">
             <div>
-              <label for="auto-sel-msg-frequency"> Message Frequency: </label>
+              <label for="auto-sel-msg-frequency"> Automation Type: </label>
               <select id="auto-sel-msg-frequency" class="form-select" aria-label="Select Message Frequency">
-                  <option value="auto-def-select-opt" selected> Select Message Frequency </option>
+                  <option value="auto-def-select-freq-opt" selected> Select Message Frequency </option>
                   <option value="once"> One Time </option>
                   <option value="many"> Recurring </option>
               </select>
@@ -431,8 +443,8 @@
 
         </div>
         <div class="modal-footer">
-          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button id="auto-send-msg" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+          <button id="auto-send-msg" class="btn btn-primary"> Create Automation </button>
         </div>
       </div>
     </div>
