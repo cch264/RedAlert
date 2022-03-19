@@ -38,7 +38,7 @@ def show_dashboard( request ):
         refreshSchedJobs()
         print("Initiliazing shed jobs for first time.")
     else:
-        print("Not Initiliazing Jobs for first time")
+        print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
     #delete_all_clients()
     #create_client_list()
