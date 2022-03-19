@@ -16,11 +16,15 @@ from .models import OneTimeAutomation
 from .models import RecurringAutomation
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.base import STATE_STOPPED, STATE_RUNNING, STATE_PAUSED
+
+
 
 
 
 # Initialize the background schedular
 scheduler = BackgroundScheduler()
+schedulerInitialStart = True
 
 # Create your views here.
 # Do not show the dashboard if the user isnt logged in!
@@ -28,11 +32,13 @@ scheduler = BackgroundScheduler()
 @login_required( login_url='/')
 def show_dashboard( request ):
 
-    #refreshSchedJobsTest()
-
-    refreshSchedJobs()
-
-    #refreshSchedJobs()
+    # Dont run this functin when the dashboar loads if the scheduler is already running.
+    # This is how we start the schedular on server restart. Not the best solution but it works fine for now.
+    if scheduler.state != STATE_RUNNING:
+        refreshSchedJobs()
+        print("Initiliazing shed jobs for first time.")
+    else:
+        print("Not Initiliazing Jobs for first time")
 
     #delete_all_clients()
     #create_client_list()
@@ -395,7 +401,9 @@ def save_automation( request ):
 
 # Iterates through the automation collections and either creates new scheduled jobs from automations that havent been shceduled or reshedules jobs that may have been lost due to system restart.
 # Called on system load and when a new automation is added or edited.
-def refreshSchedJobs():
+def refreshSchedJobs( ):
+
+    
     all_jobs = scheduler.get_jobs()
 
     job_id_array = []
@@ -414,7 +422,7 @@ def refreshSchedJobs():
     print("Job ID array after creation: {}".format( job_id_array ))
 
     for one_time_auto in all_one_time_autos:
-        if one_time_auto.id not in job_id_array:
+        if ("O" + str(one_time_auto.id) ) not in job_id_array:
             print("Creating new one time automation shed. ID: {}::: Date obj is {}".format( one_time_auto.id, one_time_auto.date ))
 
             auto_year = one_time_auto.date_str[0:4]
@@ -422,24 +430,34 @@ def refreshSchedJobs():
             auto_day = one_time_auto.date_str[8:10]
 
             # Shed the job for 8am on the date specified by user. Sends the notifications at 17 UTC, which is 10am MST.
-            new_job = scheduler.add_job(send_auto_message, 'date',[one_time_auto.id, "one"], run_date = datetime.datetime( int(auto_year), int(auto_month), int(auto_day), 17, 0), id = str(one_time_auto.id),name=recurr_auto.name )
+            new_job = scheduler.add_job(send_auto_message, 'date',[one_time_auto.id, "one"], run_date = datetime.datetime( int(auto_year), int(auto_month), int(auto_day), 17, 0), id = "O" + str(one_time_auto.id),name=one_time_auto.name )
+        else:
+            print("One time auto already has a scheduled job, skipping...")
 
     for recurr_auto in all_recurr_autos:
-        if recurr_auto.id not in job_id_array:
+        if ("R" + str(recurr_auto.id) ) not in job_id_array:
             print("Creating recurring automation shed. ID: {}::: Date str is {}".format( recurr_auto.id, recurr_auto.start_date_str ))
            
             auto_unit = recurr_auto.send_msg_freq_unit
 
             if auto_unit == "month":
-                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], month='1-12', day="1st mon", hour="17", start_date = recurr_auto.start_date, id = str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.
+                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], month='1-12', day="1st mon", hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.
             elif auto_unit == "week":
-                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"],  day_of_week='mon', hour="17", start_date = recurr_auto.start_date, id = str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.,
+                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"],  day_of_week='mon', hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.,
             else:
-                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], hour="17", start_date = recurr_auto.start_date, id = str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function monthly.,
+                new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function monthly.,
+        else:
+            print("Recurring auto already has a scheduled job, skipping...")
             
             
     print("All jobs scheduled. Sheduled jobs: {}".format( scheduler.get_jobs() ) )
-    scheduler.start()
+
+       # start the scheduler if its not already running.
+    if scheduler.state != STATE_RUNNING:
+        print("STARTING SCHEDULER")
+        scheduler.start()
+    else:
+        print("NOT starting Scheduler")
 
 
 def task():
@@ -570,6 +588,23 @@ def send_auto_message( autoID, type ):
             #print("Sent to: {}\n".format(sms_index))
 
 
+def deleteSchedJob( autoID, type ):
+
+    if type == "many":
+        type = "R" # If the automation is recurring
+    else:
+        type = "O" # If the automation is one time
+    
+    all_jobs = scheduler.get_jobs()
+
+    print("Deleting sched job: All jobs currently scheduled: {}".format(all_jobs) )
+
+    for job in all_jobs:
+        if (type + str(autoID) ) == job.id: # Remove automated job if it exists.
+            print("Job with id {} removed.".format(job.id))
+            job.remove() # Remove the job if its id matches the id of the automation.
+
+            print("Deleting sched job: Jobs Scheduled after deletion: {}".format(scheduler.get_jobs()) )
 
 
 def refreshSchedJobsTest():
@@ -598,4 +633,9 @@ def refreshSchedJobsTest():
             
             
     print("All jobs scheduled. Sheduled jobs: {}".format( scheduler.get_jobs() ) )
-    scheduler.start()
+    
+    # start the scheduler if its not already running.
+    if scheduler.state != STATE_RUNNING:
+        print("STARTING SCHEDULER")
+        scheduler.start()
+
