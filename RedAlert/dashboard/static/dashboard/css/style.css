@@ -87,12 +87,33 @@
     border-radius: 8px;
     margin-left: 5px;
     padding: 10px;
-    
 }
 
 .age-filter-input{
     width: 35%;
     display: inline;
+}
+
+.msg-succeeded-popup{
+  text-align: right;
+  color: white;
+  margin-top: 10px;
+  padding-top: 8px;
+  padding-bottom: 10px;
+  padding-right: 5px;
+  border-radius: 10px;
+  background-color: #75e389;
+}
+
+.msg-failed-popup{
+  text-align: right;
+  color: white;
+  margin-top: 10px;
+  padding-top: 8px;
+  padding-bottom: 10px;
+  padding-right: 5px;
+  border-radius: 10px;
+  background-color: #ff5d5d;
 }
 
 .sr-scroll-box{
@@ -104,3 +125,47 @@
 #expand-sr-btn{
     margin-top: 10px;
 }
+<<<<<<< Updated upstream
+=======
+
+
+#client-map{
+    height: 700px;
+    width: 90%;
+    margin-left:auto;
+    margin-right: auto;
+    border: 2px solid #0d6efd;
+    border-radius: 15px;
+}
+
+#start-drawing-btn{
+    background-color:#07CA2E;
+    border-color:#07ED3C;
+}
+
+
+#start-drawing-btn:focus{
+    box-shadow: 0 0 0 .25rem #3DFF68;;
+}
+
+#stop-drawing-btn{
+    background-color:#E94040;
+    border-color:#E94040;
+}
+
+
+#stop-drawing-btn:focus{
+    box-shadow: 0 0 0 .25rem #FF9A9A;;
+}
+
+
+
+#clear-draw-btn{
+    background-color:#B10404;
+    border-color:#B10404;
+}
+
+#clear-draw-btn:focus{
+    box-shadow: 0 0 0 .25rem #F53B3B;;
+}
+>>>>>>> Stashed changes

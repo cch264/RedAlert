@@ -186,6 +186,14 @@ window.addEventListener('load', (event) => {
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
+<<<<<<< Updated upstream
+=======
+    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
+
+
+
+
+>>>>>>> Stashed changes
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {
@@ -218,6 +226,7 @@ btn.addEventListener('click', (event) => {
 
 function send_client_notification()
 {
+  // get information from HTML inputs
   let message_subject = $('#message-subject');
   message_subject = message_subject.val();
 
@@ -233,6 +242,7 @@ function send_client_notification()
   let selected_clients = $('#selected-clients-id-array');
   selected_clients = selected_clients.val();
 
+  // print info to console for debuggung
   console.log(`Subject: ${message_subject}\n Message: ${message_body}\n
     Message Type: ${message_type}\n Message Priority: ${message_priority}\n
     Selected Clients: ${selected_clients}\n`);
@@ -255,6 +265,58 @@ function send_client_notification()
       success: function (data) {
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message sent' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'Your alert has been sent.' ;
+          $(block_to_insert).addClass("msg-succeeded-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 3000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(block_to_insert);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
+
+          // get html input fields
+          let subjectInput = document.getElementById("message-subject");
+          let bodyInput = document.getElementById("message-body");
+          let msgTypeInput = document.getElementById("sel-msg-type");
+          let msgPriorityInput = document.getElementById("sel-msg-priority");
+          let selectedClients = document.getElementById("selected-clients-id-array");
+
+          // reset field values to their original states
+          subjectInput.value = "";
+          bodyInput.value = "";
+          $(msgTypeInput)[0].selectedIndex = 0;
+          $(msgPriorityInput)[0].selectedIndex = 0;
+          $('.selected-sr').remove();
+          refreshSelectedClientsAfterSearch();
+
       },
       // Error handling LOWKEY USELESS
       error: function ( jqXHR, textStatus, errorThrown ) {
@@ -262,6 +324,42 @@ function send_client_notification()
           var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
           console.log('Error - ' + errorMessage);
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message failed' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'There was an error when sending your alert. Please try again.' ;
+          $(block_to_insert).addClass("msg-failed-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 3000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(block_to_insert);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
       }
   });
 }
@@ -650,9 +748,29 @@ function fill_client_results_box( client_list )
     $('#search-results-container').append( element_to_append );
 
     // Get the div that contains the search result.
+<<<<<<< Updated upstream
     $(`#sr-btn-${result.item.id}`).on('click', (event) => {
 
       $(`#sr-${result.item.id}`).addClass('sel-sr-color');
+=======
+    $(`#sr-btn-${clientID}`).on('click', (event) => {
+
+      // DESELECT A PREVIOUSLY SELECTED CLIENT SEARCH RESULT
+      // If the client search result already exist in the selected clients container, remove it.
+      // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
+      if( $(`#selected-sr-${clientID}`).length )
+      {
+        toggleAnyClient( clientID );
+      }
+      else
+      {
+        toggleAnyClient( clientID );
+
+
+      }
+
+    })
+>>>>>>> Stashed changes
 
       invertPlusBtn( `#sr-btn-${result.item.id}` );
 
@@ -666,10 +784,93 @@ function fill_client_results_box( client_list )
 
         refreshSelectedClientsString();
       }
+<<<<<<< Updated upstream
       else
       {
         // Create html element for each search result the user clicks.
         let selected_search_result = generateSelectedSearchElement(result);
+=======
+  });
+  // Check selected clients div for selected element
+
+}
+
+// Deselects a client search result but does not affect the map.
+function deselectClientSearchResult( clientIDInt )
+{
+  $(`#selected-sr-${clientIDInt}`).remove();
+  $(`#sr-${clientIDInt}`).removeClass('sel-sr-color');
+  invertPlusBtn( `#sr-btn-${clientIDInt}` );
+  $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
+  toggleSpecificPin( clientIDInt.toString() );
+
+  refreshSelectedClientsString(clientIDInt, false);
+}
+
+function selectClientSearchResult( clientIDInt )
+{
+    $(`#sr-${clientIDInt}`).addClass('sel-sr-color');
+
+   invertPlusBtn( `#sr-btn-${clientIDInt}` );
+
+   toggleSpecificPin( clientIDInt.toString() );
+
+   // Create html element for each search result the user clicks.
+   let selected_search_result = generateSelectedSearchElement( getClientSearchResultObjByID( clientIDInt ) );
+
+   // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
+   $("#selected-clients-container").append( selected_search_result );
+
+
+   // This is the remove button that is located on the element appened to the selected clients container at the bottom of the page.
+   $(`#sel-sr-btn-${clientIDInt}`).on('click', function(event){
+      $(`#selected-sr-${clientIDInt}`).remove();
+      invertPlusBtn( `#sr-btn-${clientIDInt}`);
+      $(`#sr-${clientIDInt}`).removeClass('sel-sr-color');
+      toggleSpecificPin( clientIDInt.toString() );
+      $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
+      refreshSelectedClientsString(clientIDInt, false);
+
+         });
+
+   $(`#sr-${clientIDInt}`).attr('data-selected-client', 'true');
+
+   refreshSelectedClientsString(clientIDInt, true);
+}
+
+function getClientSearchResultObjByID( clientIDInt )
+{
+  console.log(`SEARCHING FOR CLIENT ID IS ${parseInt(clientIDInt)}`);
+
+  for( let index = 0; index < search_result_object.length; index++ )
+  {
+    if(search_result_object[index].item.id === parseInt(clientIDInt) )
+    {
+      return search_result_object[index];
+    }
+  }
+  return false;
+
+}
+
+function getClientFromAllClients( clientID )
+{
+  all_clients
+
+  for( let index = 0; index < all_clients.length; index++ )
+  {
+    if(all_clients[index].id === parseInt(clientID) )
+    {
+      return all_clients[index];
+    }
+  }
+  return false;
+}
+
+function refreshSelectedClientsAfterSearch()
+{
+  $('.selected-sr').remove(); // remove all previous search results.
+>>>>>>> Stashed changes
 
         // Add the new element that was created by cloning the unselected search result item. Remove the sel-sr-color class from the cloned item.
         $("#selected-clients-container").append( selected_search_result );

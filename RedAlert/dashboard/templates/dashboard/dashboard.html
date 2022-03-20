@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
       {% endblock %}
-  
+
 
   {% block content %}
 
@@ -162,6 +162,19 @@
             <div style="background-color:aqua" class="col" id="map">
               Map Section
             </div>
+<<<<<<< Updated upstream
+=======
+
+            <div id="map-btn-container" class="d-flex justify-content-center">
+              <button id="start-drawing-btn" class="btn" type="button"> <i class="fa-solid fa-pencil"></i> </button>
+
+              <button id="stop-drawing-btn" class="btn btn-primary display-none" type="button"> <i class="fa-solid fa-ban"></i></i> </button>
+
+              <button id="clear-draw-btn" class="btn btn-primary" type="button"> <i class="fa-solid fa-arrows-rotate"></i></i> </button>
+
+            </div>
+
+>>>>>>> Stashed changes
           </div>
 
           <div class="row">
@@ -246,6 +259,7 @@
                       <div class="d-flex flex-row-reverse">
                         <button id="send-msg" class="btn btn-primary"> Send Message </button>
                       </div>
+                      <div id="msg-popup"></div>
 
                       <h3> Selected Clients </h3>
                       <div id="selected-clients-container">
@@ -324,7 +338,100 @@
 
 
 
+<<<<<<< Updated upstream
   <a href='/tech_demo/send_email'></a>
+=======
+  <div class="modal fade" id="create-automation-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a New Automation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="d-flex flex-row justify-content-between">
+            <div class="w-50">
+                <div>
+                  <label for="auto-name"> Automation Name: </label>
+                  <input id="auto-name" class="form-control" type="subject" name="subject">
+                </div>
+
+                <div>
+                  <label for="auto-message-subject"> Subject: </label>
+                  <input id="auto-message-subject" class="form-control" type="subject" name="subject">
+                </div>
+
+                <div>
+                  <label for="auto-message-body"> Message: </label>
+                  <textarea id="auto-message-body" class="form-control" type="text-area" name="message">  </textarea>
+                </div>
+            </div>
+
+            <div>
+
+              <label for="auto-sel-msg-type"> Message Type: </label>
+              <select id="auto-sel-msg-type" class="form-select mb-2" aria-label="Select message type">
+                <option value="auto-def-select-opt" selected> Select a Message Type </option>
+                  <option value="sms"> Send SMS </option>
+                  <option value="email">Send Email </option>
+                  <option value="both">Send Email and SMS </option>
+              </select>
+
+              <label for="auto-sel-msg-priority"> Message Priority: </label>
+              <select id="auto-sel-msg-priority" class="form-select" aria-label="Select message priority">
+                <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="emergency"> Send Emergency Message</option>
+                  <option value="social">Send Social Message</option>
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="d-flex flex-row justify-content-between">
+            <div>
+              <label for="auto-sel-msg-frequency"> Message Frequency: </label>
+              <select id="auto-sel-msg-frequency" class="form-select" aria-label="Select Message Frequency">
+                  <option value="auto-def-select-opt" selected> Select Message Frequency </option>
+                  <option value="once"> One Time </option>
+                  <option value="many"> Recurring </option>
+              </select>
+            </div>
+
+            <div id="auto-send-msg-once-inputs" class="display-none">
+              <label for="auto-send-once-date">Send Message On: </label>
+              <input id="auto-send-once-date" class="form-control" type="date" />
+            </div>
+
+            <div id="auto-send-msg-many-inputs" class="display-none">
+
+              <label for="auto-send-many-date">Start Recurring Automation Date: </label>
+              <input id="auto-send-many-date" class="form-control" type="date" />
+
+              <label for="auto-send-freq">Message Frequency: </label>
+              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>
+
+              <label for="auto-send-freq-unit"> Every: </label>
+              <select id="auto-send-freq-unit" class="form-select" aria-label="Select Message Frequency">
+                  <option value="day" selected> Day </option>
+                  <option value="week"> Week </option>
+                  <option value="month"> Month </option>
+                  <option value="year"> Year </option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="auto-send-msg" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+        </div>
+      </div>
+    </div>
+  </div>
+>>>>>>> Stashed changes
 
   {% endblock %}
 
@@ -337,7 +444,12 @@
     <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
+<<<<<<< Updated upstream
     
+=======
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+>>>>>>> Stashed changes
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
 
