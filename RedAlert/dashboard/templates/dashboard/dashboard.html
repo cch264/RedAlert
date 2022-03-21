@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
       {% endblock %}
-  
+
 
   {% block content %}
 
@@ -172,7 +172,7 @@
 
             <div id="map-btn-container" class="d-flex justify-content-center">
               <button id="start-drawing-btn" class="btn" type="button"> <i class="fa-solid fa-pencil"></i> </button>
-              
+
               <button id="stop-drawing-btn" class="btn btn-primary display-none" type="button"> <i class="fa-solid fa-ban"></i></i> </button>
 
               <button id="clear-draw-btn" class="btn btn-primary" type="button"> <i class="fa-solid fa-arrows-rotate"></i></i> </button>
@@ -265,6 +265,7 @@
                       <div class="d-flex flex-row-reverse">
                         <button id="send-msg" class="btn btn-primary"> Send Message </button>
                       </div>
+                      <div id="msg-popup"></div>
 
                       <h3> Selected Clients </h3>
                       <div id="selected-clients-container">
@@ -357,7 +358,7 @@
         <div class="modal-body">
 
           <div class="d-flex flex-row justify-content-between">
-            <div class="w-50">  
+            <div class="w-50">
                 <div>
                   <label for="auto-name"> Automation Name: </label>
                   <input id="auto-name" class="form-control" type="subject" name="subject">
@@ -407,16 +408,16 @@
 
             <div id="auto-send-msg-once-inputs" class="display-none">
               <label for="auto-send-once-date">Send Message On: </label>
-              <input id="auto-send-once-date" class="form-control" type="date" />     
+              <input id="auto-send-once-date" class="form-control" type="date" />
             </div>
 
             <div id="auto-send-msg-many-inputs" class="display-none">
 
               <label for="auto-send-many-date">Start Recurring Automation Date: </label>
-              <input id="auto-send-many-date" class="form-control" type="date" />   
+              <input id="auto-send-many-date" class="form-control" type="date" />
 
               <label for="auto-send-freq">Message Frequency: </label>
-              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>  
+              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>
 
               <label for="auto-send-freq-unit"> Every: </label>
               <select id="auto-send-freq-unit" class="form-select" aria-label="Select Message Frequency">
@@ -449,7 +450,7 @@
     <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
