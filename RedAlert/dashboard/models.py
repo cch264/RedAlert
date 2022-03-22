@@ -5,12 +5,13 @@ from django.db import models
 class OneTimeAutomation( models.Model ):
     name = models.CharField( max_length = 200)
     date = models.DateField( auto_now= False )
-    date_str = models.CharField( max_length = 200) 
+    date_str = models.CharField( max_length = 200) # Date string makes date easy to display on front end. Formatted like this YYYY-MM-DD.
     msg_body = models.CharField( max_length = 1000)
     msg_sub = models.CharField( max_length = 200)
     msg_type = models.CharField( max_length = 200)
     msg_priority = models.CharField( max_length = 200)
     selected_clients = models.CharField( max_length = 500)
+    active = models.BooleanField( default=True)
 
 
 class RecurringAutomation( models.Model ):
@@ -24,4 +25,5 @@ class RecurringAutomation( models.Model ):
     selected_clients = models.CharField( max_length = 500)
     send_msg_freq = models.IntegerField(default= 1)
     send_msg_freq_unit = models.CharField( max_length = 200 )
+    active = models.BooleanField( default=True)
 

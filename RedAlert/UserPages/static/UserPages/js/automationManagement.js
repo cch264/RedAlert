@@ -148,7 +148,7 @@ function initializeRecurringAutoModals()
 }
 
 
-//////////////////////////// START Editing One Automation Code Below ///////////////////////////////////////
+//////////////////////////// START Editing One Time Automation Code Below ///////////////////////////////////////
 
 
 // Get the values in the modal so they can be restored if the user discards their edits.
@@ -250,7 +250,7 @@ function assignOneTimeModalButtonListeners( autoID )
 {
     $(`#auto-modal-edit-${autoID}`).on('click', () => { editOneTimeModal(autoID); toggleOneTimeEditButton(autoID) } );
     $(`#auto-modal-discard-changes-${autoID}`).on('click', () => { stopEditingOneTimeModal( autoID )} );
-    $(`#auto-save-changes-${autoID}`).on('click', () => { updateOneTimeAutomation( autoID ) } );
+    $(`#auto-save-changes-${autoID}`).on('click', () => { validateAutomation(autoID, "once") } );
     $(`#auto-delete-${autoID}`).on('click', ()=> {deleteOneTimeAutomation(autoID)} );
 }
 
@@ -463,7 +463,7 @@ function assignRecurrModalButtonListeners( autoID )
 {
     $(`#auto-many-edit-auto-${autoID}`).on('click', () => { editRecurModal(autoID); toggleRecurrEditButton(autoID) } );
     $(`#auto-many-modal-discard-changes-${autoID}`).on('click', () => { stopEditingRecurModal( autoID )} );
-    $(`#auto-many-save-changes-${autoID}`).on('click', () => { updateRecurringAutomation( autoID ) } );
+    $(`#auto-many-save-changes-${autoID}`).on('click', () => { validateAutomation( autoID, "many" ) } );
     $(`#auto-many-delete-${autoID}`).on('click', ()=> {deleteRecurringAutomation(autoID)} );
 }
 
@@ -497,6 +497,110 @@ function deleteRecurringAutomation(autoID)
 
         createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
     }
+}
+
+function validateAutomation( autoID, type )
+{
+    let autoTypeModifier = "";
+    if( type === "many")
+    {
+        autoTypeModifier = "-many"
+    }
+
+    let canSubmit = true;
+
+    let missingInputWarningStr = "The following fields must be filled out: <ul>";
+
+    if( $(`#auto${autoTypeModifier}-name-${autoID}`).val().trim() === "")
+    {
+        missingInputWarningStr += "<li>Automation Name</li> ";
+        canSubmit = false;
+    }
+    if( $(`#auto${autoTypeModifier}-message-subject-${autoID}`).val().trim() === "" )
+    {
+        missingInputWarningStr += "<li>Subject</li> ";
+        canSubmit = false;
+    }
+    
+    if( $(`#auto${autoTypeModifier}-message-body-${autoID}`).val().trim() === "" )
+    {
+        missingInputWarningStr += "<li>Message Body</li> ";
+        canSubmit = false;
+    }
+
+    if( $(`#auto${autoTypeModifier}-sel-msg-type-${autoID}`).val() === "auto-many-def-select-type-opt")
+    {
+        missingInputWarningStr += "<li>Message Type</li> ";
+        canSubmit = false;
+    }
+  
+    if(  $(`#auto${autoTypeModifier}-sel-msg-priority-${autoID}`).val() === "auto-many-def-select-priority-opt" )
+    {
+        missingInputWarningStr += "<li>Message Priority</li>";
+        canSubmit = false;
+    }
+
+
+    if( $(`#auto${autoTypeModifier}-sel-msg-frequency-${autoID}`).val() === "once")
+    {
+        if( $(`#auto${autoTypeModifier}-send-once-date-${autoID}`).val() === "" )
+        {
+            missingInputWarningStr += "<li>Date for One Time Automation</li> ";
+            canSubmit = false;
+        }
+    }
+
+    else if( $(`#auto${autoTypeModifier}-sel-msg-frequency-${autoID}`).val() === "many")
+    {
+        if( $(`#auto${autoTypeModifier}-send-many-date-${autoID}`).val() === "" )
+        {
+            missingInputWarningStr += "<li>Date for Recurring Automation</li> ";
+            canSubmit = false;
+        }
+    }
+
+
+    if(canSubmit)
+    {
+        if( type === "many")
+        {
+            updateRecurringAutomation( autoID ); // Create the automation using an ajax request.
+    
+            $(`#recurring-auto-${autoID}`).modal('hide');
+
+            toggleRecurrEditButton( autoID );
+
+            toggleRecurringModalInputs( autoID, true );
+
+    
+        }
+        else
+        {
+            updateOneTimeAutomation( autoID );
+
+            $(`#one-time-auto-${autoID}`).modal('hide');
+
+            toggleOneTimeEditButton( autoID ); // Toggle the edit buttons on the modal after finishing edits.
+
+            toggleOneTimeModalInputs( autoID, true );
+        }
+
+        createPopup("Successfully Updated Automation!", "popup-container", "#11F3A9", 25);
+    }
+    else
+    {
+        missingInputWarningStr += "</ul>"
+
+        if(type === "many")
+        {
+            createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
+        }
+        else
+        {
+            createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
+        }
+    }
+
 }
 
 
@@ -550,6 +654,8 @@ function updateOneTimeAutomation( autoID )
         {send_msg_once_date: $(`#auto-send-once-date-${autoID}`).val() }
         )
 
+    // Change the name of the automation list element to reflect a possibly new name for the auto.
+    $(`#one-time-auto-li-${autoID}`).text( autoData.auto_name );
 
     $.ajax({
 
@@ -599,7 +705,8 @@ function updateRecurringAutomation( autoID )
         {send_msg_many_unit: $(`#auto-many-send-freq-unit-${autoID}`).val() }
     );
        
-    
+    // Change the name of the automation list element to reflect a possibly new name for the auto.
+    $(`#recurring-auto-li-${autoID}`).text( autoData.auto_name );
 
     $.ajax({
 

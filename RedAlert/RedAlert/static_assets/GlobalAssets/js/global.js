@@ -2,7 +2,7 @@
 var timer;
 
 // Make sure your container is set to flex and justify-content-center for this to look right!
-function createPopup( message, targetID='popup-container', color='#19E412' )
+function createPopup( message, targetID='popup-container', color='#19E412', fontSize = 30, decreaseOpacity=.03)
 {
   $('.fading-popup').remove(); // remove old popups.
 
@@ -10,13 +10,13 @@ function createPopup( message, targetID='popup-container', color='#19E412' )
 
   var opacity = 1;
 
-  $(`#${targetID}`).append(`<div class="fading-popup w-75" style="background-color: ${color}; font-size: 30px; padding:10px; display: flex; justify-content: center; border-radius: 10px;"> <div><strong>${message}</strong> </div> </div>`);
+  $(`#${targetID}`).append(`<div class="fading-popup w-75" style="background-color: ${color}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: center; border-radius: 10px;"> <div><strong>${message}</strong> </div> </div>`);
 
   timer = setInterval( ()=>{
         if( opacity > 0)
         {
           console.log(`Adjusting opacity`);
-          opacity -= .03;
+          opacity -= decreaseOpacity;
           $('.fading-popup').css('opacity', opacity);
         }
         else

@@ -93,6 +93,9 @@ Install Jquery for your django app
 	run the command  "wget https://code.jquery.com/jquery-3.6.0.min.js"
 	This downloads a compressed folder containing jquery source code.
 
+Install apschedular 
+	pip install apscheduler
+
 pip freeze | grep pymongo - view what version of pymongo is running on your project
 pip freeze | grep djongo
 
