@@ -192,6 +192,8 @@ Meeting Notes:
 	Dont need agent birthday or address. Change agent address to Agency Address. Just remove it from the sign up page.
 	Move filters to the left side of search bar. 
 	Combine filters into a single drop down.
+
+	Add dynamic city filter based on client city.
 	
 	
 	
