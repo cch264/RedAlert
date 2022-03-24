@@ -356,7 +356,7 @@ def send_message( request ):
     return JsonResponse(response)
 
 
-# Function that takes an ajax request and creates an automation.
+# Function that takes an ajax request and creates a new automation.
 def save_automation( request ):
     print("Request Dictionary is: {}".format( request.POST ))
 
@@ -376,6 +376,7 @@ def save_automation( request ):
         newRecurringAuto.msg_priority = request.POST['message_priority']
         newRecurringAuto.selected_clients = request.POST['selected_clients']
         newRecurringAuto.send_msg_freq_unit = request.POST['send_msg_many_unit']
+        newRecurringAuto.user_id = request.user.id
         newRecurringAuto.save()
 
          #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
@@ -390,6 +391,7 @@ def save_automation( request ):
         newOneTimeAuto.msg_type = request.POST['message_type']
         newOneTimeAuto.msg_priority =  request.POST['message_priority']
         newOneTimeAuto.selected_clients =  request.POST['selected_clients']
+        newOneTimeAuto.user_id= request.user.id
         newOneTimeAuto.save()
 
 
