@@ -441,6 +441,7 @@ def refreshSchedJobs( ):
             auto_unit = recurr_auto.send_msg_freq_unit
 
             if auto_unit == "month":
+                # Params: add_job( function _to_execute, job_type, function params in order, months to send message, day to send message, eariliest date notification will be sent, id assigned ot the job, and name of job.,)
                 new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], month='1-12', day="1st mon", hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.
             elif auto_unit == "week":
                 new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"],  day_of_week='mon', hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.,

@@ -29,7 +29,8 @@ class UserSignUpForm(forms.Form):
 
     password_confirm = forms.CharField(label='Confirm Password', widget=forms.PasswordInput )
 
-    birthday = forms.DateField( label='Birthday (YYYY-MM-DD)', widget=forms.SelectDateWidget( attrs={'class':'test-class'} ) )
+    # Format of date returned (YYYY-MM-DD)
+    birthday = forms.DateField( label='Birthday', widget=forms.DateInput( attrs={'class':'test-class', 'type':'date'} ) )
 
     agency_name = forms.CharField( label='Agency Name', max_length=100 )
 
