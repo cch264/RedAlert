@@ -50,6 +50,8 @@ function clearModalInputs()
     $('#auto-send-freq').val('1');
     $('#auto-send-freq-unit').val('day').change();
 
+    closeAllClosablePopups(); // function from global.js
+
 }
 
 function validateAutomation()
@@ -126,11 +128,16 @@ function validateAutomation()
         $(`#create-automation-modal`).modal('hide');
 
         createPopup("Successfully Created Automation!", "popup-container-auto-create-success", "#11F3A9", 25);
+
+        closeAllClosablePopups();
+
+        //createClosablePopup( message = "Successfully Created Automation!", targetID='popup-container-auto-create-success', color='#19E412', fontSize = 20);
     }
     else
     {
-        missingInputWarningStr += "</ul>"
-        createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
+        missingInputWarningStr += "</ul>";
+        //createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
+        createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
     }
 
 }

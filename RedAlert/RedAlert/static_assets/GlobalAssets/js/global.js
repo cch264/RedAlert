@@ -83,3 +83,9 @@ function createClosablePopup( message="No msg provided", targetID='closable-popu
 
 
 }
+
+
+function closeAllClosablePopups()
+{
+  $('.closable-popup').remove(); // remove old popups.
+}
