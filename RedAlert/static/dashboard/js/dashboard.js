@@ -195,7 +195,7 @@ window.addEventListener('load', (event) => {
     $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
 
 
-  
+
 
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
@@ -271,6 +271,57 @@ function send_client_notification()
       success: function (data) {
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message sent' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'Your alert has been sent.' ;
+          $(block_to_insert).addClass("msg-succeeded-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 3000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(container_block.firstChild);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
+
+          // get html input fields
+          let subjectInput = document.getElementById("message-subject");
+          let bodyInput = document.getElementById("message-body");
+          let msgTypeInput = document.getElementById("sel-msg-type");
+          let msgPriorityInput = document.getElementById("sel-msg-priority");
+          let selectedClients = document.getElementById("selected-clients-id-array");
+
+          // reset field values to their original states
+          subjectInput.value = "";
+          bodyInput.value = "";
+          $(msgTypeInput)[0].selectedIndex = 0;
+          $(msgPriorityInput)[0].selectedIndex = 0;
+          $('.selected-sr').remove();
+          refreshSelectedClientsAfterSearch();
       },
       // Error handling LOWKEY USELESS
       error: function ( jqXHR, textStatus, errorThrown ) {
@@ -278,6 +329,42 @@ function send_client_notification()
           var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
           console.log('Error - ' + errorMessage);
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message failed' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'There was an error when sending your alert. Please try again.' ;
+          $(block_to_insert).addClass("msg-failed-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 3000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(container_block.firstChild);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
       }
   });
 }
@@ -675,7 +762,7 @@ function fill_client_results_box( client_list )
 
     // Get the div that contains the search result.
     $(`#sr-btn-${clientID}`).on('click', (event) => {
-  
+
       // DESELECT A PREVIOUSLY SELECTED CLIENT SEARCH RESULT
       // If the client search result already exist in the selected clients container, remove it.
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
@@ -687,7 +774,7 @@ function fill_client_results_box( client_list )
       {
         toggleAnyClient( clientID );
 
-    
+
       }
 
     })
@@ -773,7 +860,7 @@ function selectClientSearchResult( clientIDInt )
          });
 
    $(`#sr-${clientIDInt}`).attr('data-selected-client', 'true');
-  
+
    refreshSelectedClientsString(clientIDInt, true);
 }
 
@@ -808,7 +895,7 @@ function getClientFromAllClients( clientID )
 
 function refreshSelectedClientsAfterSearch()
 {
-  $('.selected-sr').remove(); // remove all previous search results. 
+  $('.selected-sr').remove(); // remove all previous search results.
 
   let selectedClientID = $("#selected-clients-id-array").val();
 
@@ -1016,32 +1103,4 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
-}
-
-
-function createPopup( message, targetID='popup-container' )
-{
-  var opacity = 1;
-
-  $(`#${targetID}`).append(`<div class="fading-popup" style="background-color: #19E412; font-size: 30px; padding:10px; display: flex; justify-content: center;"> <div><strong>${message}</strong> </div> </div>`);
-
-
-  var timer = setInterval( ()=>{
-        if( opacity > 0)
-        {
-          console.log(`Adjusting opacity`);
-          opacity -= .03;
-          $('.fading-popup').css('opacity', opacity);
-        }
-        else
-        {
-          console.log(`Killing timer`);
-          $('.fading-popup').remove();
-          clearInterval(timer)
-        }
-      }, 100 );
-
-
-
-
 }
