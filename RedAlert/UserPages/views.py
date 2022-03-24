@@ -24,7 +24,7 @@ def show_profile_page( request ):
 
 def show_automations( request ):
     print("USER ID IS {}".format( request.user.id ))
-    oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id )
+    oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id ) # Use the auth user id to get the automations for THIS user only.
     recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
 
     context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos}

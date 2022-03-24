@@ -22,6 +22,15 @@
         {% if changed_pass %}
           <div> You successfully changed your password! </div>
         {% endif %}
+        
+        {% if loginSuccess == 0 %}
+          <div> No account found with those credentials! </div>
+        {% endif %}
+
+        {% if loggedOut == 1 %}
+          <div> Successfully Logged Out! </div>
+        {% endif %}
+
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
           <!-- Protects against Cross Site Request Forgeries -->

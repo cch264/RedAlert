@@ -41,11 +41,11 @@ def show_dashboard( request ):
         print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
     #delete_all_clients()
-    #create_client_list()
+    #create_client_list(request)
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
-    all_clients_array = Client.objects.all()
+    all_clients_array = Client.objects.filter(user_id=request.user.id)
 
     json_array = []
     for client in all_clients_array:
@@ -84,7 +84,7 @@ def show_dashboard( request ):
     return render(request, 'dashboard/dashboard.html', response)
 
 
-def create_client_list():
+def create_client_list(request):
 
     names =["Zane Roman",
     "Mya Fry",
@@ -194,6 +194,7 @@ def create_client_list():
         a_client.email = "cch264@nau.edu"
         a_client.phone = "4803690030"
         #a_client.phone = "13096202335"
+        a_client.user_id = request.user.id
 
         a_client.save()
 

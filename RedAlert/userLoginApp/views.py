@@ -24,7 +24,7 @@ from sms import send_sms
 # A view function is the code we run before showing a user a page so we can query the database and perform other functions
 # like user authentication or creating a list of data to show on the web page.
 # If login_success =3 , user did not just log in. 0 if user failed to log in and 1 if they succeeded in logging in.
-def userLoginPage( request, pass_change="false" ):
+def userLoginPage( request, pass_change="false", loginSuccess=1, loggedOut = 0 ):
 
     print("PASS CHANGE IS {}".format(pass_change))
     user_changed_password = False
@@ -32,7 +32,7 @@ def userLoginPage( request, pass_change="false" ):
     if pass_change != "false":
         user_changed_password = True
     
-    response = { 'changed_pass': user_changed_password }
+    response = { 'changed_pass': user_changed_password, 'loginSuccess': loginSuccess, 'loggedOut':loggedOut}
 
     return render(request, 'userLoginApp/userLogin.html', response)
 
