@@ -31,6 +31,10 @@
           <div> Successfully Logged Out! </div>
         {% endif %}
 
+        {% if not_logged_in %}
+          <div> {{not_logged_in_message}} </div>
+        {% endif %}
+
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
           <!-- Protects against Cross Site Request Forgeries -->

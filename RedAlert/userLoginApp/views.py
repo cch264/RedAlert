@@ -18,6 +18,7 @@ import random
 from django.utils.dateparse import parse_date
 from .forms import UserSignUpForm
 from sms import send_sms
+from django.contrib.auth import logout
 
 
 # Create your views here.
@@ -26,13 +27,27 @@ from sms import send_sms
 # If login_success =3 , user did not just log in. 0 if user failed to log in and 1 if they succeeded in logging in.
 def userLoginPage( request, pass_change="false", loginSuccess=1, loggedOut = 0 ):
 
+    print("request params {}".format(request.GET))
     print("PASS CHANGE IS {}".format(pass_change))
     user_changed_password = False
 
+    not_logged_in_message = ""
+    not_logged_in = False
+
     if pass_change != "false":
         user_changed_password = True
+
+    if loggedOut == 1:
+        logout(request)
+
+    if request.GET['next']:
+        print('in HEREREHURHE')
+        not_logged_in = True
+        not_logged_in_message = "You must be logged in to access that page!"
+
+
     
-    response = { 'changed_pass': user_changed_password, 'loginSuccess': loginSuccess, 'loggedOut':loggedOut}
+    response = { 'changed_pass': user_changed_password, 'loginSuccess': loginSuccess, 'loggedOut':loggedOut, 'not_logged_in': not_logged_in, 'not_logged_in_message': not_logged_in_message}
 
     return render(request, 'userLoginApp/userLogin.html', response)
 
