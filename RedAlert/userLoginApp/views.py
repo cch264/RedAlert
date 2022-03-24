@@ -38,12 +38,15 @@ def userLoginPage( request, pass_change="false", loginSuccess=1, loggedOut = 0 )
         user_changed_password = True
 
     if loggedOut == 1:
-        logout(request)
+        logout(request) # log the user out from the system.
 
-    if request.GET['next']:
-        print('in HEREREHURHE')
-        not_logged_in = True
-        not_logged_in_message = "You must be logged in to access that page!"
+    # WE receive a get param when the user trys to access a page they dont have permissions to access. Check for it using a try block so we dont crash nothing.
+    try:
+        if request.GET['next']:
+            not_logged_in = True
+            not_logged_in_message = "You must be logged in to access that page!"
+    except:
+        print('User was logged in.')
 
 
     
