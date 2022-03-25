@@ -40,8 +40,8 @@ def show_dashboard( request ):
     else:
         print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
-    #delete_all_clients()
-    #create_client_list()
+    delete_all_clients()
+    create_client_list()
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
@@ -168,6 +168,7 @@ def create_client_list():
     notification_status =['all','emergency','none']
     #emails = ["@gmail.com", "@nau.edu", "@cox.com", "@yahoo.com"]
     emails = ["cch264@nau.edu", "npn24@nau.edu", "sng235@nau.edu", "mkd97@nau.edu"]
+    phones = ["14803690030", "13096202335", "19285668342"]
 
 
 
@@ -189,10 +190,10 @@ def create_client_list():
         a_client.lat = longLat[index][0]
         a_client.long = longLat[index][1]
         a_client.email = emails[random.randint(0, len(emails) - 1 )]
+        a_client.phone = phones[random.randint(0, len(phones) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
         #a_client.email = "npn24@nau.edu"
-        a_client.email = "cch264@nau.edu"
-        a_client.phone = "4803690030"
+        #a_client.email = "cch264@nau.edu"
         #a_client.phone = "13096202335"
 
         a_client.save()
@@ -364,10 +365,10 @@ def save_automation( request ):
 
     print("Clients array? {}".format( request.POST['selected_clients'] ) )
 
-    
+
     if request.POST['message_freq'] == "many":
         newRecurringAuto = RecurringAutomation()
-        newRecurringAuto.name = request.POST['auto_name'] 
+        newRecurringAuto.name = request.POST['auto_name']
         newRecurringAuto.start_date = request.POST['send_msg_many_start_date']
         newRecurringAuto.start_date_str = request.POST['send_msg_many_start_date']
         newRecurringAuto.msg_body = request.POST['message_body']
@@ -382,7 +383,7 @@ def save_automation( request ):
     else:
         newOneTimeAuto = OneTimeAutomation()
 
-        newOneTimeAuto.name = request.POST['auto_name'] 
+        newOneTimeAuto.name = request.POST['auto_name']
         newOneTimeAuto.date = request.POST['send_msg_once_date']
         newOneTimeAuto.date_str = request.POST['send_msg_once_date']
         newOneTimeAuto.msg_body = request.POST['message_body']
@@ -403,7 +404,7 @@ def save_automation( request ):
 # Called on system load and when a new automation is added or edited.
 def refreshSchedJobs( ):
 
-    
+
     all_jobs = scheduler.get_jobs()
 
     job_id_array = []
@@ -437,7 +438,7 @@ def refreshSchedJobs( ):
     for recurr_auto in all_recurr_autos:
         if ("R" + str(recurr_auto.id) ) not in job_id_array:
             print("Creating recurring automation shed. ID: {}::: Date str is {}".format( recurr_auto.id, recurr_auto.start_date_str ))
-           
+
             auto_unit = recurr_auto.send_msg_freq_unit
 
             if auto_unit == "month":
@@ -448,8 +449,8 @@ def refreshSchedJobs( ):
                 new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function monthly.,
         else:
             print("Recurring auto already has a scheduled job, skipping...")
-            
-            
+
+
     print("All jobs scheduled. Sheduled jobs: {}".format( scheduler.get_jobs() ) )
 
        # start the scheduler if its not already running.
@@ -594,7 +595,7 @@ def deleteSchedJob( autoID, type ):
         type = "R" # If the automation is recurring
     else:
         type = "O" # If the automation is one time
-    
+
     all_jobs = scheduler.get_jobs()
 
     print("Deleting sched job: All jobs currently scheduled: {}".format(all_jobs) )
@@ -613,7 +614,7 @@ def refreshSchedJobsTest():
 
     job_id_array = []
 
-  
+
 
     print("All jobs currently scheduled: {}".format(all_jobs) )
 
@@ -630,12 +631,11 @@ def refreshSchedJobsTest():
     new_job = scheduler.add_job(send_auto_message, 'date',[one_time_auto.id, "one"], run_date=datetime.date(2022,3,18), id = str(one_time_auto.id) )
 
     #new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], hour="17", minute="00", start_date = datetime.date(2022, 3, 18), id = str(recurr_auto.id) ) # Executes the function monthly at 10am MST
-            
-            
+
+
     print("All jobs scheduled. Sheduled jobs: {}".format( scheduler.get_jobs() ) )
-    
+
     # start the scheduler if its not already running.
     if scheduler.state != STATE_RUNNING:
         print("STARTING SCHEDULER")
         scheduler.start()
-
