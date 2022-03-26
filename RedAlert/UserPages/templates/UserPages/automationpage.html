@@ -36,11 +36,15 @@
 
                     <div>
                       {% if oneTimeAuto.active %}
-                        <span> Scheduled to run. </span>
+                        <span> Time Until Execution: </span> 
+                        <div id="one-time-auto-timer-{{oneTimeAuto.id}}" style="display: inline-block;">
+
+                        </div>
                       {% else %}
                         <span> Completed </span>
                       {% endif%}
                     </div>
+
                   </div>
                 </li>
               {% endfor %}
@@ -53,8 +57,13 @@
                     </div>
 
                     <div>
-                      <span> Scheduled to run </span>
+                      <span> Scheduled to run in: </span>
                     </div>
+
+                    <div id="recurr-auto-timer-{{recurringAuto.id}}">
+
+                    </div>
+
                   </div>
                 </li>
               {% endfor %}

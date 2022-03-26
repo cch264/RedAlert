@@ -59,7 +59,7 @@ function initializeAutomationModal()
 
         //console.log(`MODAL ID IS ${recurringAutoID}`);
 
-        $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) )
+        $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) );
     })
     //$('#auto-modal-cancel').on('click', clearModalInputs )
    // $('#auto-send-msg').on('click', updateAutomation);
@@ -120,6 +120,8 @@ function initializeOneTimeAutoModals()
 
     assignOneTimeModalButtonListeners( oneTimeAutoID )
 
+    createTimerForAutomations( oneTimeAutoID, "once" );
+
    })
 
   
@@ -140,6 +142,8 @@ function initializeRecurringAutoModals()
         $('#auto-many-send-freq-unit-' + recurringAutoID).val( $('#auto-many-send-freq-unit-val-' + recurringAutoID).val() ).change();
 
         assignRecurrModalButtonListeners(recurringAutoID);
+
+        createTimerForAutomations( recurringAutoID, "many" );
         
 
     })
@@ -740,4 +744,59 @@ function updateRecurringAutomation( autoID )
             console.log('Error - ' + errorMessage);
         }
     });
+}
+
+function createTimerForAutomations( autoID, type )
+{   
+    /*
+    one-time-auto-timer-{{oneTimeAuto.id}}"
+recurr-auto-timer-{{recurringAuto.id}}"
+  */
+
+    var dateOfExecution;
+
+    if(type === "once")
+    {
+        dateOfExecution = new Date($(`#auto-send-once-date-${autoID}`).val()).getTime(); 
+    }
+    else
+    {
+        dateOfExecution = new Date($(`#auto-many-send-many-date-${autoID}`).val()).getTime(); 
+    }
+
+    
+    var timerInterval = setInterval( function(){
+        var currentDate = new Date().getTime();
+
+        var timeLeft = dateOfExecution - currentDate;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        if(type === "once")
+        {
+            $(`#one-time-auto-timer-${autoID}`).html( days + "d " + hours + "h " + minutes + "m " + seconds + "s"); 
+        }
+        else
+        {
+            $(`#recurr-auto-timer-${autoID}`).html( days + "d " + hours + "h " + minutes + "m " + seconds + "s" );
+        }
+
+        if( timeLeft < 0)
+        {
+            clearInterval(timerInterval);
+            if(type === "once")
+            {
+                $(`#one-time-auto-timer-${autoID}`).remove();
+            }
+            else
+            {
+                $(`#recurr-auto-timer-${autoID}`).remove();
+            }
+        }
+
+    }, 1000);
 }
