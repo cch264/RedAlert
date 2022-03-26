@@ -426,6 +426,7 @@ def save_automation( request ):
 # Called on system load and when a new automation is added or edited.
 def refreshSchedJobs( ):
 
+    markOneTimeAutosAsInactive()
 
     all_jobs = scheduler.get_jobs()
 
@@ -677,3 +678,17 @@ def refreshSchedJobsTest():
     if scheduler.state != STATE_RUNNING:
         print("STARTING SCHEDULER")
         scheduler.start()
+
+
+# Iterates through the one time automation objects and marks them inactive if their run date is greater than today
+def markOneTimeAutosAsInactive():
+
+    all_one_time_autos = OneTimeAutomation.objects.filter(active__in=[True])
+
+    for automation in all_one_time_autos:
+        print("AUTOMATION str {} COMPARISON {}".format(str(automation.date), automation.date < date.today()))
+
+        if automation.date < date.today(): # The automation date is a datetime.date object which is created by date.today() where using datetime.now() returns a datetime.datetime object.
+            print("setting auto active false")
+            automation.active = False
+            automation.save()
