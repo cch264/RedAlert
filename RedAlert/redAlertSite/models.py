@@ -23,6 +23,7 @@ class Client( models.Model ):
     phone = models.IntegerField( default=43803690030 )
     lat = models.FloatField()
     long = models.FloatField()
+    user_id = models.IntegerField(default = 11) # the id of the auth user object. Defaults to calvins user id, change this to your id to make all automations belong to you.
 
     def __str__(self):
         return self.name

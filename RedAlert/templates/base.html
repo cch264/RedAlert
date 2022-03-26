@@ -50,6 +50,7 @@
                         <a class="dropdown-item" href="{% url 'dashboard_urls:dashboard_page'%}"> Dashboard </a>
                         <a class="dropdown-item" href="{% url 'user_pages_urls:automation_page'%}"> Automations </a>
                         <a class="dropdown-item" href="{% url 'user_pages_urls:faq_page'%}"> FAQ </a>
+                        <a id="logout-button" class="dropdown-item" href="{% url 'loginAppUrls:log_user_out' 1%}"> Log Out </a> <!-- Pass optinal paramter 1 to the url. -->
                     
                 </div>
 
@@ -99,6 +100,8 @@
         <script src="{% static 'GlobalAssets/js/global.js' %}" > </script>
 
         <script src="{% static 'GlobalAssets/js/fuse.js' %}" > </script>
+
+        <script src="{% static 'GlobalAssets/js/anime.min.js' %}"></script> 
 
         <!-- Add page custom js last. -->
         {% block js_links %} {% endblock %}

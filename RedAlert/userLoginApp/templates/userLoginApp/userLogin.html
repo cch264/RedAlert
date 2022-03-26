@@ -17,11 +17,15 @@
   {% block content %}
     <div class="d-flex flex-column align-items-center my-5 mx-2 footer-padding-fix">
 
+      
+      
       <div class="w-25">
+        
+        <div id="closable-popup-container" class="d-flex justify-content-center">
+  
+        </div>
 
-        {% if changed_pass %}
-          <div> You successfully changed your password! </div>
-        {% endif %}
+
         <!-- Submits to the save_new_user path in urls.py in the redAlertSite folder. Takes optional args parameter. Add a space and include the argument. -->
         <form action="{% url 'loginAppUrls:auth_user_login' %}" method="post">
           <!-- Protects against Cross Site Request Forgeries -->
@@ -51,9 +55,40 @@
 
     </div>
 
+
+    <!-- HIDDEN INPUTS -->
+    <input type="hidden" value="true" id="on-login-page">
+
   {% endblock %}
 
 
 {% block js_links %}
-    <script src="{% static 'userLoginApp/js/userLogin.js' %}" > pageLoad(); </script> 
+    <script src="{% static 'userLoginApp/js/userLogin.js' %}" > console.log("FYUFUUIASFDIBUABIUSFIBUNASFNUIBHJ BAS")</script> 
+
+    <!-- Hackyish way to warn user why they were redirected to the login page. Calls function in global.js -->
+    {% if changed_pass %}
+      <script>
+        createClosablePopup(message='You successfully changed your password!', targetID='closable-popup-container', color='#19E412', fontSize = 20)
+      </script>
+    {% endif %}
+    
+    {% if loginSuccess == 0 %}
+      <script>
+        createClosablePopup(message='No account found with those credentials!', targetID='closable-popup-container', color='#BC1F43', fontSize = 20)
+      </script>
+    {% endif %}
+
+    {% if loggedOut == 1 %}
+      <script>
+        createClosablePopup(message='Successfully Logged Out!', targetID='closable-popup-container', color='#19E412', fontSize = 20)
+      </script>
+    {% endif %}
+
+    {% if not_logged_in %}
+      <script >
+        console.log("hi");
+        createClosablePopup(message='You must be logged in to view that page!', targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+      </script>
+    {% endif %}
+
   {% endblock %}

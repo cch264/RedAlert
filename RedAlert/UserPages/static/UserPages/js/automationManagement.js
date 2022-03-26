@@ -180,6 +180,8 @@ function stopEditingOneTimeModal( autoID )
         restoreOneTimeModalInputs( autoID );
     
         toggleOneTimeModalInputs( autoID, true );
+
+        closeAllClosablePopups();
     }
 
 }
@@ -390,6 +392,8 @@ function stopEditingRecurModal( autoID )
         restoreRecurModalInputs( autoID );
     
         toggleRecurringModalInputs( autoID, true );
+
+        closeAllClosablePopups(); // located in global.js
     }
 
 }
@@ -586,6 +590,8 @@ function validateAutomation( autoID, type )
         }
 
         createPopup("Successfully Updated Automation!", "popup-container", "#11F3A9", 25);
+
+        closeAllClosablePopups();
     }
     else
     {
@@ -593,11 +599,13 @@ function validateAutomation( autoID, type )
 
         if(type === "many")
         {
-            createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
+            //createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20);
         }
         else
         {
-            createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
+            //createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20);
         }
     }
 

@@ -28,3 +28,13 @@
     color: green;
 }
 
+.closable-popup-close-btn{
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    opacity: .5;
+}
+
+.closable-popup-close-btn:hover{
+    background: white;
+}

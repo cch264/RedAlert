@@ -1,61 +1,38 @@
 window.addEventListener('load', (event) => {
 
+    insertPasswordValidationHTML();
+
     resetPassFieldsOnLoad();
-
-    $('#edit-user-profile').on('click', function()
-    {
-        $('#user-profile-display-form').toggle();
-        $('#user-profile-edit-form').toggle();
-
-        $('#allow-pass-edit').prop("checked", false);
-    })
-
-    $('#discard-user-profile-changes').on('click', function()
-    {
-        $('#user-profile-display-form').toggle();
-        $('#user-profile-edit-form').toggle();
-
-        // If user discards changes, uncheck the checkbox as it is not reset automatically.
-        $('#allow-pass-edit').prop("checked", false);
-
-        togglePasswordEdit();
-
-    })
-
-    $('#allow-pass-edit').on('click',function(){
-        
-        togglePasswordEdit();
-    });
 
 
     // Give both pass fields listeners to detect changes in the input. Notice the first two params are switched in validatePassword. This is because validatePassword checks input1 against password validators but only checks input2
     // when validating the form for submission, therefore we need to also add a listeners to the other input to check input2 against input1 while the user types.
-    $('#update-pass-input-1').keyup(function(){
+    $('#id_password').keyup(function(){
         // Set validate password listener 
-        let correctValidation = validatePassword('#update-pass-input-1', '#update-pass-input-2', '#pass-validation-alert-list');
+        let correctValidation = validatePassword('#id_password', '#id_password_confirm', '#pass-validation-alert-list');
 
         if( correctValidation )
         {
-            $('#submit-user-profile-changes').prop('disabled', false);
+            $('#create-new-account-btn').prop('disabled', false);
         }
         else
         {
-            $('#submit-user-profile-changes').prop('disabled', true);
+            $('#create-new-account-btn').prop('disabled', true);
         }
     });
 
-    $('#update-pass-input-2').keyup(function(){
+    $('#id_password_confirm').keyup(function(){
 
         // Set validate password listener 
-        let correctValidation = validatePasswordMatchOnly('#update-pass-input-2', '#update-pass-input-1', '#pass-validation-alert-list');
+        let correctValidation = validatePasswordMatchOnly('#id_password_confirm', '#id_password', '#pass-validation-alert-list');
 
         if( correctValidation )
         {
-            $('#submit-user-profile-changes').prop('disabled', false);
+            $('#create-new-account-btn').prop('disabled', false);
         }
         else
         {
-            $('#submit-user-profile-changes').prop('disabled', true);
+            $('#create-new-account-btn').prop('disabled', true);
         }
     });
 });
@@ -229,14 +206,36 @@ function togglePasswordEdit()
 // Removes input from password fields and ensures checkbox is not checked on page refresh since browsers like Firefox love to fill in forms for you.
 function resetPassFieldsOnLoad()
 {
-    $('#allow-pass-edit').prop("checked", false);
-    $('#update-pass-input-1').prop('disabled', true);
-    $('#update-pass-input-2').prop('disabled', true);
 
-    $('#update-pass-input-1').val("");
-    $('#update-pass-input-2').val("");
+    $('#id_password').val("");
+    $('#id_password_confirm').val("");
 }
 
 
 
+// Manually inserts the html that tells user what pass requirements they need.
+// This is a workaround since we are using django forms and cannot directly place this code inside our html where we need it to go so we must use jquery. Screw Django Forms!
+function insertPasswordValidationHTML()
+{
+    $(`<ul id="pass-validation-alert-list" class="fa-ul">
+        <li id='needs-upper-case-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must contain 1 upper case letter. </span></li>
+        <li id='needs-upper-case-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 upper case letter. </span></li>
 
+        <li id='needs-lower-case-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span > <span class='red-text-color'>Password must contain 1 lower case letter.</span></li>
+        <li id='needs-lower-case-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 lower case letter.</span></li>
+
+        <li id='needs-digit-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must contain 1 digit.</span></li>
+        <li id='needs-digit-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 digit.</span></li>
+
+        <li id='needs-special-char-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span > <span class='red-text-color'>Password must contain 1 special character.</span></li>
+        <li id='needs-special-char-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must contain 1 special character</span></li>
+
+        <li id='needs-length-fail' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Password must be at least 8 characters long.</span></li>
+        <li id='needs-length-succeed' class="display-none"><span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'>Password must be at least 8 characters long.</span></li>
+
+        <li id='needs-to-match' class="display-none"><span class='fa-li'> <i class='fa-solid fa-xmark red-text-color'></i> </span> <span class='red-text-color'>Passwords must match before you can submit! </span></li>
+        <li id='pass-match' class="display-none"> <span class='fa-li'> <i class='fa-solid fa-check green-text-color'></i> </span> <span class='green-text-color'> Passwords match! You may submit now! </span> </li>
+        
+      </ul>`
+    ).insertAfter( $('#id_password_confirm') );
+}

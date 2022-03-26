@@ -41,11 +41,11 @@ def show_dashboard( request ):
         print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
     #delete_all_clients()
-    #create_client_list()
+    #create_client_list(request)
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
-    all_clients_array = Client.objects.all()
+    all_clients_array = Client.objects.filter(user_id=request.user.id)
 
     json_array = []
     for client in all_clients_array:
@@ -84,7 +84,7 @@ def show_dashboard( request ):
     return render(request, 'dashboard/dashboard.html', response)
 
 
-def create_client_list():
+def create_client_list(request):
 
     names =["Zane Roman",
     "Mya Fry",
@@ -195,6 +195,7 @@ def create_client_list():
         #a_client.email = "npn24@nau.edu"
         #a_client.email = "cch264@nau.edu"
         #a_client.phone = "13096202335"
+        a_client.user_id = request.user.id
 
         a_client.save()
 
@@ -357,7 +358,7 @@ def send_message( request ):
     return JsonResponse(response)
 
 
-# Function that takes an ajax request and creates an automation.
+# Function that takes an ajax request and creates a new automation.
 def save_automation( request ):
     print("Request Dictionary is: {}".format( request.POST ))
 
@@ -377,6 +378,7 @@ def save_automation( request ):
         newRecurringAuto.msg_priority = request.POST['message_priority']
         newRecurringAuto.selected_clients = request.POST['selected_clients']
         newRecurringAuto.send_msg_freq_unit = request.POST['send_msg_many_unit']
+        newRecurringAuto.user_id = request.user.id
         newRecurringAuto.save()
 
          #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
@@ -391,6 +393,7 @@ def save_automation( request ):
         newOneTimeAuto.msg_type = request.POST['message_type']
         newOneTimeAuto.msg_priority =  request.POST['message_priority']
         newOneTimeAuto.selected_clients =  request.POST['selected_clients']
+        newOneTimeAuto.user_id= request.user.id
         newOneTimeAuto.save()
 
 
@@ -442,6 +445,7 @@ def refreshSchedJobs( ):
             auto_unit = recurr_auto.send_msg_freq_unit
 
             if auto_unit == "month":
+                # Params: add_job( function _to_execute, job_type, function params in order, months to send message, day to send message, eariliest date notification will be sent, id assigned ot the job, and name of job.,)
                 new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], month='1-12', day="1st mon", hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.
             elif auto_unit == "week":
                 new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"],  day_of_week='mon', hour="17", start_date = recurr_auto.start_date, id = "R" + str(recurr_auto.id),name=recurr_auto.name ) # Executes the function monthly.,
