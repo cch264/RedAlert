@@ -431,7 +431,7 @@ def refreshSchedJobs( ):
 
     job_id_array = []
 
-    all_one_time_autos = OneTimeAutomation.objects.all()
+    all_one_time_autos = OneTimeAutomation.objects.filter(active__in=[True]) # Only get one time automations that have not run yet.
 
     all_recurr_autos = RecurringAutomation.objects.all()
 
@@ -445,7 +445,7 @@ def refreshSchedJobs( ):
     print("Job ID array after creation: {}".format( job_id_array ))
 
     for one_time_auto in all_one_time_autos:
-        if one_time_auto.msg_type == "test_one_time_auto":
+        if one_time_auto.msg_type == "test_one_time_auto" and ("O" + str(one_time_auto.id) ) not in job_id_array:
             new_job = scheduler.add_job(send_auto_message, 'date', [one_time_auto.id, "one"], run_date = datetime( datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour, datetime.now().minute + 1), id = "O" + str(one_time_auto.id),name=one_time_auto.name )
             print("Creating one time automation test. ID: {}::: Run Date is {}".format( one_time_auto.id, datetime( datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour, datetime.now().minute + 1) ))
 
@@ -462,7 +462,7 @@ def refreshSchedJobs( ):
             print("One time auto already has a scheduled job, skipping...")
 
     for recurr_auto in all_recurr_autos:
-        if recurr_auto.msg_type == "test_recurr_auto":
+        if recurr_auto.msg_type == "test_recurr_auto" and ("R" + str(recurr_auto.id) ) not in job_id_array:
             new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], minute="*", start_date = datetime.now(), id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function every minute.
             print("Creating recurring automation TEST. ID: {}::: Date start str is {}".format( recurr_auto.id, datetime.now() ))
         elif ("R" + str(recurr_auto.id) ) not in job_id_array:
@@ -501,6 +501,8 @@ def send_auto_message( autoID, type ):
 
     if type == "one":
         automation = OneTimeAutomation.objects.get(id=autoID)
+        automation.active = False
+        automation.save()
     else:
         automation = RecurringAutomation.objects.get(id=autoID)
 
@@ -511,6 +513,7 @@ def send_auto_message( autoID, type ):
 
     # We change the type of the auto to signify this is a test autoamtion that gets send every minute.
     if (message_type == "test_one_time_auto") or (message_type == "test_recurr_auto"):
+        message_body += " Message Sent on:" + str(datetime.now())
         message_type = "both"
 
     message_priority = automation.msg_priority
