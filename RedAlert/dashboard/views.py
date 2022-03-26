@@ -463,8 +463,8 @@ def refreshSchedJobs( ):
 
     for recurr_auto in all_recurr_autos:
         if recurr_auto.msg_type == "test_recurr_auto":
-            new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], minute="1", start_date = date.today(), id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function every minute.
-            print("Creating recurring automation TEST. ID: {}::: Date start str is {}".format( recurr_auto.id, date.today() ))
+            new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], minute="*", start_date = datetime.now(), id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function every minute.
+            print("Creating recurring automation TEST. ID: {}::: Date start str is {}".format( recurr_auto.id, datetime.now() ))
         elif ("R" + str(recurr_auto.id) ) not in job_id_array:
             print("Creating recurring automation shed. ID: {}::: Date str is {}".format( recurr_auto.id, recurr_auto.start_date_str ))
 
