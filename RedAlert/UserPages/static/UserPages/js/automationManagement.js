@@ -762,6 +762,8 @@ recurr-auto-timer-{{recurringAuto.id}}"
     else
     {
         dateOfExecution = new Date($(`#auto-many-send-many-date-${autoID}`).val()).getTime(); 
+
+        dateOfExecution = getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution );
     }
 
     
@@ -799,4 +801,37 @@ recurr-auto-timer-{{recurringAuto.id}}"
         }
 
     }, 1000);
+}
+
+
+// Receive the date of execution for recurring auto.
+// Recurring next send date will either be the recurring start date OR if the start day has passed, the next execution will be today + the frequency for this auto.
+// Not accurate to the hour! Simply adds one day, week, month, or year to the current date depending on when the recurring automation is supposed to be sent.
+function getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution )
+{
+
+    var today = new Date().getTime();
+
+    if( dateOfExecution > today)
+    {
+        return dateOfExecution;
+    }
+    
+    // Else, date of execution has passed.
+
+    let autoFreq = $(`#auto-many-send-freq-unit-${autoID}`).val();
+
+    switch(autoFreq){
+        case "day":
+
+            return today + 86400000; // Add one day in milliseconds to the current date, that is the next automatione execution time.
+        case "week":
+
+            return today + 604800000;
+        case "month":
+
+            return today + 2629746000;
+        case "year":
+            return today + 31556952000;
+    }
 }
