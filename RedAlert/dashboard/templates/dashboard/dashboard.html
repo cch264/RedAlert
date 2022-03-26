@@ -348,6 +348,13 @@
             </div>
             </div>
           </div>
+
+          {% if not userHasClients %}                                     
+            <div class="d-flex justify-content-center">
+              <button type="button" id="generate-clients-for-user" class="btn btn-primary mt-3"> <a style="text-decoration: none; color: white;" href="{% url 'dashboard_urls:generate_clients'%}"> Click Here to Generate Clients! </a> </button>
+            </div>
+          {% endif %}
+
         </div>
       </div>
 
