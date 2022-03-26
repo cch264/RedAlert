@@ -40,8 +40,8 @@ def show_dashboard( request ):
     else:
         print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
-    delete_all_clients()
-    create_client_list()
+    #delete_all_clients()
+    #create_client_list()
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
