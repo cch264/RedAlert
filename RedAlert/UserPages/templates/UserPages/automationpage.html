@@ -28,11 +28,36 @@
             <ul id="automation-list" class="list-group">
 
               {% for oneTimeAuto in oneTimeAutos%}
-                <li class="list-group-item auto-li" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
+                <li class="list-group-item auto-li" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      {{oneTimeAuto.name}}
+                    </div>
+
+                    <div>
+                      Status - 
+                      {% if oneTimeAuto.active %}
+                        <span> Scheduled to run. </span>
+                      {% else %}
+                        <span> Completed. </span>
+                      {% endif%}
+                    </div>
+                  </div>
+                </li>
               {% endfor %}
 
               {% for recurringAuto in recurringAutos %}
-                <li class="list-group-item auto-li" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
+                <li class="list-group-item auto-li" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      {{recurringAuto.name}}
+                    </div>
+
+                    <div>
+                      <span> Scheduled to run. </span>
+                    </div>
+                  </div>
+                </li>
               {% endfor %}
             </ul>
 
