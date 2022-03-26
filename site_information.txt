@@ -140,6 +140,10 @@ Allow SSH to server DO THIS BEFORE STARTING UFW or else you cant connect back to
 	sudo ufw allow ssh
 
 
+Server commands:
+	Restart Server After Making Changes
+		sudo systemctl restart gunicorn
+
 The templatetags folder holds custom defined filter functions created by the user to be used in html templates.
 
 MONGODB:
@@ -178,6 +182,7 @@ Show ipaddress and port number for running db server
 	db.runCommand({whatsmyuri : 1})
 
 
+
 Start Stop or Restart mongodb local server
 	sudo systemctl status mongodb
 	sudo systemctl stop mongodb
@@ -186,6 +191,35 @@ Start Stop or Restart mongodb local server
 	
 UNMASK MONGODB service. If your system says mongodb service not found do this.
 	sudo service mongod start
+
+
+Using the database on the server with username and pass ( type these commands )
+	use admin
+	db.auth("redalertadmin", passwordPrompt())
+	
+Kill mongo service:
+	ps -edaf | grep mongo | grep -v grep
+	
+	kill pid_of_process
+	
+Start mongodb with user account requirement. If you start the service with this command then you will
+need a username and password to login.
+	mongod --auth
+	
+	
+	db.createUser(
+		{
+		  user: "redalertadmin",
+		  pwd: passwordPrompt(), // or cleartext password
+		  roles: [
+		    { role: "userAdminAnyDatabase", db: "admin" },
+		    { role: "readWriteAnyDatabase", db: "admin" }
+		  ]
+		}
+	)
+	
+	Port: 27017
+	HOST: hwsrv-937117.hostwindsdns.com
 	
 	
 Meeting Notes:
@@ -194,7 +228,3 @@ Meeting Notes:
 	Combine filters into a single drop down.
 
 	Add dynamic city filter based on client city.
-	
-	
-	
-	
