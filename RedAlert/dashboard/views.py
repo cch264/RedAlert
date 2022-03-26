@@ -14,6 +14,10 @@ from sms import send_sms
 from django.core.mail import send_mail
 from .models import OneTimeAutomation
 from .models import RecurringAutomation
+from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import STATE_STOPPED, STATE_RUNNING, STATE_PAUSED
@@ -32,6 +36,7 @@ schedulerInitialStart = True
 @login_required( login_url='/')
 def show_dashboard( request ):
 
+    userHasClients = True
     # Dont run this functin when the dashboar loads if the scheduler is already running.
     # This is how we start the schedular on server restart. Not the best solution but it works fine for now.
     if scheduler.state != STATE_RUNNING:
@@ -42,6 +47,13 @@ def show_dashboard( request ):
 
     #delete_all_clients()
     #create_client_list(request)
+
+
+    print("Length of clients retreived from db  {}".format( len( Client.objects.filter(user_id=request.user.id) ) ) )
+
+    if len( Client.objects.filter(user_id=request.user.id) ) == 0:
+        print("NO CLIENTS ASSOCIATED WITH THIS ACCOUNT!!!!")
+        userHasClients = False
 
     #client_json = json.dumps( [{"msg": "yo", "amsg": "hello"}, {"msg": "val", "amsg": "hello"}] )
 
@@ -78,7 +90,8 @@ def show_dashboard( request ):
     client_json = json.dumps( json_array )
 
     response = {
-        'client_json' : client_json
+        'client_json' : client_json,
+        'userHasClients':userHasClients
     }
 
     return render(request, 'dashboard/dashboard.html', response)
@@ -213,8 +226,11 @@ def delete_all_clients():
 
 
 
+def generate_clients_from_dashboard(request):
 
+    create_client_list(request)
 
+    return HttpResponseRedirect( reverse('dashboard_urls:dashboard_page') )
 
 
 

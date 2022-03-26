@@ -10,4 +10,5 @@ urlpatterns = [
     path('execute_search/', views.execute_search, name='execute_search'),
     path('send_message/', views.send_message, name='send_message'),
     path('save_automation/', views.save_automation, name='send_automation'),
+    path('generate_clients/', views.generate_clients_from_dashboard, name='generate_clients'),
 ]
