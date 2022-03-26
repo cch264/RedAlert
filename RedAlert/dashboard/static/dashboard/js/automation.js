@@ -1,6 +1,8 @@
 window.addEventListener('load', (event) => {
 
     initializeAutomationModal();
+    $('#create-one-time-test-auto').on('click', ()=> {createAutomation(true) } );
+    $('#create-recurr-test-auto').on('click', ()=>{createAutomation(true) } );
 })
 
 
@@ -143,7 +145,7 @@ function validateAutomation()
 }
 
 
-function createAutomation()
+function createAutomation( createTestAuto = false )
 {   
     let autoData = {
         auto_name: $('#auto-name').val(),
@@ -164,6 +166,14 @@ function createAutomation()
             {message_freq: msg_freq},
             {send_msg_once_date: $('#auto-send-once-date').val()}
          )
+
+          // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             console.log(`Setting one time test auto type`);
+             autoData.message_type = "test_one_time_auto";
+         }
+
     }
     else
     {
@@ -174,6 +184,14 @@ function createAutomation()
             {send_msg_many_freq: 1 },
             {send_msg_many_unit: $('#auto-send-freq-unit').val() }
         );
+
+         // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             autoData.message_type = "test_recurr_auto";
+             console.log(`Setting recurr test auto type`);
+         }
+
        
     }
 

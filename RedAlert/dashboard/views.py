@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import random
 import string
-import datetime
 from sms import send_sms
 from django.core.mail import send_mail
 from .models import OneTimeAutomation
@@ -18,6 +17,10 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+
+#import datetime
+from datetime import date
+from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import STATE_STOPPED, STATE_RUNNING, STATE_PAUSED
@@ -202,12 +205,12 @@ def create_client_list(request):
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
         a_client.lat = longLat[index][0]
         a_client.long = longLat[index][1]
-        a_client.email = emails[random.randint(0, len(emails) - 1 )]
-        a_client.phone = phones[random.randint(0, len(phones) - 1 )]
+        #a_client.email = emails[random.randint(0, len(emails) - 1 )]
+        #a_client.phone = phones[random.randint(0, len(phones) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
         #a_client.email = "npn24@nau.edu"
-        #a_client.email = "cch264@nau.edu"
-        #a_client.phone = "13096202335"
+        a_client.email = "calvin7757@gmail.com"
+        a_client.phone = "14803690030"
         a_client.user_id = request.user.id
 
         a_client.save()
@@ -442,7 +445,11 @@ def refreshSchedJobs( ):
     print("Job ID array after creation: {}".format( job_id_array ))
 
     for one_time_auto in all_one_time_autos:
-        if ("O" + str(one_time_auto.id) ) not in job_id_array:
+        if one_time_auto.msg_type == "test_one_time_auto":
+            new_job = scheduler.add_job(send_auto_message, 'date', [one_time_auto.id, "one"], run_date = datetime( datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour, datetime.now().minute + 1), id = "O" + str(one_time_auto.id),name=one_time_auto.name )
+            print("Creating one time automation test. ID: {}::: Run Date is {}".format( one_time_auto.id, datetime( datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour, datetime.now().minute + 1) ))
+
+        elif ("O" + str(one_time_auto.id) ) not in job_id_array:
             print("Creating new one time automation shed. ID: {}::: Date obj is {}".format( one_time_auto.id, one_time_auto.date ))
 
             auto_year = one_time_auto.date_str[0:4]
@@ -450,12 +457,15 @@ def refreshSchedJobs( ):
             auto_day = one_time_auto.date_str[8:10]
 
             # Shed the job for 8am on the date specified by user. Sends the notifications at 17 UTC, which is 10am MST.
-            new_job = scheduler.add_job(send_auto_message, 'date',[one_time_auto.id, "one"], run_date = datetime.datetime( int(auto_year), int(auto_month), int(auto_day), 17, 0), id = "O" + str(one_time_auto.id),name=one_time_auto.name )
+            new_job = scheduler.add_job(send_auto_message, 'date', [one_time_auto.id, "one"], run_date = datetime( int(auto_year), int(auto_month), int(auto_day), 17, 0), id = "O" + str(one_time_auto.id),name=one_time_auto.name )
         else:
             print("One time auto already has a scheduled job, skipping...")
 
     for recurr_auto in all_recurr_autos:
-        if ("R" + str(recurr_auto.id) ) not in job_id_array:
+        if recurr_auto.msg_type == "test_recurr_auto":
+            new_job = scheduler.add_job(send_auto_message, 'cron', [recurr_auto.id, "many"], minute="1", start_date = date.today(), id = "R" + str(recurr_auto.id), name= recurr_auto.name  ) # Executes the function every minute.
+            print("Creating recurring automation TEST. ID: {}::: Date start str is {}".format( recurr_auto.id, date.today() ))
+        elif ("R" + str(recurr_auto.id) ) not in job_id_array:
             print("Creating recurring automation shed. ID: {}::: Date str is {}".format( recurr_auto.id, recurr_auto.start_date_str ))
 
             auto_unit = recurr_auto.send_msg_freq_unit
@@ -498,6 +508,11 @@ def send_auto_message( autoID, type ):
     message_subject = automation.msg_sub
     message_body = automation.msg_body
     message_type = automation.msg_type
+
+    # We change the type of the auto to signify this is a test autoamtion that gets send every minute.
+    if (message_type == "test_one_time_auto") or (message_type == "test_recurr_auto"):
+        message_type = "both"
+
     message_priority = automation.msg_priority
     selected_clients = automation.selected_clients
 
