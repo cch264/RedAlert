@@ -1,5 +1,8 @@
 window.addEventListener('load', (event) => {
 
+    $('#agent-code-edit-input').on('keyup', checkNewAccountInput );
+    $('#phone-number-edit-input').on('keyup', checkNewAccountInput );
+
     resetPassFieldsOnLoad();
 
     $('#edit-user-profile').on('click', function()
@@ -59,6 +62,46 @@ window.addEventListener('load', (event) => {
         }
     });
 });
+
+function checkNewAccountInput()
+{
+
+    let regExp = new RegExp("^\\d+$");
+    let agentCodeValid = regExp.exec($('#agent-code-edit-input').val());
+    let agentPhoneNumValid = regExp.exec($('#phone-number-edit-input').val());
+
+    let inputsValid = agentCodeValid && agentPhoneNumValid;
+
+    if( !inputsValid )
+    {
+        console.log(`Disabling submit button.`);
+        $('#submit-user-profile-changes').attr('disabled', true);
+    }
+    else
+    {
+        console.log(`Enabling submit button.`);
+        $('#submit-user-profile-changes').attr('disabled', false);
+    }
+
+    
+    
+    $('.agent-code-number-req-warning').remove();
+
+    if( !agentCodeValid )
+    {
+        console.log(`Adding warning for: code`);
+        $("label[for='agent-code-edit-input']").append(`<span class='agent-code-number-req-warning red-text'> *Please Enter a Number</span>`);
+    }
+
+
+    $('.agent-phone-number-req-warning').remove();
+
+    if( !agentPhoneNumValid )
+    {
+        console.log(`Adding warning for: phone`);
+        $("label[for='phone-number-edit-input']").append(`<span class='agent-phone-number-req-warning red-text'> *Please Enter a Number</span>`);
+    }
+}
 
 // Validates the first input field only checking if password meets the requirements.
 function validatePassword( input1ID, input2ID, passValidStatusListID)

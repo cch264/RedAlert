@@ -45,7 +45,7 @@
               <label for="account-creation-input">Account Creation Date: </label>
               <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
 
-              <button id="edit-user-profile" type="button" class="btn btn-primary">Edit Profile</button>
+              <button id="edit-user-profile" type="button" class="btn btn-primary mt-3">Edit Profile</button>
 
             </form>
 
@@ -58,27 +58,27 @@
               <input id="user-email-input" name="email" class="form-control" value="{{ userAuthObj.email }}" disabled ></input>
 
               <label for="email-input">First Name: </label>
-              <input id="first-name-input" name="first_name" class="form-control" value="{{ userAuthObj.first_name }}" >
+              <input id="first-name-input" name="first_name" class="form-control" value="{{ userAuthObj.first_name }}" required="true" >
 
               <label for="last-name-input">Last Name: </label>
-              <input id="last-name-input" name="last_name" class="form-control" value="{{ userAuthObj.last_name }}" >
+              <input id="last-name-input" name="last_name" class="form-control" value="{{ userAuthObj.last_name }}" required="true">
 
               <label for="birthdate-input">Birthdate: </label>
               <input id="birthdate-input" name="birthdate" class="form-control" value="{{ userInfoObj.birthdate }}" disabled>
 
-              <label for="agent-code-input">Agent Code: </label>
-              <input id="agent-code-input" name="agent_code" class="form-control" value="{{ userInfoObj.agent_code }}" >
+              <label for="agent-code-edit-input">Agent Code: </label>
+              <input id="agent-code-edit-input" name="agent_code" class="form-control" value="{{ userInfoObj.agent_code }}" required="true">
 
-              <label for="phone-number-input">Phone Number: </label>
-              <input id="phone-number-input" name="agent_phone_number" class="form-control" value="{{ userInfoObj.agent_phone_number }}" >
+              <label for="phone-number-edit-input">Phone Number: </label>
+              <input id="phone-number-edit-input" name="agent_phone_number" class="form-control" value="{{ userInfoObj.agent_phone_number }}" required="true">
 
               <label for="address-input">Address: </label>
-              <input id="address-input" name="agent_address" class="form-control" value="{{ userInfoObj.agent_address }}" >
+              <input id="address-input" name="agent_address" class="form-control" value="{{ userInfoObj.agent_address }}" required="true">
 
               <label for="account-creation-input">Account Creation Date: </label>
               <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
 
-              <h4> Edit Password <input type="checkbox" id="allow-pass-edit" class="ms-2" name="allow-pass-edit" > </h4>
+              <div class="d-flex justify-content-between align-items-center"> <div> <h4> Edit Password </h4> </div> <input type="checkbox" id="allow-pass-edit" class="ms-2 pass-change-cb" name="allow-pass-edit" > </div>
 
               <label for="update-pass-input-1"> Enter New Password </label>
               <input id="update-pass-input-1" name="pass-1" class="form-control" type="password" disabled>
@@ -111,8 +111,8 @@
 
               <input id="user-changed-password" type="hidden" name="changed-password" value="false">
 
-              <button id="submit-user-profile-changes" type="submit" class="btn btn-success">Submit Changes</button>
-              <button id="discard-user-profile-changes" type="button" class="btn btn-danger">Discard Changes</button>
+              <button id="submit-user-profile-changes" type="submit" class="btn btn-success mt-2">Submit Changes</button>
+              <button id="discard-user-profile-changes" type="button" class="btn btn-danger mt-2">Discard Changes</button>
             </form>
             
         </div>
