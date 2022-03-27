@@ -68,7 +68,7 @@
     <!-- Hackyish way to warn user why they were redirected to the login page. Calls function in global.js -->
     {% if changed_pass %}
       <script>
-        createClosablePopup(message='You successfully changed your password!', targetID='closable-popup-container', color='#19E412', fontSize = 20)
+        createClosablePopup(message='You successfully changed your password! Please log in again.', targetID='closable-popup-container', color='#19E412', fontSize = 20)
       </script>
     {% endif %}
     
