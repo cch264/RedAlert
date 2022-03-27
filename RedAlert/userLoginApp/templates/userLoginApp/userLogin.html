@@ -86,8 +86,13 @@
 
     {% if not_logged_in %}
       <script >
-        console.log("hi");
         createClosablePopup(message='You must be logged in to view that page!', targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+      </script>
+    {% endif %}
+
+    {% if created_new_account == 1 %}
+      <script >
+        createClosablePopup(message='Account Created!', targetID='closable-popup-container', color='#19E412', fontSize = 20);
       </script>
     {% endif %}
 
