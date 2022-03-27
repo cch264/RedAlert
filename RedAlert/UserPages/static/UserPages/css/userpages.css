@@ -16,3 +16,12 @@
 .auto-li:hover{
     background-color: #DF6464;
 }
+
+.pass-change-cb{
+    width: 20px;
+    height: 20px;
+}
+
+.red-text{
+    color: red;
+}

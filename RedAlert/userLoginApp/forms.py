@@ -13,32 +13,42 @@ Important Notes about fields in forms
 class UserSignUpForm(forms.Form):
 
     first_name = forms.CharField(label='First Name', max_length=100 )
+    first_name.widget.attrs['required'] = 'true'
 
     last_name = forms.CharField( label='Last Name', max_length=100 )
+    last_name.widget.attrs['required'] = 'true'
 
     email = forms.CharField( max_length=100 )
 
     # Assign an html attribute to the field.
     email.widget.attrs['autocomplete'] = 'off'
+    email.widget.attrs['required'] = 'true'
 
     # forms.CharField specifies the type of input field, widgets are
     # kind of like addons. forms.CharField is called a form field,
     # PasswordInput is a form widget.
     # If label is not provided, the label defaults to the name of the form field.
     password = forms.CharField( widget=forms.PasswordInput )
+    password.widget.attrs['required'] = 'true'
 
     password_confirm = forms.CharField(label='Confirm Password', widget=forms.PasswordInput )
+    password_confirm.widget.attrs['required'] = 'true'
 
     # Format of date returned (YYYY-MM-DD)
     birthday = forms.DateField( label='Birthday', widget=forms.DateInput( attrs={'class':'test-class', 'type':'date'} ) )
+    birthday.widget.attrs['required'] = 'true'
 
     agency_name = forms.CharField( label='Agency Name', max_length=100 )
+    agency_name.widget.attrs['required'] = 'true'
 
     agent_code = forms.CharField( label='Agent Code', max_length=100 )
+    agent_code.widget.attrs['required'] = 'true'
 
-    agent_phone_number = forms.IntegerField( label='Phone Number')
+    agent_phone_number = forms.CharField( label='Phone Number')
+    agent_phone_number.widget.attrs['required'] = 'true'
 
     agent_address = forms.CharField( label='Your Address')
+    agent_address.widget.attrs['required'] = 'true'
 
     # Used to clean an individual form! clean_fieldname must be the method name  for this to work.
     # This is a custom method that is called automatically when the forms is being validated and cleaned to ensure the proper data has been entered.
