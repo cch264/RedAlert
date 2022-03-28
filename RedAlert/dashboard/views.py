@@ -199,7 +199,7 @@ def create_client_list(request):
         a_client.license_num = random.choice(string.ascii_uppercase ) + str(random.randint(10000000,99999999))
         a_client.policies = policies[random.randint(0, len(policies) - 1 )]
         # YYYY-MM-DD
-        a_client.birthdate = datetime.date(random.randint(1920, 2005),random.randint(1, 12), random.randint(1, 28) )
+        a_client.birthdate = datetime(random.randint(1920, 2005),random.randint(1, 12), random.randint(1, 28) )
         a_client.age = 2022 - a_client.birthdate.year
         a_client.gender = gender[ random.randint(0,1)]
         a_client.notification_status = notification_status[random.randint(0, len(notification_status) - 1)]
