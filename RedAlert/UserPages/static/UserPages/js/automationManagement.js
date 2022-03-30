@@ -766,6 +766,8 @@ recurr-auto-timer-{{recurringAuto.id}}"
         dateOfExecution = getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution );
     }
 
+    console.log(`Date of next execution ${dateOfExecution}`)
+
     
     var timerInterval = setInterval( function(){
         var currentDate = new Date().getTime();
@@ -789,10 +791,12 @@ recurr-auto-timer-{{recurringAuto.id}}"
 
         if( timeLeft < 0)
         {
+            console.log(` Remove timer for auto with id ${autoID}`)
             clearInterval(timerInterval);
             if(type === "once")
             {
                 $(`#one-time-auto-timer-${autoID}`).remove();
+                $(`#one-time-auto-timer-label-${autoID}`).text('Completed');
             }
             else
             {
