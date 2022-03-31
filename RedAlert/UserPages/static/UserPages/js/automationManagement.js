@@ -757,22 +757,34 @@ recurr-auto-timer-{{recurringAuto.id}}"
 
     if(type === "once")
     {
-        dateOfExecution = new Date($(`#auto-send-once-date-${autoID}`).val()).getTime(); 
+        // Gets time in UTC but converts to users time zone, this is an issue. Basically creating a date using
+        // the date constructor will offset the date given by minus one day. This is some issue with converting from UTC to current Timezone
+        // as we are passing a date that is in the current timezone already. Because javascript is so awesome we need to
+        // appen a time to the date for the date to be correct. 'T10:00:00' this time stands for 10am since that is when notifications are sent in our app.
+        //
+        // TO Clarify: new Date().getTime() returns the time in the users time zone. new Date(dateString) returns a UTC time that is converted to our timezone.
+        // At the time of writing UTC was 1 day ahead of today so parsing a stirng date for 03-31-2022 would return 03-30-2022.
+        // Parsing a date with a string is discouraged accoring to the MDN so next time pass integers representing the date to avoid head aches.
+        dateOfExecution = new Date( $(`#auto-send-once-date-${autoID}`).val() + "T10:00:00").getTime(); 
     }
     else
     {
-        dateOfExecution = new Date($(`#auto-many-send-many-date-${autoID}`).val()).getTime(); 
+        dateOfExecution = new Date($(`#auto-many-send-many-date-${autoID}`).val()  + "T10:00:00" ).getTime(); 
 
         dateOfExecution = getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution );
     }
 
-    console.log(`Date of next execution ${dateOfExecution}`)
+    console.log(`Date of next execution ${dateOfExecution}`);
 
     
     var timerInterval = setInterval( function(){
-        var currentDate = new Date().getTime();
+        var currentDate = new Date().getTime(); // Get current time in UTC
+
+        //console.log(`Current Date ${currentDate}`);
 
         var timeLeft = dateOfExecution - currentDate;
+
+        //console.log(`Time left until execution ${timeLeft}`);
 
         // Time calculations for days, hours, minutes and seconds
         var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
