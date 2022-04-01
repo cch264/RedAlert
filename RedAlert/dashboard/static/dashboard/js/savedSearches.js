@@ -1,3 +1,5 @@
+
+// Assign the save search button a click listener that executes ajax to save the users search to our database.
 $('#save-search-btn').on('click', createNewSavedSearch );
 
 
@@ -31,4 +33,12 @@ function createNewSavedSearch()
             console.log('Error - ' + errorMessage);
         }
     });
+
+    $('#no-saved-searches').remove();
+    
+    let searchContainer = $('#saved-search-container');
+
+    searchContainer.append(`<li class="list-group-item">${searchToSave}</li>`);
+
+    createPopup( "Succesfully Saved Search!", targetID='popup-container', color='#19E412', fontSize = 30, decreaseOpacity=.03)
 }

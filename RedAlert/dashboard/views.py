@@ -13,6 +13,7 @@ from sms import send_sms
 from django.core.mail import send_mail
 from .models import OneTimeAutomation
 from .models import RecurringAutomation
+from .models import SavedSearches
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
@@ -89,12 +90,21 @@ def show_dashboard( request ):
     #print( len( json_array ) )
     #print( str(json_array) )
 
+    saved_search_objects = SavedSearches.objects.filter(user_id=request.user.id)
+    saved_search_array = []
+
+    for search in saved_search_objects:
+        saved_search_array.append( search.name )
+
+    print(saved_search_array)
 
     client_json = json.dumps( json_array )
 
     response = {
         'client_json' : client_json,
-        'userHasClients':userHasClients
+        'userHasClients':userHasClients,
+        'saved_searches': saved_search_array,
+        'has_saved_searches' : saved_search_objects.exists()
     }
 
     return render(request, 'dashboard/dashboard.html', response)
@@ -692,3 +702,16 @@ def markOneTimeAutosAsInactive():
             print("setting auto active false")
             automation.active = False
             automation.save()
+
+
+def save_user_search(request):
+    new_search = SavedSearches()
+
+    new_search.name = request.POST['search']
+    new_search.user_id = request.user.id
+
+    new_search.save()
+
+    response = {'Success':'true'}
+
+    return JsonResponse(response)
