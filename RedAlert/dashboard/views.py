@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 # Import the client model from redAlertSite app.
 from redAlertSite.models import Client
+from .models import SavedSubset
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -52,6 +53,7 @@ def show_dashboard( request ):
     #print( len( json_array ) )
     #print( str(json_array) )
 
+    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
 
     client_json = json.dumps( json_array )
 
@@ -327,5 +329,15 @@ def send_message( request ):
             #print("Sent to: {}\n".format(sms_index))
 
     # send json response back
+    response = {'Success': 'True'}
+    return JsonResponse(response)
+
+def saveSubset(request):
+    newSubset = SavedSubset()
+    newSubset.name = request.POST['subset']
+    newSubset.user_id = request.user.id
+
+    newSubset.save()
+
     response = {'Success': 'True'}
     return JsonResponse(response)

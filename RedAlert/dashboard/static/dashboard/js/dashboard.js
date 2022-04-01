@@ -3,7 +3,7 @@ var selected_client_id_array = [];
 
 var all_clients = JSON.parse( $('#client-json-input').val() );
 
-
+var savedSubsetKeys = [];
 
 var search_all_keys = [
   "id",
@@ -189,6 +189,7 @@ window.addEventListener('load', (event) => {
     // When the page loads show all search results.
     executeSearch(true);
 
+    refreshSubsetList();
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
@@ -969,6 +970,16 @@ function refreshSelectedClientsString( clientID, add=true)
   $('#send-message-header').html('Send Message To: ' + client_name_str);
 
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
+
+  // Show or hide the save subset button 
+  if(selected_client_id_array.length != 0)
+  {
+    $('#save-subset-btn').show();
+  }
+  else
+  {
+    $('#save-subset-btn').hide();
+  }
 }
 
 function addListenerToSearchResultScrollBox()
@@ -1041,7 +1052,118 @@ function createPopup( message, targetID='popup-container' )
         }
       }, 100 );
 
+}
+
+// ----------------------- Saved Subsets -----------------------------
 
 
+function createNewSubset(name)
+{
+  console.log("Creating a new subset: " + name);
 
+  // Global array of subset keys. I'm not sure if this will be needed or used yet.
+  savedSubsetKeys.push(name);
+  
+  // Save currently selected client id array into localStorage as a new subset with name provided by user as the key.
+  // localStorage is a simple client side storage utility that does not expire unless cleared by the user.
+  localStorage.setItem(name, selected_client_id_array);
+  console.log("Adding subset of selected clients(by ID) into localStorage: " + localStorage.getItem(name));
+  
+  console.log("Number of subsets in localstorage: " + localStorage.length);
+  refreshSubsetList();
+}
+
+function refreshSubsetList()
+{
+  // Remove all current subsets from the html so they don't duplicate
+  $('.subset').remove();
+  let key = "";
+  // Iterate through the localStorage to grab all of the saved subsets. 
+  // NOTE: If anything else other than subset keys are stored in localStorage, this whole thing will go up in flames.
+  for (let index = 0; index < localStorage.length; index++) 
+  {
+    key = localStorage.key(index);
+    key.toString();
+
+    // onclick not working right
+    $('#saved-subsets').append('<li id='+key+' onclick="selectSubset('+key+')" class="list-group-item subset">'+key+'</li>');
+    
+    // move to window listener? 
+    //$("subset").click(selectSubset(key));
+  }
+}
+
+function selectSubset(subsetKey)
+{
+  subsetKey.toString();
+  console.log("A Subset was clicked with key= " + subsetKey);
+
+  for (let index = 0; index < localStorage.getItem(subsetKey).length; index++) 
+  {
+    selectClientSearchResult(localStorage.getItem(subsetKey)[index]);
+  }
+}
+
+
+function subsetNamePopup(tryAgain=false)
+{
+  // Note: Inserting a name with commas will cut off any letters after the comma, this will cause problems with
+  // the list id since it uses user inputted name as element ID and localStorage key value.
+  let subsetName = "";
+  if(tryAgain)
+  {
+    subsetName = prompt("Subset name is already used, please enter new subset name:", "My New Subset");
+  }
+  else
+  {
+    subsetName = prompt("Please enter subset name:", "My New Subset");
+  }
+
+  if (subsetName == null || subsetName == "") 
+  {
+    console.log("User cancelled subset name prompt or name was blank, no subset was created.");
+  }
+  else if(localStorage.getItem(subsetName))
+  {
+    subsetNamePopup(true);
+  } 
+  else 
+  {
+    createNewSubset(subsetName);
+  }
+}
+
+localStorage.clear();
+
+$('#save-subset-btn').on('click', createNewSavedSubset );
+function createNewSavedSubset()
+{
+    // Get the users search query.
+    let subsetToSave = $('#selected-clients-id-array').val();
+
+    $.ajax({
+
+
+        url:'/dashboard/save_subset/',
+        // Type of Request
+        method: "POST",
+        // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+        // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+        headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
+        data: {subset: subsetToSave},
+
+        // Function to call when to django returns a response to our ajax request.
+        success: function (data) {
+            //var x = JSON.stringify(data);
+            console.log("AJAX SAVE SUBSET WAS A SUCCESS " + data['Success']);
+        },
+        // Error handling LOWKEY USELESS
+        error: function ( jqXHR, textStatus, errorThrown ) {
+            console.log(`Error WITH SAVE SEARCH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+            console.log('Error - ' + errorMessage);
+        }
+    });
 }

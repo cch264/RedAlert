@@ -9,4 +9,5 @@ urlpatterns = [
     path('', views.show_dashboard, name='dashboard_page' ),
     path('execute_search/', views.execute_search, name='execute_search'),
     path('send_message/', views.send_message, name='send_message'),
+    path('save_subset/', views.saveSubset, name='save_subset'),
 ]
