@@ -26,6 +26,7 @@ def show_automations( request ):
     oneTimeAutos = OneTimeAutomation.objects.all()
     recurringAutos = RecurringAutomation.objects.all()
 
+    # Grab the subsets for the current agent/user
     saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
     saved_subset_array = []
 
@@ -36,12 +37,7 @@ def show_automations( request ):
 
     return render(request, 'UserPages/automationpage.html', context)  
 
-def show_subsets(request):
-    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
-    saved_subset_array = []
 
-    for subset in saved_subset_objects:
-        saved_subset_array.append(subset)
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
