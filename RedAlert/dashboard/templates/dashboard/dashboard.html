@@ -270,15 +270,9 @@
                       <div id="selected-clients-container">
                         <input id="selected-clients-id-array" type="hidden">
 
-<<<<<<< HEAD
-                        <button id="save-subset-btn" class="btn btn-primary">Save Selection as Subset</button>
+                        <button id="save-subset-btn" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#save-subset-modal">Save Selection as Subset</button>
 
                         <button id="no-selections-showing" class="btn btn-primary display-none"> Don't worry your selections are still here. Click here to show all your selections.</button>
-=======
-                        <button id="no-selections-showing" class="btn btn-primary display-none">
-                           Don't worry your selections are still here. Click here to show all your selections.
-                        </button>
->>>>>>> main
                       </div>
                       <div>
                       </div>
@@ -336,6 +330,9 @@
 
                 <div class="bwh-content px-2 pb-2">
                   <ul id="saved-subsets"class="list-group">
+                    {% for subset in saved_subsets %}
+                      <li class="list-group-item">{{subset.name}}</li>
+                    {% endfor %}
                     
                   </ul>
                 </div>
@@ -350,6 +347,30 @@
     </div>
   </div>
 
+
+
+  <div class="modal fade" id="save-subset-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create New Subset</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label for="subset-name"> Subset Name: </label>
+            <input id="subset-name" class="form-control" type="subject" name="subject">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="create-subset-btn" class="btn btn-primary" data-bs-dismiss="modal"> Create Subset </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
 
   <div class="modal fade" id="create-automation-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

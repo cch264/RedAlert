@@ -56,11 +56,16 @@ def show_dashboard( request ):
     #print( str(json_array) )
 
     saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    saved_subset_array = []
+
+    for subset in saved_subset_objects:
+        saved_subset_array.append(subset)
 
     client_json = json.dumps( json_array )
 
     response = {
-        'client_json' : client_json
+        'client_json' : client_json,
+        'saved_subsets' : saved_subset_array,
     }
 
     return render(request, 'dashboard/dashboard.html', response)
@@ -336,17 +341,16 @@ def send_message( request ):
     response = {'Success': 'True'}
     return JsonResponse(response)
 
-<<<<<<< HEAD
 def saveSubset(request):
     newSubset = SavedSubset()
-    newSubset.name = request.POST['subset']
+    newSubset.name = request.POST['subsetName']
+    newSubset.clientIDs = request.POST['subset']
     newSubset.user_id = request.user.id
 
     newSubset.save()
 
     response = {'Success': 'True'}
     return JsonResponse(response)
-=======
 
 # Function that takes an ajax request and saves an automation.
 def save_automation( request ):
@@ -388,4 +392,3 @@ def save_automation( request ):
     
     return JsonResponse(response)
 
->>>>>>> main
