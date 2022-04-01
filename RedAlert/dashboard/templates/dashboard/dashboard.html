@@ -221,7 +221,9 @@
 
                   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                    <h4 id="send-message-header"> Send Message To: </h4>
+                    <div class="d-flex justify-content-between">
+                      <h4 id="send-message-header"> Send Message To: </h4> <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#create-automation-modal"> Create Automation </button>
+                    </div>
 
                     <div id="notif-tab-1" class="notif-tab px-3 py-3">
 
@@ -268,9 +270,15 @@
                       <div id="selected-clients-container">
                         <input id="selected-clients-id-array" type="hidden">
 
+<<<<<<< HEAD
                         <button id="save-subset-btn" class="btn btn-primary">Save Selection as Subset</button>
 
                         <button id="no-selections-showing" class="btn btn-primary display-none"> Don't worry your selections are still here. Click here to show all your selections.</button>
+=======
+                        <button id="no-selections-showing" class="btn btn-primary display-none">
+                           Don't worry your selections are still here. Click here to show all your selections.
+                        </button>
+>>>>>>> main
                       </div>
                       <div>
                       </div>
@@ -344,7 +352,96 @@
 
 
 
-  <a href='/tech_demo/send_email'></a>
+  <div class="modal fade" id="create-automation-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a New Automation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="d-flex flex-row justify-content-between">
+            <div class="w-50">  
+                <div>
+                  <label for="auto-name"> Automation Name: </label>
+                  <input id="auto-name" class="form-control" type="subject" name="subject">
+                </div>
+
+                <div>
+                  <label for="auto-message-subject"> Subject: </label>
+                  <input id="auto-message-subject" class="form-control" type="subject" name="subject">
+                </div>
+
+                <div>
+                  <label for="auto-message-body"> Message: </label>
+                  <textarea id="auto-message-body" class="form-control" type="text-area" name="message">  </textarea>
+                </div>
+            </div>
+
+            <div>
+
+              <label for="auto-sel-msg-type"> Message Type: </label>
+              <select id="auto-sel-msg-type" class="form-select mb-2" aria-label="Select message type">
+                <option value="auto-def-select-opt" selected> Select a Message Type </option>
+                  <option value="sms"> Send SMS </option>
+                  <option value="email">Send Email </option>
+                  <option value="both">Send Email and SMS </option>
+              </select>
+
+              <label for="auto-sel-msg-priority"> Message Priority: </label>
+              <select id="auto-sel-msg-priority" class="form-select" aria-label="Select message priority">
+                <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="emergency"> Send Emergency Message</option>
+                  <option value="social">Send Social Message</option>
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="d-flex flex-row justify-content-between">
+            <div>
+              <label for="auto-sel-msg-frequency"> Message Frequency: </label>
+              <select id="auto-sel-msg-frequency" class="form-select" aria-label="Select Message Frequency">
+                  <option value="auto-def-select-opt" selected> Select Message Frequency </option>
+                  <option value="once"> One Time </option>
+                  <option value="many"> Recurring </option>
+              </select>
+            </div>
+
+            <div id="auto-send-msg-once-inputs" class="display-none">
+              <label for="auto-send-once-date">Send Message On: </label>
+              <input id="auto-send-once-date" class="form-control" type="date" />     
+            </div>
+
+            <div id="auto-send-msg-many-inputs" class="display-none">
+
+              <label for="auto-send-many-date">Start Recurring Automation Date: </label>
+              <input id="auto-send-many-date" class="form-control" type="date" />   
+
+              <label for="auto-send-freq">Message Frequency: </label>
+              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>  
+
+              <label for="auto-send-freq-unit"> Every: </label>
+              <select id="auto-send-freq-unit" class="form-select" aria-label="Select Message Frequency">
+                  <option value="day" selected> Day </option>
+                  <option value="week"> Week </option>
+                  <option value="month"> Month </option>
+                  <option value="year"> Year </option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="auto-send-msg" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {% endblock %}
 
@@ -362,5 +459,6 @@
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
     <script src="{% static 'dashboard/js/pointinpoly.js' %}"></script>
+    <script src="{% static 'dashboard/js/automation.js' %}"></script>
 
   {% endblock %}

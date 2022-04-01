@@ -1029,6 +1029,7 @@ function executeSearchAjax() {
     });
 }
 
+<<<<<<< HEAD
 
 function createPopup( message, targetID='popup-container' )
 {
@@ -1167,3 +1168,5 @@ function createNewSavedSubset()
         }
     });
 }
+=======
+>>>>>>> main

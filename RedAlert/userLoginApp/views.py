@@ -111,7 +111,7 @@ def createNewUserForm( request ):
             print("REDIRECTING TO NEW URL")
 
             # redirect to a new URL:
-            return  render(request, 'userLoginApp/newUserSuccess.html')
+            return HttpResponseRedirect(reverse('loginAppUrls:user_login_page'))
             #HttpResponseRedirect(reverse('loginAppUrls:new_user_success'))
 
         else:
