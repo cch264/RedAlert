@@ -192,7 +192,7 @@ window.addEventListener('load', (event) => {
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
-    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
+    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); });
 
 
 
@@ -200,6 +200,16 @@ window.addEventListener('load', (event) => {
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {
+          // Show the saved search button if the search box is empty or hide it if the search bar is empty.
+          if( $('#user-search-input').val() != '' )
+          {
+            $('#save-search-btn').css('display','block');
+          }
+          else
+          {
+            $('#save-search-btn').css('display','none');
+          }
+
           if( !$('#no-selections-showing').hasClass('display-none') )
           {
             $('#no-selections-showing').addClass('display-none');
@@ -209,9 +219,11 @@ window.addEventListener('load', (event) => {
 
             executeSearch();
 
-
+          console.log(`SEARCH BOX VAL: ${ $('#user-search-input').val() }`);
+            
         })
 
+        
         createSearchKeyCategoryArray();
 
         assignSearchFilterListeners();
@@ -1103,4 +1115,12 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
-}
+
+
+  }
+  
+  function preventFormSubmission( event )
+  {
+    event.preventDefault;
+    return false;
+  }
