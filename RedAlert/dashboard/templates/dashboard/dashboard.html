@@ -51,7 +51,7 @@
               </div>
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                <form id="user-search-box-form" class="form-floating w-100" method="post">
+                <form id="user-search-box-form" class="form-floating w-100" onsubmit="return preventFormSubmission(event);">
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
 
@@ -59,9 +59,15 @@
                   <!-- This is where the json from our django backend is stored until a javascript function grabs the data to search through it. -->
                   <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
 
-                  <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
+                  <div class="d-flex form-floating">
+                    <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
-                  <label id="search-input-label" for="user-search-input"> Search: </label>
+                    <button id="save-search-btn" class="btn btn-primary"> Save Search </button>
+                    <input type="text" style="display: none;" >
+
+                    <label id="search-input-label" for="user-search-input"> Search: </label>
+                  </div>
+
                 </form>
 
                   <div id="filter-container" class="container">
@@ -312,12 +318,14 @@
                 </div>
 
                 <div class="bwh-content px-2 pb-2">
-                  <ul class="list-group">
-                    <li class="list-group-item">An active item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
+                  <ul id="saved-search-container" class="list-group">
+                    {% for search in saved_searches %}
+                      <li class="list-group-item">{{search}}</li>
+                    {% endfor %}
+
+                    {% if not has_saved_searches %}
+                      <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+                    {% endif %}
                   </ul>
                 </div>
               </div>
@@ -477,5 +485,6 @@
     <script src="{% static 'dashboard/js/map.js' %}"></script>
     <script src="{% static 'dashboard/js/pointinpoly.js' %}"></script>
     <script src="{% static 'dashboard/js/automation.js' %}"></script>
+    <script src="{% static 'dashboard/js/savedSearches.js' %}"></script>
 
   {% endblock %}

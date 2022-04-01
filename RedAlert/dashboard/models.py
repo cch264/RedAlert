@@ -28,3 +28,7 @@ class RecurringAutomation( models.Model ):
     send_msg_freq_unit = models.CharField( max_length = 200 )
     active = models.BooleanField( default=True)
     user_id = models.IntegerField(default = 11) # the id of the auth user object. Defaults to calvins user id, change this to your id to make all automations belong to you.
+
+class SavedSearches( models.Model ):
+    name = models.CharField( max_length = 200)
+    user_id =  models.IntegerField(default = 11)
