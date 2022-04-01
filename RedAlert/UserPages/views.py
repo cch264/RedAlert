@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
+from dashboard.models import SavedSubset
 
 # Get the User Auth object and the UserInfo Object
 def show_profile_page( request ):
@@ -25,9 +26,22 @@ def show_automations( request ):
     oneTimeAutos = OneTimeAutomation.objects.all()
     recurringAutos = RecurringAutomation.objects.all()
 
-    context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos}
+    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    saved_subset_array = []
 
-    return render(request, 'UserPages/automationpage.html', context)    
+    for subset in saved_subset_objects:
+        saved_subset_array.append(subset)
+
+    context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos, 'saved_subsets': saved_subset_array}
+
+    return render(request, 'UserPages/automationpage.html', context)  
+
+def show_subsets(request):
+    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    saved_subset_array = []
+
+    for subset in saved_subset_objects:
+        saved_subset_array.append(subset)
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
