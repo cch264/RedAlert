@@ -70,6 +70,19 @@
 
         
 
+            <h1> Your Saved Searches </h1>
+
+            <ul id="search-list" class="list-group">
+              {% for search in savedSearches%}
+                <li id="saved-search-{{search.id}}" class="list-group-item saved-search" data-bs-toggle="modal" data-bs-target="#save-search-modal-{{search.id}}" > {{search.name}}</li>
+              {% endfor %}
+
+              {% if not hasSavedSearches %}
+              <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+              {% endif %}
+            </ul>
+
+
         
             <h1> Your Subsets </h1>
 
@@ -84,19 +97,59 @@
         
 
         
-            <h1> Your Search Queries </h1>
-
-            <ul id="search-list" class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
-            </ul>
 
         </div>
 
     </div>
+
+
+    {% for search in savedSearches %}
+      <div class="modal fade saved-search-modal" id="save-search-modal-{{search.id}}" data-search-id="{{search.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h5 class="modal-title" id="search-modal-header-{{search.id}}"><span id="search-modal-header-mode-{{search.id}}">View</span> a Search Query</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+    
+            <div class="modal-body">
+              <!-- Container that holds a pop up describing what fields failed to validate.-->
+              <div id="closable-popup-container-saved-search-{{search.id}}" class="mx-2">
+    
+              </div>
+    
+              <label for="name-for-search-to-save-{{search.id}}"> Search Query Name: </label>
+              <input id="name-for-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.name}}" disabled>
+    
+    
+              <label for="display-user-search-to-save-{{search.id}}"> Search Query: </label>
+              <input id="display-user-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.query}}" disabled>
+    
+            </div>
+    
+            <div class="modal-footer">
+
+              <button id="close-search-modal-btn-{{search.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="edit-search-btn-{{search.id}}" class="btn btn-primary"> Edit Search </button>
+
+              <div class="d-flex justify-content-between w-100">
+                <div>
+                  <button id="delete-search-{{search.id}}" class="btn btn-danger display-none"> Delete</button>
+                </div>
+
+                <div>
+                  <button id="save-search-btn-{{search.id}}" class="btn btn-primary display-none"> Save Search </button>
+                  <button id="discard-search-{{search.id}}" type="button" class="btn btn-secondary display-none">Discard</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
 
     {% for oneTimeAuto in oneTimeAutos %}
 
@@ -349,4 +402,5 @@
 {% block js_links %}
     <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
     <script src="{% static 'UserPages/js/automationManagement.js' %}" ></script> 
+    <script src="{% static 'UserPages/js/savedSearches.js' %}" ></script> 
   {% endblock %}

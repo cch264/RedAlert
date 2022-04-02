@@ -172,8 +172,19 @@
     display: inline-block;
 }
 
+/*
 #save-search-btn{
+    
+}
+*/
+
+#open-save-search-modal{
     margin-right: 10px;
     margin-left: 10px;
     display: none;
+}
+
+.saved-search:hover{
+    background-color: #DF6464;
+    cursor: pointer;
 }

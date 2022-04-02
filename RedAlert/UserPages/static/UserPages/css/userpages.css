@@ -15,6 +15,7 @@
 
 .auto-li:hover{
     background-color: #DF6464;
+    cursor: pointer;
 }
 
 .pass-change-cb{
@@ -24,4 +25,9 @@
 
 .red-text{
     color: red;
+}
+
+.saved-search:hover{
+    background-color: #DF6464;
+    cursor: pointer;
 }

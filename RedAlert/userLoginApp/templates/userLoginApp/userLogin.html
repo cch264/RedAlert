@@ -68,31 +68,31 @@
     <!-- Hackyish way to warn user why they were redirected to the login page. Calls function in global.js -->
     {% if changed_pass %}
       <script>
-        createClosablePopup(message='You successfully changed your password! Please log in again.', targetID='closable-popup-container', color='#19E412', fontSize = 20)
+        createClosablePopup(message='<div style="text-align: center"><strong>You successfully changed your password! Please log in again.</strong> </div>', targetID='closable-popup-container', color='#19E412', fontSize = 20)
       </script>
     {% endif %}
     
     {% if loginSuccess == 0 %}
       <script>
-        createClosablePopup(message='No account found with those credentials!', targetID='closable-popup-container', color='#BC1F43', fontSize = 20)
+        createClosablePopup(message='<div style="text-align: center"><strong>No account found with those credentials!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20)
       </script>
     {% endif %}
 
     {% if loggedOut == 1 %}
       <script>
-        createClosablePopup(message='Successfully Logged Out!', targetID='closable-popup-container', color='#19E412', fontSize = 20)
+        createClosablePopup(message='<div style="text-align: center"><strong>Successfully Logged Out!</strong> </div>', targetID='closable-popup-container', color='#19E412', fontSize = 20)
       </script>
     {% endif %}
 
     {% if not_logged_in %}
       <script >
-        createClosablePopup(message='You must be logged in to view that page!', targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+        createClosablePopup(message='<div style="text-align: center"><strong>You must be logged in to view that page!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
       </script>
     {% endif %}
 
     {% if created_new_account == 1 %}
       <script >
-        createClosablePopup(message='Account Created!', targetID='closable-popup-container', color='#19E412', fontSize = 20);
+        createClosablePopup(message='<div style="text-align: center"><strong>Account Created!</strong> </div>', targetID='closable-popup-container', color='#19E412', fontSize = 20);
       </script>
     {% endif %}
 

@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
+from dashboard.models import SavedSearches
 from dashboard.views import *
+
 
 # Get the User Auth object and the UserInfo Object
 @login_required( login_url='/')
@@ -27,9 +29,20 @@ def show_automations( request ):
     
     print("USER ID IS {}".format( request.user.id ))
     oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id ) # Use the auth user id to get the automations for THIS user only.
-    recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
+    hasOneTimeAutos = oneTimeAutos.exists()
 
-    context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos}
+    recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
+    hasRecurringAutos = recurringAutos.exists()
+
+    savedSearches = SavedSearches.objects.filter(user_id=request.user.id)
+    hasSavedSearches = savedSearches.exists()
+
+    context = {'oneTimeAutos': oneTimeAutos,
+               'hasOneTimeAutos': hasOneTimeAutos,
+               'hasRecurringAutos': hasRecurringAutos,
+               'recurringAutos': recurringAutos,
+               'savedSearches': savedSearches,
+               'hasSavedSearches': hasSavedSearches}
 
     return render(request, 'UserPages/automationpage.html', context)    
 
@@ -169,6 +182,25 @@ def delete_automation( request ):
         return JsonResponse(response)
 
 
+def delete_search(request):
 
+    saved_search = SavedSearches.objects.get(id=request.POST['searchID'])
 
+    saved_search.delete()
 
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def update_search(request):
+
+    saved_search = SavedSearches.objects.get(id=request.POST['searchID'])
+
+    saved_search.name = request.POST['searchName']
+    saved_search.query = request.POST['searchQuery']
+
+    saved_search.save()
+
+    response = {'success': 'true'}
+
+    return JsonResponse(response)

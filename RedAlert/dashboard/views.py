@@ -94,7 +94,7 @@ def show_dashboard( request ):
     saved_search_array = []
 
     for search in saved_search_objects:
-        saved_search_array.append( search.name )
+        saved_search_array.append( [search.name, search.query] )
 
     print(saved_search_array)
 
@@ -707,7 +707,8 @@ def markOneTimeAutosAsInactive():
 def save_user_search(request):
     new_search = SavedSearches()
 
-    new_search.name = request.POST['search']
+    new_search.name = request.POST['name']
+    new_search.query = request.POST['search']
     new_search.user_id = request.user.id
 
     new_search.save()
