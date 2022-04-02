@@ -342,15 +342,26 @@ def send_message( request ):
     return JsonResponse(response)
 
 def saveSubset(request):
+    
+    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    # Check that the user is not using a duplicate subset name, for database purposes
+    for subset in saved_subset_objects:
+        print(subset.name + " New Name: " + request.POST['subsetName'])
+        if subset.name == request.POST['subsetName']:
+            response = {'Success': 'duplicate'}
+            return JsonResponse(response)
+    
+
     newSubset = SavedSubset()
     newSubset.name = request.POST['subsetName']
     newSubset.clientIDs = request.POST['subset']
     newSubset.user_id = request.user.id
-
     newSubset.save()
 
     response = {'Success': 'True'}
     return JsonResponse(response)
+
+
 
 # Function that takes an ajax request and saves an automation.
 def save_automation( request ):

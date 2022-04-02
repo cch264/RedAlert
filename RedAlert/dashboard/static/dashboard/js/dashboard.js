@@ -1078,13 +1078,38 @@ function createNewSavedSubset()
         // Function to call when to django returns a response to our ajax request.
         success: function (data) {
             console.log("AJAX SAVE SUBSET WAS A SUCCESS " + data['Success']);
+            if(data['Success'] == "duplicate")
+            {
+              showAndDismissAlert("danger", "A subset with this name already exists, please choose another.");
+            }
+            else if(data['Success'] == "True")
+            {
+              $('#save-subset-modal').modal('toggle')
+              
+            }
         },
         // Error handling LOWKEY USELESS
         error: function ( jqXHR, textStatus, errorThrown ) {
-            console.log(`Error WITH SAVE SEARCH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            console.log(`Error WITH SAVE SUBSET AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
             var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
             console.log('Error - ' + errorMessage);
         }
     });
+}
+
+function showAndDismissAlert(type, message) {
+  var htmlAlert = '<div class="alert alert-' + type + '">' + message + '</div>';
+  // style="z-index: 2; position: absolute; top: 0; left: 0;"
+  // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
+  $(".alert-messages").prepend(htmlAlert);
+
+  // Since we are prepending, take the first alert and tell it to fade in and then fade out.
+  // Note: if we were appending, then should use last() instead of first()
+  $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
+}
+
+function selectSubset()
+{
+  select
 }
