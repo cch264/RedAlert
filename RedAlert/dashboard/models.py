@@ -30,5 +30,6 @@ class RecurringAutomation( models.Model ):
     user_id = models.IntegerField(default = 11) # the id of the auth user object. Defaults to calvins user id, change this to your id to make all automations belong to you.
 
 class SavedSearches( models.Model ):
-    name = models.CharField( max_length = 200)
+    name = models.CharField( max_length = 800)
+    query = models.CharField( max_length = 800)
     user_id =  models.IntegerField(default = 11)

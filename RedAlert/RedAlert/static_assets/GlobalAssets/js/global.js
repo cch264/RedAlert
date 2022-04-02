@@ -42,10 +42,7 @@ function createClosablePopup( message="No msg provided", targetID='closable-popu
   console.log(`Creating popup target id is ${targetID}`);
 
   $(`#${targetID}`).append(`<div class="closable-popup w-100" style="background-color: ${color}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: space-between; border-radius: 10px;">
-                                <div style="text-align: center">
-                                    <strong>${message}</strong>
-                                </div>
-
+                                ${message}
                                 <div class="closable-popup-close-btn d-flex justify-content-center align-items-center" class="me-2"><i class="fa-solid fa-xmark"></i></div>
                             </div>`);
 

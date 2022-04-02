@@ -62,7 +62,8 @@
                   <div class="d-flex form-floating">
                     <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
-                    <button id="save-search-btn" class="btn btn-primary"> Save Search </button>
+                    <button type="button" id="open-save-search-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save-search-modal"> Save Search </button>
+
                     <input type="text" style="display: none;" >
 
                     <label id="search-input-label" for="user-search-input"> Search: </label>
@@ -320,7 +321,7 @@
                 <div class="bwh-content px-2 pb-2">
                   <ul id="saved-search-container" class="list-group">
                     {% for search in saved_searches %}
-                      <li class="list-group-item">{{search}}</li>
+                      <li class="list-group-item saved-search" data-search-query="{{search.1 }}">{{search.0}}</li>
                     {% endfor %}
 
                     {% if not has_saved_searches %}
@@ -369,6 +370,37 @@
     </div>
   </div>
 
+  <div class="modal fade" id="save-search-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Save a Search Query</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Container that holds a pop up describing what fields failed to validate.-->
+          <div id="closable-popup-container-saved-search" class="mx-2">
+
+          </div>
+
+          <label for="name-for-search-to-save"> Name Your Search Query: </label>
+          <input id="name-for-search-to-save" type="text" class="form-control">
+
+
+          <label for="display-user-search-to-save"> Search Query to Save: </label>
+          <input id="display-user-search-to-save" type="text" class="form-control">
+
+        </div>
+
+        <div class="modal-footer">
+          <button id="save-search-btn" class="btn btn-info"> Save Search </button>
+          <button id="save-search-discard" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <div class="modal fade" id="create-automation-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

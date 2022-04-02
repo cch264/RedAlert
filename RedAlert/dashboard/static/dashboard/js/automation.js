@@ -61,7 +61,7 @@ function validateAutomation()
 
     let canSubmit = true;
 
-    let missingInputWarningStr = "The following fields must be filled out: <ul>";
+    let missingInputWarningStr = "<div><strong>The following fields must be filled out: <ul>";
 
     if( $('#auto-name').val().trim() === "")
     {
@@ -137,7 +137,7 @@ function validateAutomation()
     }
     else
     {
-        missingInputWarningStr += "</ul>";
+        missingInputWarningStr += "</ul></strong> </div>";
         //createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
         createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
     }

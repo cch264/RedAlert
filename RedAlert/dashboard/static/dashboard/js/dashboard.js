@@ -203,11 +203,11 @@ window.addEventListener('load', (event) => {
           // Show the saved search button if the search box is empty or hide it if the search bar is empty.
           if( $('#user-search-input').val() != '' )
           {
-            $('#save-search-btn').css('display','block');
+            $('#open-save-search-modal').css('display','block');
           }
           else
           {
-            $('#save-search-btn').css('display','none');
+            $('#open-save-search-modal').css('display','none');
           }
 
           if( !$('#no-selections-showing').hasClass('display-none') )
@@ -735,7 +735,7 @@ function executeSearch( showAllResults=false )
 
   if(userInput === "" )
   {
-    search_result_object = executeFuseSearch(  $('#user-search-input').val(), true );
+    search_result_object = executeFuseSearch(  userInput, true );
   }
   else
   {
