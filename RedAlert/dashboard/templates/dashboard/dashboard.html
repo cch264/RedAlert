@@ -217,13 +217,7 @@
 
               <div>
 
-                <ul class="nav nav-tabs py-2 my-2" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" disabled>
-                      Search Results:
-                    </button>
-                  </li>
-                </ul>
+                <h3 class="darker-body-color" > Search Results: </h3> 
 
                 <div class="bootstrap-grey-border pb-2 sr-scroll-box" id="search-results-container">
 
@@ -231,7 +225,12 @@
                 </div>
 
                 <div class="float-end">
-                  <button type="button" id="expand-sr-btn" class="btn btn-primary">Expand Search Results</button>
+                  <button type="button" id="expand-sr-btn" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
+                    <div class="me-2">
+                      Expand Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </button>
                 </div>
 
               </div>
@@ -250,75 +249,80 @@
           <div class="row">
             <div class="col">
               <div id="notif-container" class="my-3">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Notifications</button>
-                  </li>
-                </ul>
 
-                <div class="tab-content" id="myTabContent">
+                <h3 class="darker-body-color mb-3" > Notifications </h3> 
 
-                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="ps-3">
 
-                    <div class="d-flex justify-content-between">
-                      <h4 id="send-message-header"> Send Message To: </h4> <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#create-automation-modal"> Create Automation </button>
-                    </div>
 
-                    <div id="notif-tab-1" class="notif-tab px-3 py-3">
-
-                      <div class="d-flex flex-row justify-content-between">
-                        <div class="w-50">
-
-                            <div>
-                              <label for="message-subject"> Subject: </label>
-                              <input id="message-subject" class="form-control" type="subject" name="subject">
-                            </div>
-
-                            <div>
-                              <label for="message-body"> Message: </label>
-                              <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
-                            </div>
-                        </div>
-
-                        <div>
-
-                          <label for="sel-msg-type"> Message Type: </label>
-                          <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
-                            <option value="def-select-opt" selected> Select a Message Type </option>
-                              <option value="sms"> Send SMS </option>
-                              <option value="email">Send Email </option>
-                              <option value="both">Send Email and SMS </option>
-                          </select>
-
-                          <label for="sel-msg-priority"> Message Priority: </label>
-                          <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
-                            <option value="def-select-opt" selected> Select a Message Priority </option>
-                              <option value="send-emergency"> Send Emergency Message</option>
-                              <option value="send-social">Send Social Message</option>
-                          </select>
-
-                        </div>
-
-                      </div>
-
-                      <div class="d-flex flex-row-reverse">
-                        <button id="send-msg" class="btn btn-primary"> Send Message </button>
-                      </div>
-                      <div id="msg-popup"></div>
-
-                      <h3> Selected Clients </h3>
-                      <div id="selected-clients-container">
-                        <input id="selected-clients-id-array" type="hidden">
-
-                        <button id="no-selections-showing" class="btn btn-primary display-none">
-                           Don't worry your selections are still here. Click here to show all your selections.
-                        </button>
-                      </div>
-
-                    </div>
+                  <div class="d-flex justify-content-between">
+                    <h4 id="send-message-header"> Send Message To: </h4> 
                   </div>
 
+                  <div id="notif-tab-1" class="notif-tab px-3 py-3">
 
+                    <div class="d-flex flex-row justify-content-between">
+                      <div class="w-50">
+
+                          <div>
+                            <label for="message-subject"> Subject: </label>
+                            <input id="message-subject" class="form-control" type="subject" name="subject">
+                          </div>
+
+                          <div>
+                            <label for="message-body"> Message: </label>
+                            <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
+                          </div>
+                      </div>
+
+                      <div>
+
+                        <label for="sel-msg-type"> Message Type: </label>
+                        <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
+                          <option value="def-select-opt" selected> Select a Message Type </option>
+                            <option value="sms"> Send SMS </option>
+                            <option value="email">Send Email </option>
+                            <option value="both">Send Email and SMS </option>
+                        </select>
+
+                        <label for="sel-msg-priority"> Message Priority: </label>
+                        <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
+                          <option value="def-select-opt" selected> Select a Message Priority </option>
+                            <option value="send-emergency"> Send Emergency Message</option>
+                            <option value="send-social">Send Social Message</option>
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="d-flex flex-row-reverse">
+                      <button id="send-msg" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
+                        <div class="me-2">
+                            Send Message
+                        </div>
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+
+                      <button type="button" class="red-alert-btn-primary d-flex justify-content-between align-items-center me-4" data-bs-toggle="modal" data-bs-target="#create-automation-modal"> 
+                        <div class="me-2">
+                          Create Automation
+                        </div>
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                    <div id="msg-popup"></div>
+
+                    <h3> Selected Clients </h3>
+                    <div id="selected-clients-container">
+                      <input id="selected-clients-id-array" type="hidden">
+
+                      <button id="no-selections-showing" class="btn btn-primary display-none">
+                          Don't worry your selections are still here. Click here to show all your selections.
+                      </button>
+                    </div>
+
+                  </div>
                 </div>
 
 
@@ -339,7 +343,7 @@
 
               <div class="box-with-header mb-5">
                 <div class="bwh-header d-flex justify-content-center px-1 py-1">
-                  <h4> Saved Searches</h4>
+                  <h4 class="my-0"> Saved Searches</h4>
                 </div>
 
                 <div class="bwh-content pb-2">

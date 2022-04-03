@@ -796,7 +796,7 @@ function fill_client_results_box( client_list )
   console.log(`TOTAL CLIENTS IN SR: ${client_count}`);
 }
 
-// Takes a result item, toggles the result from selected to unselected or vice versa.
+// Takes a client id, toggles the search result matching the client id.
 function toggleClientSelection( clientIDInt )
 {
   //console.log(`In toggle`);
@@ -905,20 +905,27 @@ function getClientFromAllClients( clientID )
   return false;
 }
 
+/* 
+* When a user makes a search, the existing search results are removed and recreated.
+* This is a huge problem if the user has already selected clients. This function reselects any clients
+* that were previously selected when the search bar is used.
+*/ 
 function refreshSelectedClientsAfterSearch()
 {
   $('.selected-sr').remove(); // remove all previous search results.
 
+  // Get comma seperated string of selected clients
   let selectedClientID = $("#selected-clients-id-array").val();
 
+  // Split client string by comma to get an array of clients
   let selectedClientIDArray = selectedClientID.split(",");
 
+  // Convert each client id from a string to an integer.
   for( let index = 0; index < selectedClientIDArray; index++ )
   {
     selectedClientIDArray[index] = parseInt(selectedClientIDArray[index]);
   }
 
-  //console.log(`SSSelected clients array ${selectedClientIDArray} length is ${selectedClientIDArray.length}`);
 
   for( let index = 0; index < selectedClientIDArray.length; index++ )
   {
@@ -947,7 +954,9 @@ function generateSelectedSearchElement(result)
 
   return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr selected-sr">
             <div class="d-flex flex-column justify-content-center ps-2">
-              <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div>
+              <div id="sel-sr-btn-${result.item.id}" class="d-flex justify-content-between align-items-center remove-sr-btn">
+                <div>Remove</div>
+                <i class="px-2 fa-solid fa-xmark"></i></div>
             </div>
 
             <div class="container">
@@ -980,8 +989,10 @@ function generateSelectedSearchElement(result)
 function generateSearchElement(result)
 {
   return `<div id="sr-${result.item.id}" data-selected-client="false" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
-              <div class="d-flex flex-column justify-content-center ps-2">
-                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
+              <div class="d-flex flex-column justify-content-center ps-2 sr-btn-container">
+                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn d-flex justify-content-between align-items-center"> 
+                   <div class="me-2">Select </div> 
+                   <i class="fa-solid fa-plus"></i> </div>
               </div>
 
               <div class="container">
@@ -1029,13 +1040,14 @@ function invertPlusBtn( elementID)
         $(elementID).removeClass('remove-sr-btn');
         $(elementID).addClass('plus-btn');
         $(elementID).addClass('select-client-btn');
-        $(elementID).append(` Select <i class="fa-solid fa-plus"></i> `);
+        $(elementID).append(` <div class='me-2'>Select </div><i class="fa-solid fa-plus"></i> `);
       }
 }
 
+
+// Keeps track of a comma seperated list of client ids that have been selected by the user.
 function refreshSelectedClientsString( clientID, add=true)
 {
-
   if( add )
   {
     // Dont add the selected client if the array already includes the id.
@@ -1067,7 +1079,18 @@ function refreshSelectedClientsString( clientID, add=true)
 
   $('#send-message-header').html('Send Message To: ' + client_name_str);
 
+  // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
+
+}
+
+// Check if the user has selected any clients.
+function checkForSelectedClients()
+{
+  if($("#selected-clients-id-array").val() === "")
+  {
+    
+  }
 }
 
 function addListenerToSearchResultScrollBox()
@@ -1078,12 +1101,20 @@ function addListenerToSearchResultScrollBox()
   {
     $('#search-results-container').removeClass('sr-scroll-box');
 
-    $('#expand-sr-btn').html("Minimize Search Results");
+    $('#expand-sr-btn').html(`
+                    <div class="me-2">
+                      Minimize Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-up"></i>`);
   }
   else // If search results container is expanded, minimize it.
   {
     $('#search-results-container').addClass('sr-scroll-box');
-    $('#expand-sr-btn').html("Expand Search Results");
+    $('#expand-sr-btn').html(`
+                    <div class="me-2">
+                      Expand Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>`);
   }
 
 }
