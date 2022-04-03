@@ -26,10 +26,11 @@
 }
 
 .bwh-header{
-    border: 2px solid;
-    border-radius: 6px;
-    background-color: #0d6efd;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background-color: #E60F0F;
     color: white;
+    margin-bottom: 3px;
 }
 
 .bootstrap-grey-border{
@@ -83,7 +84,6 @@
 
 #filter-container{
     width: 40%;
-    border: 3px solid #0d6efd;
     border-radius: 8px;
     margin-left: 5px;
     padding: 10px;
@@ -185,6 +185,25 @@
 }
 
 .saved-search:hover{
-    background-color: #DF6464;
+    background-color: #F56666;
+    color: white;
+    border-radius: 4px;
     cursor: pointer;
 }
+
+.saved-search{
+    border-top: 1px #EAEAEB solid;
+    font-size: 18px;
+    padding-left: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+    text-align: center;
+}
+
+
+#appl-filters-display{
+    font-weight: 550;
+}
+
+

@@ -41,7 +41,7 @@
             <div class="col">
 
 
-              <div class="d-flex flex-row">
+              <div class="d-flex flex-row body-font">
                 <h4 id="appl-filters-display"> Applied Filters: None</h4>
 
                 <div class="display-filters-container">
@@ -71,99 +71,98 @@
 
                 </form>
 
-                  <div id="filter-container" class="container">
-                    <div class="row px-3">
-                      <div class="col px-1 d-flex justify-content-center">
-                        <h4> Filters </h4>
-                      </div>
+                <!-- Start filter container -->
+                <div id="filter-container" class="container">
+                  <div class="row px-3">
+                    <div class="col px-1 d-flex justify-content-center">
+                      <h4> Filters </h4>
                     </div>
+                  </div>
 
-                    <div class="row  px-3">
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-pattern-category" >City</h5>
+                  <div class="row  px-3">
+                    <div class="col-4 d-flex flex-column px-1">
+                      <h5 class="filter-pattern-category" >City</h5>
 
-                        <div>
-                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
-                          <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
-                          <label for="mesa-filter-pattern"> - Mesa </label>
-                        </div>
-
-                        <div>
-                          <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
-                          <label for="phoenix-filter-pattern" > - Phoenix </label>
-                        </div>
-
-                        <div>
-                          <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
-                          <label for="scottsdale-filter-pattern" > - Scottsdale </label>
-                        </div>
-
-                        <div>
-                          <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
-                          <label for="flagstaff-filter-pattern" > - Flagstaff </label>
-                        </div>
-
+                      <div>
+                        <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                        <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
+                        <label for="mesa-filter-pattern"> - Mesa </label>
                       </div>
 
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-pattern-category" >Policies</h5>
-
-                        <div>
-                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
-                          <input id="fire-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="fire">
-                          <label for="fire-filter-pattern"> - Fire </label>
-                        </div>
-
-                        <div>
-                          <input id="home-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="home" >
-                          <label for="home-filter-pattern" > - Home </label>
-                        </div>
-
-                        <div>
-                          <input id="pet-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="pet">
-                          <label for="pet-filter-pattern" > - Pet </label>
-                        </div>
-
-                        <div>
-                          <input id="boat-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="boat">
-                          <label for="boat-filter-pattern" > - Boat </label>
-                        </div>
-
-                        <div>
-                          <input id="auto-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="auto">
-                          <label for="auto-filter-pattern" > - Auto </label>
-                        </div>
-
+                      <div>
+                        <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
+                        <label for="phoenix-filter-pattern" > - Phoenix </label>
                       </div>
 
-
-
-
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
-
-                        <div> Enter Range </div>
-                        <div>
-                          <input id="age-filter-range-pattern-1" class="age-filter-input" type="text" data-query-key="age" data-query-pattern="lower-range" placeholder="Min">
-                          <span> - </span>
-                          <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
-                        </div>
+                      <div>
+                        <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
+                        <label for="scottsdale-filter-pattern" > - Scottsdale </label>
                       </div>
 
+                      <div>
+                        <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
+                        <label for="flagstaff-filter-pattern" > - Flagstaff </label>
+                      </div>
 
                     </div>
 
-                    <div class="row">
-                      <div class="col d-flex flex-row-reverse">
-                        <button type="button" id="clear-filters-btn" class="btn btn-danger"> Clear All Filters </button>
+                    <div class="col-4 d-flex flex-column px-1">
+                      <h5 class="filter-pattern-category" >Policies</h5>
+
+                      <div>
+                        <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                        <input id="fire-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="fire">
+                        <label for="fire-filter-pattern"> - Fire </label>
+                      </div>
+
+                      <div>
+                        <input id="home-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="home" >
+                        <label for="home-filter-pattern" > - Home </label>
+                      </div>
+
+                      <div>
+                        <input id="pet-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="pet">
+                        <label for="pet-filter-pattern" > - Pet </label>
+                      </div>
+
+                      <div>
+                        <input id="boat-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="boat">
+                        <label for="boat-filter-pattern" > - Boat </label>
+                      </div>
+
+                      <div>
+                        <input id="auto-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="auto">
+                        <label for="auto-filter-pattern" > - Auto </label>
+                      </div>
+
+                    </div>
+
+
+
+
+                    <div class="col-4 d-flex flex-column px-1">
+                      <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
+
+                      <div> Enter Range </div>
+                      <div>
+                        <input id="age-filter-range-pattern-1" class="age-filter-input" type="text" data-query-key="age" data-query-pattern="lower-range" placeholder="Min">
+                        <span> - </span>
+                        <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
                       </div>
                     </div>
 
 
                   </div>
 
-
+                  <div class="row">
+                    <div class="col d-flex flex-row-reverse">
+                      <button type="button" id="clear-filters-btn" class="btn btn-danger"> Clear All Filters </button>
+                    </div>
+                  </div>
                 </div>
+                <!-- End filters -->
+
+              </div>
 
             </div>
           </div>
@@ -307,7 +306,7 @@
       </div>
 
       <!-- This col is going to be really small because it only gets 1 column space out of the 12 available in this row.-->
-      <div class="col-2 px-0">
+      <div class="col-2 px-0 pt-5">
         <div class= "container-fluid px-0">
           <div class="row" >
             <div class="col">
@@ -318,16 +317,16 @@
                   <h4> Saved Searches</h4>
                 </div>
 
-                <div class="bwh-content px-2 pb-2">
-                  <ul id="saved-search-container" class="list-group">
+                <div class="bwh-content pb-2">
+                  <div id="saved-search-container" class="d-flex flex-column justify-content-center align-items-center ">
                     {% for search in saved_searches %}
-                      <li class="list-group-item saved-search" data-search-query="{{search.1 }}">{{search.0}}</li>
+                      <div class="saved-search" data-search-query="{{search.1 }}">{{search.0}}</div>
                     {% endfor %}
 
                     {% if not has_saved_searches %}
-                      <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+                      <div id="no-saved-searches" class="">You dont have any saved searches</div>
                     {% endif %}
-                  </ul>
+                  </div>
                 </div>
               </div>
 

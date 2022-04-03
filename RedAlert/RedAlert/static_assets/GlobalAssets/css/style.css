@@ -1,4 +1,13 @@
 
+@font-face {
+    font-family: "Source Sans Pro";
+    src: url('../fonts/SourceSansPro/SourceSansPro-Regular.ttf') format('truetype');
+}
+
+* {
+    font-family: "Source Sans Pro", sans-serif;
+}
+
 
 /* These are global css variables for us to use in any css file. Accessed like this, var(--bootstrap-grey) */
 :root {
@@ -38,3 +47,42 @@
 .closable-popup-close-btn:hover{
     background: white;
 }
+
+
+#primary-nav-bar, #primary-footer{
+    background-color: #FFFFFF;
+    border-bottom:1px #EAEAEB solid;
+}
+
+.top-grey-border{
+    border-top:1px #EAEAEB solid;
+}
+
+
+.main-site-font-color{
+    color:#F01716;
+}
+
+#site-header{
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+/*
+.dropdown-item:hover{
+    background-color: #F01716;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+*/
+
+.dropdown-item:hover{
+    background-color: #FFFFFF;
+    border-bottom: 2px #F01716 solid ;
+    color: #860909;
+}
+
+.body-font{
+    color: #860909;
+}
+

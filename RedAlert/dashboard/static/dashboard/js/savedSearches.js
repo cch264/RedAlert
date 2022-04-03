@@ -62,7 +62,7 @@ function createNewSavedSearch()
     let searchContainer = $('#saved-search-container');
 
     // Add the new saved search to the list of saved searches.
-    searchContainer.append(`<li class="list-group-item saved-search" data-search-query="${searchToSave}" >${searchToSaveName}</li>`);
+    searchContainer.append(`<div class="saved-search" data-search-query="${searchToSave}">${searchToSaveName}</li>`);
 
     createPopup( "Succesfully Saved Search!", targetID='popup-container', color='#19E412', fontSize = 30, decreaseOpacity=.03);
 
