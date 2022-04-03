@@ -638,7 +638,7 @@ function assignSearchFilterListeners()
 
   function updateAppliedFiltersDisplay()
   {
-    let appliedFiltersStr = "Applied Filters: ";
+    let appliedFiltersStr = "<span class='body-font-color'>Applied Filters:</span> ";
 
     // If there are filters selected, then index 0 will be true.
     if( searchKeysAndPatterns[0] )

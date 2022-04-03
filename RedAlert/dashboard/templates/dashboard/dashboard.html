@@ -33,39 +33,57 @@
     <div id="popup-container">
     </div>
 
+    <!-- This row contains the headers for filters and client search.-->
+    <div class="row mt-3">
+
+      <div class="col-1">
+        
+        <div class="d-flex justify-content-center">
+          <h4 class=" bold-font darker-body-color"> Filters </h4>
+        </div>
+      </div>
+
+      <div class="col-9">
+
+        <div class="d-flex justify-content-center">
+          <h4 class="bold-font darker-body-color"> Search For Clients </h4>
+        </div>
+
+      </div>
+
+      <div class="col-2">
+      </div>
+      
+    </div>
+
     <div class="row">
 
       <!-- Begin column for filters -->
       <div class="col-1" >
         <!-- Start filter container -->
         <div id="filter-container" class="container">
-          <div class="row px-3">
-            <div class="col px-1 d-flex justify-content-center">
-              <h4> Filters </h4>
-            </div>
-          </div>
 
-          <div class="row px-3">
-            <div class="col d-flex flex-column px-1">
-              <h5 class="filter-pattern-category" >City</h5>
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-pattern-category body-font-color">City</h5>
 
-              <div>
+              <div class="indent-filter-container">
                 <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
                 <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
                 <label for="mesa-filter-pattern"> - Mesa </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
                 <label for="phoenix-filter-pattern" > - Phoenix </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
                 <label for="scottsdale-filter-pattern" > - Scottsdale </label>
-              </div>
+              </div class="indent-filter-container">
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
                 <label for="flagstaff-filter-pattern" > - Flagstaff </label>
               </div>
@@ -73,32 +91,32 @@
             </div>
           </div>
 
-          <div class="row px-3">
-            <div class="col d-flex flex-column px-1">
-              <h5 class="filter-pattern-category" >Policies</h5>
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-pattern-category body-font-color" >Policies</h5>
 
-              <div>
+              <div class="indent-filter-container">
                 <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
                 <input id="fire-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="fire">
                 <label for="fire-filter-pattern"> - Fire </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="home-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="home" >
                 <label for="home-filter-pattern" > - Home </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="pet-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="pet">
                 <label for="pet-filter-pattern" > - Pet </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="boat-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="boat">
                 <label for="boat-filter-pattern" > - Boat </label>
               </div>
 
-              <div>
+              <div class="indent-filter-container">
                 <input id="auto-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="auto">
                 <label for="auto-filter-pattern" > - Auto </label>
               </div>
@@ -107,14 +125,14 @@
           </div>
 
 
-          <div class="row px-3">
-            <div class="col-4 d-flex flex-column px-1">
-              <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-range-pattern-category body-font-color" data-is-range="true" >Age</h5>
 
-              <div> Enter Range </div>
-              <div>
+              <div class="indent-filter-container"> Enter Range </div>
+              <div class="indent-filter-container">
                 <input id="age-filter-range-pattern-1" class="age-filter-input" type="text" data-query-key="age" data-query-pattern="lower-range" placeholder="Min">
-                <span> - </span>
+                <div> - </div>
                 <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
               </div>
             </div>
@@ -131,21 +149,13 @@
         </div>
         <!-- End filters -->
       </div>
+      <!-- End column for filters -->
+
       <!-- In boot strap grid, you can have a maximum of 12 columns total, col-11 means user all 11 columns spaces avaialble, leaving only one column space for the remaining columns.-->
       <div class="col-9">
         <div class= "container-fluid">
           <div class="row" >
             <div class="col">
-
-
-              <div class="d-flex flex-row body-font">
-                <h4 id="appl-filters-display"> Applied Filters: None</h4>
-
-                <div class="display-filters-container">
-
-                </div>
-
-              </div>
 
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
                 <form id="user-search-box-form" class="form-floating w-100" onsubmit="return preventFormSubmission(event);">
@@ -157,7 +167,7 @@
                   <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
 
                   <div class="d-flex form-floating">
-                    <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
+                    <input type="text" class="form-control flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
                     <button type="button" id="open-save-search-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save-search-modal"> Save Search </button>
 
@@ -167,6 +177,15 @@
                   </div>
 
                 </form>
+
+              </div>
+
+              <div class="d-flex flex-row">
+                <h6 id="appl-filters-display"> <span class="body-font-color">Applied Filters:</span> None</h6>
+
+                <div class="display-filters-container">
+
+                </div>
 
               </div>
 
@@ -312,7 +331,7 @@
       </div>
 
       <!-- This col is going to be really small because it only gets 1 column space out of the 12 available in this row.-->
-      <div class="col-2 px-0 pt-5">
+      <div class="col-2 px-0">
         <div class= "container-fluid px-0">
           <div class="row" >
             <div class="col">

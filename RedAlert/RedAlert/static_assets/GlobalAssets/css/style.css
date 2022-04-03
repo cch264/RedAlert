@@ -82,7 +82,15 @@
     color: #860909;
 }
 
-.body-font{
+.body-font-color{
     color: #860909;
+}
+
+.darker-body-color{
+    color: #390404;
+}
+
+.bold-font{
+    font-weight: 900;
 }
 
