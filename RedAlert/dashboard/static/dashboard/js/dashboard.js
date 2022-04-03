@@ -1084,7 +1084,10 @@ function createNewSavedSubset()
             }
             else if(data['Success'] == "True")
             {
-              $('#save-subset-modal').modal('toggle')
+              // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
+              let subsetContainer = $('#saved-subsets');
+              subsetContainer.append(`<li id=${subsetName} class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#select-subset-modal">${subsetName}</li>`);
+              $('#save-subset-modal').modal('toggle');
               
             }
         },
@@ -1109,7 +1112,7 @@ function showAndDismissAlert(type, message) {
   $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
 }
 
-function selectSubset()
+function selectSubset(subsetName)
 {
-  select
+  // 
 }
