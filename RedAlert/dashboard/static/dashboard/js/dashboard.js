@@ -889,6 +889,7 @@ function getClientSearchResultObjByID( clientIDInt )
   {
     if(search_result_object[index].item.id === parseInt(clientIDInt) )
     {
+      console.log(`Client found ${parseInt(clientIDInt)}`);
       return search_result_object[index];
     }
   }
@@ -1087,7 +1088,6 @@ function refreshSelectedClientsString( clientID, add=true)
   // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
 
-<<<<<<< HEAD
   // Show or hide the save subset button 
   if(selected_client_id_array.length != 0)
   {
@@ -1097,10 +1097,8 @@ function refreshSelectedClientsString( clientID, add=true)
   {
     $('#save-subset-btn').hide();
   }
-=======
   checkForSelectedClients();
 
->>>>>>> main
 }
 
 // Check if the user has selected any clients.
@@ -1174,9 +1172,9 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
+}
 
 
-<<<<<<< HEAD
 function createPopup( message, targetID='popup-container' )
 {
   var opacity = 1;
@@ -1252,7 +1250,8 @@ function createNewSavedSubset()
     });
 }
 
-function showAndDismissAlert(type, message) {
+function showAndDismissAlert(type, message) 
+{
   var htmlAlert = '<div class="alert alert-' + type + '">' + message + '</div>';
   // style="z-index: 2; position: absolute; top: 0; left: 0;"
   // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
@@ -1276,14 +1275,12 @@ function selectClientsFromSubset( event )
     // That parses the input element value and selects ids in the string.
     $('#selected-clients-id-array').val(clientIDString);
 
-    refreshSelectedClientsAfterSearch()
+    refreshSelectedClientsAfterSearch();
 }
-=======
-  }
+  
 
-  function preventFormSubmission( event )
-  {
-    event.preventDefault;
-    return false;
-  }
->>>>>>> main
+function preventFormSubmission( event )
+{
+  event.preventDefault;
+  return false;
+}

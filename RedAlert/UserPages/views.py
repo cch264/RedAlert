@@ -6,13 +6,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
-<<<<<<< HEAD
 from dashboard.models import SavedSubset
-=======
 from dashboard.models import SavedSearches
 from dashboard.views import *
 
->>>>>>> main
 
 # Get the User Auth object and the UserInfo Object
 @login_required( login_url='/')
@@ -35,21 +32,12 @@ def show_automations( request ):
     oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id ) # Use the auth user id to get the automations for THIS user only.
     hasOneTimeAutos = oneTimeAutos.exists()
 
-<<<<<<< HEAD
-    # Grab the subsets for the current agent/user
-    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
-    saved_subset_array = []
-
-    for subset in saved_subset_objects:
-        saved_subset_array.append(subset)
-
-    context = {'oneTimeAutos': oneTimeAutos, 'recurringAutos': recurringAutos, 'saved_subsets': saved_subset_array}
-
-    return render(request, 'UserPages/automationpage.html', context)  
-
-=======
     recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
     hasRecurringAutos = recurringAutos.exists()
+
+    # Grab the subsets for the current agent/user
+    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    hasSubsets = saved_subset_objects.exists()
 
     savedSearches = SavedSearches.objects.filter(user_id=request.user.id)
     hasSavedSearches = savedSearches.exists()
@@ -59,8 +47,14 @@ def show_automations( request ):
                'hasRecurringAutos': hasRecurringAutos,
                'recurringAutos': recurringAutos,
                'savedSearches': savedSearches,
-               'hasSavedSearches': hasSavedSearches}
->>>>>>> main
+               'hasSavedSearches': hasSavedSearches,
+               'saved_subsets': saved_subset_objects,
+               'has_subsets' :hasSubsets
+               }
+
+    return render(request, 'UserPages/automationpage.html', context)  
+
+
 
 
 def show_faq( request ):
