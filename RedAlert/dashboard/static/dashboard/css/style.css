@@ -251,6 +251,10 @@ border-bottom: 1px #EAEAEB solid ;
     border-radius: 10px;
 }
 
+.map-tools-header{
+    font-size: 18px;
+}
+
 /* End search result container styles */
 
 
@@ -270,3 +274,20 @@ border-bottom: 1px #EAEAEB solid ;
 }
 
 /* End Notification Styles */
+
+
+/* MAP controls */
+
+.draw-tool-label{
+    font-size: 12px;
+    color: #555555;
+}
+
+.d-flex-col-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* END MAP controls */
