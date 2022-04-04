@@ -130,17 +130,47 @@
     
             <div class="modal-footer">
 
-              <button id="close-search-modal-btn-{{search.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button id="edit-search-btn-{{search.id}}" class="btn btn-primary"> Edit Search </button>
+              <button type="button" id="close-search-modal-btn-{{search.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+                <div class="me-2">
+                  Close
+                </div>
+              </button>
+  
+              <button type="button" id="edit-search-btn-{{search.id}}" class="red-alert-btn-primary flex-row-between">
+                <div class="me-2">
+                  Edit
+                </div>
+                <i class="fa-solid fa-pen"></i>
+              </button>
 
               <div class="d-flex justify-content-between w-100">
                 <div>
-                  <button id="delete-search-{{search.id}}" class="btn btn-danger display-none"> Delete</button>
+
+                  <button type="button" id="delete-search-{{search.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Delete Search 
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
                 </div>
 
                 <div>
-                  <button id="save-search-btn-{{search.id}}" class="btn btn-primary display-none"> Save Search </button>
-                  <button id="discard-search-{{search.id}}" type="button" class="btn btn-secondary display-none">Discard</button>
+
+                  <button type="button" id="discard-search-{{search.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Discard
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                  <button type="button" id="save-search-btn-{{search.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                    <div class="me-2">
+                      Save Search
+                    </div>
+                    <i class="fa-solid fa-floppy-disk"></i>
+                  </button>
+                  
                 </div>
 
               </div>
@@ -253,19 +283,48 @@
   
           </div>
           <div class="modal-footer">
-            <button id="auto-modal-close-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="auto-modal-edit-{{oneTimeAuto.id}}" class="btn btn-primary"> Edit </button>
+
+            <button type="button" id="auto-modal-close-{{oneTimeAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+              <div class="me-2">
+                Close
+              </div>
+            </button>
+
+            <button type="button" id="auto-modal-edit-{{oneTimeAuto.id}}" class="red-alert-btn-primary flex-row-between">
+              <div class="me-2">
+                Edit
+              </div>
+              <i class="fa-solid fa-pen"></i>
+            </button>
 
             <div class="d-flex justify-content-between w-100">
               <div>
-                <button id="auto-delete-{{oneTimeAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+                <button type="button" id="auto-delete-{{oneTimeAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Delete Automation 
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
 
               <div>
-                <button id="auto-modal-discard-changes-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-                <button id="auto-save-changes-{{oneTimeAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+                <button type="button" id="auto-modal-discard-changes-{{oneTimeAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Discard
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+
+                <button type="button" id="auto-save-changes-{{oneTimeAuto.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                  <div class="me-2">
+                    Save Changes
+                  </div>
+                  <i class="fa-solid fa-floppy-disk"></i>
+                </button>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -376,18 +435,48 @@
   
           </div>
           <div class="modal-footer">
-            <button id="auto-many-modal-close-{{recurringAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="auto-many-edit-auto-{{recurringAuto.id}}" class="btn btn-primary"> Edit </button>
 
+            <button type="button" id="auto-many-modal-close-{{recurringAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+              <div class="me-2">
+                Close
+              </div>
+            </button>
+
+            <button type="button" id="auto-many-edit-auto-{{recurringAuto.id}}" class="red-alert-btn-primary flex-row-between">
+              <div class="me-2">
+                Edit
+              </div>
+              <i class="fa-solid fa-pen"></i>
+            </button>
+
+            <!-- Save, delete, discard btns initially hidden from view.-->
             <div class="d-flex justify-content-between w-100">
               <div>
-                <button id="auto-many-delete-{{recurringAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+                <button type="button" id="auto-many-delete-{{recurringAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Delete Automation 
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
 
               <div>
-                <button id="auto-many-modal-discard-changes-{{recurringAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-                <button id="auto-many-save-changes-{{recurringAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+                <button type="button" id="auto-many-modal-discard-changes-{{recurringAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Discard
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+
+                <button type="button" id="auto-many-save-changes-{{recurringAuto.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                  <div class="me-2">
+                    Save Changes
+                  </div>
+                  <i class="fa-solid fa-floppy-disk"></i>
+                </button>
               </div>
+              
             </div>
           </div>
         </div>
