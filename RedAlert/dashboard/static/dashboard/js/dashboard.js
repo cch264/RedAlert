@@ -184,6 +184,9 @@ function filterSearchResults( searchResultJSON )
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
 
+    // Adds a warning to bottom of page that tells user no clients are selected.
+    checkForSelectedClients();
+
     clearFilterInputs();
 
     // When the page loads show all search results.
@@ -195,14 +198,24 @@ window.addEventListener('load', (event) => {
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
-    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
+    $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); });
 
 
-  
+
 
     // Overwrite the forms on submit method so we can add our custom ajax function to execute on form submit.
     $('#user-search-box-form').keyup(function(event)
         {
+          // Show the saved search button if the search box is empty or hide it if the search bar is empty.
+          if( $('#user-search-input').val() != '' )
+          {
+            $('#open-save-search-modal').css('display','block');
+          }
+          else
+          {
+            $('#open-save-search-modal').css('display','none');
+          }
+
           if( !$('#no-selections-showing').hasClass('display-none') )
           {
             $('#no-selections-showing').addClass('display-none');
@@ -212,8 +225,10 @@ window.addEventListener('load', (event) => {
 
             executeSearch();
 
+          console.log(`SEARCH BOX VAL: ${ $('#user-search-input').val() }`);
 
         })
+
 
         createSearchKeyCategoryArray();
 
@@ -274,6 +289,57 @@ function send_client_notification()
       success: function (data) {
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message sent' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'Your alert has been sent.' ;
+          $(block_to_insert).addClass("msg-succeeded-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 6000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(container_block.firstChild);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
+
+          // get html input fields
+          let subjectInput = document.getElementById("message-subject");
+          let bodyInput = document.getElementById("message-body");
+          let msgTypeInput = document.getElementById("sel-msg-type");
+          let msgPriorityInput = document.getElementById("sel-msg-priority");
+          let selectedClients = document.getElementById("selected-clients-id-array");
+
+          // reset field values to their original states
+          subjectInput.value = "";
+          bodyInput.value = "";
+          $(msgTypeInput)[0].selectedIndex = 0;
+          $(msgPriorityInput)[0].selectedIndex = 0;
+          $('.selected-sr').remove();
+          refreshSelectedClientsAfterSearch();
       },
       // Error handling LOWKEY USELESS
       error: function ( jqXHR, textStatus, errorThrown ) {
@@ -281,6 +347,42 @@ function send_client_notification()
           var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
           console.log('Error - ' + errorMessage);
+
+          // grab reference to the parent div
+          let container_block = document.getElementById( 'msg-popup' );
+
+          // clear any outstanding notification boxes before creating a new one
+          while (container_block.lastChild)
+          {
+            container_block.removeChild(container_block.lastChild);
+          }
+
+          // set up 'message failed' notification box
+          block_to_insert = document.createElement( 'div' );
+          block_to_insert.innerHTML = 'There was an error when sending your alert. Please make sure you have selected at least one client and filled in all fields.' ;
+          $(block_to_insert).addClass("msg-failed-popup")
+
+          // add notification box
+          container_block.appendChild( block_to_insert );
+
+          // function to fade out notification box
+          function fade()
+          {
+            $(block_to_insert).fadeOut("slow");
+          }
+
+          // delay for fading effect
+          setTimeout(fade, 6000);
+
+          // function to remove the div with the notification box in it after it
+          // has faded out
+          function remove_block()
+          {
+            container_block.removeChild(container_block.firstChild);
+          }
+
+          // set timer for removal of div
+          setTimeout(remove_block, 6000);
       }
   });
 }
@@ -542,7 +644,7 @@ function assignSearchFilterListeners()
 
   function updateAppliedFiltersDisplay()
   {
-    let appliedFiltersStr = "Applied Filters: ";
+    let appliedFiltersStr = "<span class='body-font-color'>Applied Filters:</span> ";
 
     // If there are filters selected, then index 0 will be true.
     if( searchKeysAndPatterns[0] )
@@ -639,7 +741,7 @@ function executeSearch( showAllResults=false )
 
   if(userInput === "" )
   {
-    search_result_object = executeFuseSearch(  $('#user-search-input').val(), true );
+    search_result_object = executeFuseSearch(  userInput, true );
   }
   else
   {
@@ -678,7 +780,7 @@ function fill_client_results_box( client_list )
 
     // Get the div that contains the search result.
     $(`#sr-btn-${clientID}`).on('click', (event) => {
-  
+
       // DESELECT A PREVIOUSLY SELECTED CLIENT SEARCH RESULT
       // If the client search result already exist in the selected clients container, remove it.
       // If you query an html element and jquery returns 0 that means the element was not found and we know it does not exist.
@@ -690,7 +792,7 @@ function fill_client_results_box( client_list )
       {
         toggleAnyClient( clientID );
 
-    
+
       }
 
     })
@@ -700,7 +802,7 @@ function fill_client_results_box( client_list )
   console.log(`TOTAL CLIENTS IN SR: ${client_count}`);
 }
 
-// Takes a result item, toggles the result from selected to unselected or vice versa.
+// Takes a client id, toggles the search result matching the client id.
 function toggleClientSelection( clientIDInt )
 {
   //console.log(`In toggle`);
@@ -745,7 +847,6 @@ function deselectClientSearchResult( clientIDInt )
   invertPlusBtn( `#sr-btn-${clientIDInt}` );
   $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
   toggleSpecificPin( clientIDInt.toString() );
-
   refreshSelectedClientsString(clientIDInt, false);
 }
 
@@ -776,7 +877,7 @@ function selectClientSearchResult( clientIDInt )
          });
 
    $(`#sr-${clientIDInt}`).attr('data-selected-client', 'true');
-  
+
    refreshSelectedClientsString(clientIDInt, true);
 }
 
@@ -809,20 +910,27 @@ function getClientFromAllClients( clientID )
   return false;
 }
 
+/* 
+* When a user makes a search, the existing search results are removed and recreated.
+* This is a huge problem if the user has already selected clients. This function reselects any clients
+* that were previously selected when the search bar is used.
+*/ 
 function refreshSelectedClientsAfterSearch()
 {
-  $('.selected-sr').remove(); // remove all previous search results. 
+  $('.selected-sr').remove(); // remove all previous search results.
 
+  // Get comma seperated string of selected clients
   let selectedClientID = $("#selected-clients-id-array").val();
 
+  // Split client string by comma to get an array of clients
   let selectedClientIDArray = selectedClientID.split(",");
 
+  // Convert each client id from a string to an integer.
   for( let index = 0; index < selectedClientIDArray; index++ )
   {
     selectedClientIDArray[index] = parseInt(selectedClientIDArray[index]);
   }
 
-  //console.log(`SSSelected clients array ${selectedClientIDArray} length is ${selectedClientIDArray.length}`);
 
   for( let index = 0; index < selectedClientIDArray.length; index++ )
   {
@@ -851,7 +959,9 @@ function generateSelectedSearchElement(result)
 
   return `<div id="selected-sr-${result.item.id}" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr selected-sr">
             <div class="d-flex flex-column justify-content-center ps-2">
-              <div id="sel-sr-btn-${result.item.id}" class="remove-sr-btn"> Remove <i class="px-2 fa-solid fa-xmark"></i></div>
+              <div id="sel-sr-btn-${result.item.id}" class="d-flex justify-content-between align-items-center remove-sr-btn">
+                <div>Remove</div>
+                <i class="px-2 fa-solid fa-xmark"></i></div>
             </div>
 
             <div class="container">
@@ -884,8 +994,10 @@ function generateSelectedSearchElement(result)
 function generateSearchElement(result)
 {
   return `<div id="sr-${result.item.id}" data-selected-client="false" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
-              <div class="d-flex flex-column justify-content-center ps-2">
-                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn"> Select <i class="fa-solid fa-plus"></i> </div>
+              <div class="d-flex flex-column justify-content-center ps-2 sr-btn-container">
+                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn d-flex justify-content-between align-items-center"> 
+                   <div class="me-2">Select </div> 
+                   <i class="fa-solid fa-plus"></i> </div>
               </div>
 
               <div class="container">
@@ -933,13 +1045,14 @@ function invertPlusBtn( elementID)
         $(elementID).removeClass('remove-sr-btn');
         $(elementID).addClass('plus-btn');
         $(elementID).addClass('select-client-btn');
-        $(elementID).append(` Select <i class="fa-solid fa-plus"></i> `);
+        $(elementID).append(` <div class='me-2'>Select </div><i class="fa-solid fa-plus"></i> `);
       }
 }
 
+
+// Keeps track of a comma seperated list of client ids that have been selected by the user.
 function refreshSelectedClientsString( clientID, add=true)
 {
-
   if( add )
   {
     // Dont add the selected client if the array already includes the id.
@@ -971,8 +1084,10 @@ function refreshSelectedClientsString( clientID, add=true)
 
   $('#send-message-header').html('Send Message To: ' + client_name_str);
 
+  // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
 
+<<<<<<< HEAD
   // Show or hide the save subset button 
   if(selected_client_id_array.length != 0)
   {
@@ -982,8 +1097,30 @@ function refreshSelectedClientsString( clientID, add=true)
   {
     $('#save-subset-btn').hide();
   }
+=======
+  checkForSelectedClients();
+
+>>>>>>> main
 }
 
+// Check if the user has selected any clients.
+function checkForSelectedClients()
+{
+  if($("#selected-clients-id-array").val() === "")
+  {
+    $(`#selected-clients-container`).append(`
+      <h4 class="ms-3 no-clients-sel-warning">
+        No Clients Selected.
+      </h4>
+    `);
+  }
+  else
+  {
+    $(".no-clients-sel-warning").remove();
+  }
+}
+
+// Toggles the search result box between expanded and minimized.
 function addListenerToSearchResultScrollBox()
 {
 
@@ -992,12 +1129,20 @@ function addListenerToSearchResultScrollBox()
   {
     $('#search-results-container').removeClass('sr-scroll-box');
 
-    $('#expand-sr-btn').html("Minimize Search Results");
+    $('#expand-sr-btn').html(`
+                    <div class="me-2">
+                      Minimize Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-up"></i>`);
   }
   else // If search results container is expanded, minimize it.
   {
     $('#search-results-container').addClass('sr-scroll-box');
-    $('#expand-sr-btn').html("Expand Search Results");
+    $('#expand-sr-btn').html(`
+                    <div class="me-2">
+                      Expand Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>`);
   }
 
 }
@@ -1029,9 +1174,9 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
-}
 
 
+<<<<<<< HEAD
 function createPopup( message, targetID='popup-container' )
 {
   var opacity = 1;
@@ -1133,3 +1278,12 @@ function selectClientsFromSubset( event )
 
     refreshSelectedClientsAfterSearch()
 }
+=======
+  }
+
+  function preventFormSubmission( event )
+  {
+    event.preventDefault;
+    return false;
+  }
+>>>>>>> main

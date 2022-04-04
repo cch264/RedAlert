@@ -33,7 +33,7 @@
     </head>
 
     <body>
-        <nav id="primary-nav-bar" class="navbar navbar-expand-lg navbar-light bg-light mb-2" >
+        <nav id="primary-nav-bar" class="navbar navbar-expand-lg navbar-light mb-2 main-site-font-color" >
 
              <div class="d-flex align-items-center justify-content-between w-100">
 
@@ -41,7 +41,7 @@
                     <div>
                         <a href='loginAppUrls:user_login_page'> <img src="{% static 'GlobalAssets/images/Capstone_Logo.png' %}" width="50" height="50"> </a>
                     </div>
-                    <div class="ms-4"> State Farm Red Alert </div>
+                    <div id="site-header" class="ms-4"> State Farm Red Alert </div>
                 </div>
                 
                 <!-- Hide this div on screens smaller than large -->
@@ -50,6 +50,7 @@
                         <a class="dropdown-item" href="{% url 'dashboard_urls:dashboard_page'%}"> Dashboard </a>
                         <a class="dropdown-item" href="{% url 'user_pages_urls:automation_page'%}"> Automations </a>
                         <a class="dropdown-item" href="{% url 'user_pages_urls:faq_page'%}"> FAQ </a>
+                        <a id="logout-button" class="dropdown-item" href="{% url 'loginAppUrls:log_user_out' 1%}"> Log Out </a> <!-- Pass optinal paramter 1 to the url. -->
                     
                 </div>
 
@@ -100,10 +101,12 @@
 
         <script src="{% static 'GlobalAssets/js/fuse.js' %}" > </script>
 
+        <script src="{% static 'GlobalAssets/js/anime.min.js' %}"></script> 
+
         <!-- Add page custom js last. -->
         {% block js_links %} {% endblock %}
 
-        <nav id="primary-footer" class="navbar navbar-light bg-light">
+        <nav id="primary-footer" class="navbar navbar-light top-grey-border">
             <div class="d-flex flex-column justify-content-center w-100">
 
                 <div class="d-flex justify-content-center" >

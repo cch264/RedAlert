@@ -6,9 +6,16 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
+<<<<<<< HEAD
 from dashboard.models import SavedSubset
+=======
+from dashboard.models import SavedSearches
+from dashboard.views import *
+
+>>>>>>> main
 
 # Get the User Auth object and the UserInfo Object
+@login_required( login_url='/')
 def show_profile_page( request ):
 
     print("Ran show profile page view")
@@ -21,11 +28,14 @@ def show_profile_page( request ):
 
     return render(request, 'UserPages/profilepage.html', context)
 
-
+@login_required( login_url='/')
 def show_automations( request ):
-    oneTimeAutos = OneTimeAutomation.objects.all()
-    recurringAutos = RecurringAutomation.objects.all()
+    
+    print("USER ID IS {}".format( request.user.id ))
+    oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id ) # Use the auth user id to get the automations for THIS user only.
+    hasOneTimeAutos = oneTimeAutos.exists()
 
+<<<<<<< HEAD
     # Grab the subsets for the current agent/user
     saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
     saved_subset_array = []
@@ -37,6 +47,20 @@ def show_automations( request ):
 
     return render(request, 'UserPages/automationpage.html', context)  
 
+=======
+    recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
+    hasRecurringAutos = recurringAutos.exists()
+
+    savedSearches = SavedSearches.objects.filter(user_id=request.user.id)
+    hasSavedSearches = savedSearches.exists()
+
+    context = {'oneTimeAutos': oneTimeAutos,
+               'hasOneTimeAutos': hasOneTimeAutos,
+               'hasRecurringAutos': hasRecurringAutos,
+               'recurringAutos': recurringAutos,
+               'savedSearches': savedSearches,
+               'hasSavedSearches': hasSavedSearches}
+>>>>>>> main
 
 
 def show_faq( request ):
@@ -114,6 +138,9 @@ def update_automation( request ):
         newRecurringAuto.send_msg_freq_unit = request.POST['send_msg_many_unit']
         newRecurringAuto.save()
 
+        # Delete the previously scheduled job for this automation.
+        deleteSchedJob( newRecurringAuto.id, "many") 
+
          #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
     else:
 
@@ -128,8 +155,14 @@ def update_automation( request ):
         newOneTimeAuto.msg_priority =  request.POST['message_priority']
         newOneTimeAuto.save()
 
+        # Delete the previously scheduled job for this automation.
+        deleteSchedJob( newOneTimeAuto.id, "one")
+
     
-    
+
+    # We just deleted a previous sheduled job, now lets refresh the sched job list so the job for this automation is recreated.
+    refreshSchedJobs()
+
     return JsonResponse(response)
 
 
@@ -138,14 +171,19 @@ def delete_automation( request ):
     if request.POST['type'] == "many":
         automationObj = RecurringAutomation.objects.get(id=request.POST['autoID'] )
 
+        deleteSchedJob( automationObj.id, "many")
+
         automationObj.delete()
 
         response = {'Success': 'Deleted recurring automation'}
+
 
         return JsonResponse(response)
 
     elif request.POST['type'] == "one":
         oneTimeAuto = OneTimeAutomation.objects.get(id=request.POST['autoID'] )
+
+        deleteSchedJob( oneTimeAuto.id, "one")
 
         oneTimeAuto.delete()
 
@@ -161,6 +199,25 @@ def delete_automation( request ):
         return JsonResponse(response)
 
 
+def delete_search(request):
 
+    saved_search = SavedSearches.objects.get(id=request.POST['searchID'])
 
+    saved_search.delete()
 
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def update_search(request):
+
+    saved_search = SavedSearches.objects.get(id=request.POST['searchID'])
+
+    saved_search.name = request.POST['searchName']
+    saved_search.query = request.POST['searchQuery']
+
+    saved_search.save()
+
+    response = {'success': 'true'}
+
+    return JsonResponse(response)

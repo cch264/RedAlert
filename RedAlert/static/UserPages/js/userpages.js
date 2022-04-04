@@ -60,7 +60,7 @@ window.addEventListener('load', (event) => {
     });
 });
 
-
+// Validates the first input field only checking if password meets the requirements.
 function validatePassword( input1ID, input2ID, passValidStatusListID)
 {
     $(passValidStatusListID).show();

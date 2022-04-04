@@ -1,6 +1,8 @@
 window.addEventListener('load', (event) => {
 
     initializeAutomationModal();
+    $('#create-one-time-test-auto').on('click', ()=> {createAutomation(true) } );
+    $('#create-recurr-test-auto').on('click', ()=>{createAutomation(true) } );
 })
 
 
@@ -10,7 +12,7 @@ function initializeAutomationModal()
 
     $('#auto-modal-cancel').on('click', clearModalInputs )
 
-    $('#auto-send-msg').on('click', createAutomation);
+    $('#auto-send-msg').on('click', validateAutomation);
 }
 
 
@@ -34,19 +36,116 @@ function toggleAutomationType()
     }
 }
 
-
+// Clear all input elements inside the modal if the user hits the discard button.
 function clearModalInputs()
 {
-    $('#auto-sel-msg-frequency').val('auto-def-select-opt').change();
-    $('#auto-send-once-date').val('');
+
+    $('#auto-name').val('');
+    $('#auto-message-subject').val('');
+    $('#auto-message-body').val('');
+    $('#auto-sel-msg-type').val('auto-def-select-type-opt').change();
+    $('#auto-sel-msg-priority').val('auto-def-select-priority-opt').change();
+
+    $('#auto-sel-msg-frequency').val('auto-def-select-freq-opt').change();
+    $('#auto-send-once-date').val('').change();;
     $('#auto-send-many-date').val('').change();
-    $('#auto-send-freq').val('');
-    $('#auto-send-freq-unit').val('auto-send-each-day').change();
+    $('#auto-send-freq').val('1');
+    $('#auto-send-freq-unit').val('day').change();
+
+    closeAllClosablePopups(); // function from global.js
+
+}
+
+function validateAutomation()
+{
+
+    let canSubmit = true;
+
+    let missingInputWarningStr = "<div><strong>The following fields must be filled out: <ul>";
+
+    if( $('#auto-name').val().trim() === "")
+    {
+        missingInputWarningStr += "<li>Automation Name</li> ";
+        canSubmit = false;
+    }
+    if( $('#auto-message-subject').val().trim() === "" )
+    {
+        missingInputWarningStr += "<li>Subject</li> ";
+        canSubmit = false;
+    }
+    
+    if( $('#auto-message-body').val().trim() === "" )
+    {
+        missingInputWarningStr += "<li>Message Body</li> ";
+        canSubmit = false;
+    }
+
+    if( $('#auto-sel-msg-type').val() === "auto-def-select-type-opt")
+    {
+        missingInputWarningStr += "<li>Message Type</li> ";
+        canSubmit = false;
+    }
+  
+    if(  $('#auto-sel-msg-priority').val() === "auto-def-select-priority-opt" )
+    {
+        missingInputWarningStr += "<li>Message Priority</li>";
+        canSubmit = false;
+    }
+
+
+
+    if( $('#auto-sel-msg-frequency').val() === "auto-def-select-freq-opt")
+    {
+        missingInputWarningStr += "<li>Automation Type</li> ";
+        canSubmit = false;
+    }
+    else if( $('#auto-sel-msg-frequency').val() === "once")
+    {
+        if( $(`#auto-send-once-date`).val() === "" )
+        {
+            missingInputWarningStr += "<li>Date for One Time Automation</li> ";
+            canSubmit = false;
+        }
+    }
+    else if( $('#auto-sel-msg-frequency').val() === "many")
+    {
+        if( $(`#auto-send-many-date`).val() === "" )
+        {
+            missingInputWarningStr += "<li>Date for Recurring Automation</li> ";
+            canSubmit = false;
+        }
+    }
+
+    if($(`#selected-clients-id-array`).val() === "" )
+    {
+        missingInputWarningStr += "<li>You Must Select at Least 1 Client Before Creating an Automation</li> ";
+        canSubmit = false;
+    }
+
+
+    if(canSubmit)
+    {
+        createAutomation(); // Create the automation using an ajax request.
+        clearModalInputs(); // Clear automation inputs if the auto was succesfull.
+        $(`#create-automation-modal`).modal('hide');
+
+        createPopup("Successfully Created Automation!", "popup-container-auto-create-success", "#11F3A9", 25);
+
+        closeAllClosablePopups();
+
+        //createClosablePopup( message = "Successfully Created Automation!", targetID='popup-container-auto-create-success', color='#19E412', fontSize = 20);
+    }
+    else
+    {
+        missingInputWarningStr += "</ul></strong> </div>";
+        //createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
+        createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+    }
 
 }
 
 
-function createAutomation()
+function createAutomation( createTestAuto = false )
 {   
     let autoData = {
         auto_name: $('#auto-name').val(),
@@ -67,6 +166,14 @@ function createAutomation()
             {message_freq: msg_freq},
             {send_msg_once_date: $('#auto-send-once-date').val()}
          )
+
+          // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             console.log(`Setting one time test auto type`);
+             autoData.message_type = "test_one_time_auto";
+         }
+
     }
     else
     {
@@ -77,6 +184,14 @@ function createAutomation()
             {send_msg_many_freq: 1 },
             {send_msg_many_unit: $('#auto-send-freq-unit').val() }
         );
+
+         // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             autoData.message_type = "test_recurr_auto";
+             console.log(`Setting recurr test auto type`);
+         }
+
        
     }
 

@@ -192,34 +192,41 @@ var clientMarkerArray = [];
 
  function startDrawingOnMap()
  {
-  $('#start-drawing-btn').addClass('display-none'); 
+    $('#start-draw-container').css('display','none');
+    // Select all child elements and hide them with the class.
+    $('#start-draw-container >').css('display','none'); 
+    
 
-  $('#stop-drawing-btn').removeClass('display-none'); 
-  drawMode = true;
-  startingLine = true;
+    $('#stop-draw-container').css('display','flex');  
+    $('#stop-draw-container >').css('display','block');  
+
+    drawMode = true;
+    startingLine = true;
  }
 
  function stopDrawingOnMap()
  {
-  $('#stop-drawing-btn').addClass('display-none'); 
+    $('#stop-draw-container').css('display','flex');
+    $('#stop-draw-container >').css('display','none');
 
-  $('#start-drawing-btn').removeClass('display-none');
+    $('#start-draw-container').css('display','flex'); 
+    $('#start-draw-container >').css('display','block'); 
 
-  drawMode = false;
-  startingLine = true;
+    drawMode = false;
+    startingLine = true;
 
-  
+    
 
-  latlngs = [];
+    latlngs = [];
 
-  if( !drawingComplete ) // If user stopped drawing mode before finishing drawing, clear polygon.
-  {
-    discardCurrentShape();
-  }
+    if( !drawingComplete ) // If user stopped drawing mode before finishing drawing, clear polygon.
+    {
+      discardCurrentShape();
+    }
 
-  drawingComplete = false; // User is not drawing anymore, reset this var for next drawing.
+    drawingComplete = false; // User is not drawing anymore, reset this var for next drawing.
 
-  currentUserShape = null;
+    currentUserShape = null;
   drawStartPoint = null;
  }
 

@@ -18,21 +18,39 @@ import random
 from django.utils.dateparse import parse_date
 from .forms import UserSignUpForm
 from sms import send_sms
+from django.contrib.auth import logout
 
 
 # Create your views here.
 # A view function is the code we run before showing a user a page so we can query the database and perform other functions
 # like user authentication or creating a list of data to show on the web page.
 # If login_success =3 , user did not just log in. 0 if user failed to log in and 1 if they succeeded in logging in.
-def userLoginPage( request, pass_change="false" ):
+def userLoginPage( request, pass_change="false", loginSuccess=1, loggedOut = 0, newAccountSuccess = 0 ):
 
+    print("request params {}".format(request.GET))
     print("PASS CHANGE IS {}".format(pass_change))
     user_changed_password = False
 
+    not_logged_in_message = ""
+    not_logged_in = False
+
     if pass_change != "false":
         user_changed_password = True
+
+    if loggedOut == 1:
+        logout(request) # log the user out from the system.
+
+    # WE receive a get param when the user trys to access a page they dont have permissions to access. Check for it using a try block so we dont crash nothing.
+    try:
+        if request.GET['next']:
+            not_logged_in = True
+            not_logged_in_message = "You must be logged in to access that page!"
+    except:
+        print('User was logged in.')
+
+
     
-    response = { 'changed_pass': user_changed_password }
+    response = { 'changed_pass': user_changed_password, 'loginSuccess': loginSuccess, 'loggedOut':loggedOut, 'not_logged_in': not_logged_in, 'not_logged_in_message': not_logged_in_message, 'created_new_account': newAccountSuccess}
 
     return render(request, 'userLoginApp/userLogin.html', response)
 
@@ -54,7 +72,7 @@ def authenticateUserLogin( request ):
         return HttpResponseRedirect('/dashboard')
     else:
         # No backend authenticated the credentials, redirect user back to login page.
-        return HttpResponseRedirect(reverse('loginAppUrls:user_login_page', args=(0,)))
+        return HttpResponseRedirect(reverse('loginAppUrls:user_login_page', args=(0,)) )
 
 
 def createNewUserForm( request ):
@@ -111,7 +129,7 @@ def createNewUserForm( request ):
             print("REDIRECTING TO NEW URL")
 
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse('loginAppUrls:user_login_page'))
+            return HttpResponseRedirect(reverse('loginAppUrls:new_user_account_success', args=(1,) ) )
             #HttpResponseRedirect(reverse('loginAppUrls:new_user_success'))
 
         else:
@@ -123,6 +141,7 @@ def createNewUserForm( request ):
             # and pass the form object back to the template. The form now has already been bound with data, so after
             # the page loads the form will still be filled with data and will prompt the user to fix the errors in the form.
             return render(request, 'userLoginApp/createNewUser.html', {'signUpForm': userSignUpForm})
+            
 
 
     # if a GET (or any other method) we'll create a blank form
@@ -131,6 +150,7 @@ def createNewUserForm( request ):
 
         # Pass the form object to the view with the name signUpForm.
         return render(request, 'userLoginApp/createNewUser.html', {'signUpForm': userSignUpForm})
+        
 
 def loginSuccess( request ):
     return render(request, 'userLoginApp/userLoginSuccess.html')

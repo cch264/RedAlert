@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
       {% endblock %}
-  
+
 
   {% block content %}
 
@@ -33,25 +33,139 @@
     <div id="popup-container">
     </div>
 
+    <!-- This row contains the headers for filters and client search.-->
+    <div class="row mt-3">
+
+      <div class="col-1">
+        
+        <div class="d-flex justify-content-center">
+          <h4 class=" bold-font darker-body-color"> Filters </h4>
+        </div>
+      </div>
+
+      <div class="col-9">
+
+        <div class="d-flex justify-content-center">
+          <h4 class="bold-font darker-body-color"> Search For Clients </h4>
+        </div>
+
+      </div>
+
+      <div class="col-2">
+      </div>
+      
+    </div>
+
     <div class="row">
+
+      <!-- Begin column for filters -->
+      <div class="col-1" >
+        <!-- Start filter container -->
+        <div id="filter-container" class="container">
+
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-pattern-category body-font-color">City</h5>
+
+              <div class="indent-filter-container">
+                <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
+                <label for="mesa-filter-pattern"> - Mesa </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
+                <label for="phoenix-filter-pattern" > - Phoenix </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
+                <label for="scottsdale-filter-pattern" > - Scottsdale </label>
+              </div class="indent-filter-container">
+
+              <div class="indent-filter-container">
+                <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
+                <label for="flagstaff-filter-pattern" > - Flagstaff </label>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-pattern-category body-font-color" >Policies</h5>
+
+              <div class="indent-filter-container">
+                <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
+                <input id="fire-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="fire">
+                <label for="fire-filter-pattern"> - Fire </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="home-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="home" >
+                <label for="home-filter-pattern" > - Home </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="pet-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="pet">
+                <label for="pet-filter-pattern" > - Pet </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="boat-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="boat">
+                <label for="boat-filter-pattern" > - Boat </label>
+              </div>
+
+              <div class="indent-filter-container">
+                <input id="auto-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="auto">
+                <label for="auto-filter-pattern" > - Auto </label>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div class="row px-1 filter-row">
+            <div class="col d-flex flex-column px-0">
+              <h5 class="filter-range-pattern-category body-font-color" data-is-range="true" >Age</h5>
+
+              <div class="indent-filter-container"> Enter Range </div>
+              <div class="indent-filter-container">
+                <input id="age-filter-range-pattern-1" class="age-filter-input" type="text" data-query-key="age" data-query-pattern="lower-range" placeholder="Min">
+                <div> - </div>
+                <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
+              </div>
+            </div>
+
+
+          </div>
+        
+
+          <div class="row">
+            <div class="col px-0 py-0 d-flex justify-content-center">
+
+              <button type="button" class="red-alert-btn-primary-compact d-flex justify-content-between align-items-center" id="clear-filters-btn"> 
+                <div class="me-2">
+                  Clear Filters
+                </div>
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+
+            </div>
+          </div>
+        </div>
+        <!-- End filters -->
+      </div>
+      <!-- End column for filters -->
+
       <!-- In boot strap grid, you can have a maximum of 12 columns total, col-11 means user all 11 columns spaces avaialble, leaving only one column space for the remaining columns.-->
-      <div class="col-10">
+      <div class="col-9">
         <div class= "container-fluid">
           <div class="row" >
             <div class="col">
 
-
-              <div class="d-flex flex-row">
-                <h4 id="appl-filters-display"> Applied Filters: None</h4>
-
-                <div class="display-filters-container">
-
-                </div>
-
-              </div>
-
               <div class="form-floating mt-3 mb-1 d-flex flex-row flex-nowrap">
-                <form id="user-search-box-form" class="form-floating w-100" method="post">
+                <form id="user-search-box-form" class="form-floating w-100" onsubmit="return preventFormSubmission(event);">
                    <!-- Protects against Cross Site Request Forgeries. YOUR FORM WONT WORK WITHOUT THIS TOKEN INSIDE THE FORM.-->
                   {% csrf_token %}
 
@@ -59,104 +173,28 @@
                   <!-- This is where the json from our django backend is stored until a javascript function grabs the data to search through it. -->
                   <input id="client-json-input" type="hidden" value="{{client_json}}"></input>
 
-                  <input type="text" class="form-control border border-primary rounded flex-grow-1" id="user-search-input" placeholder="Type your search here!">
+                  <div class="d-flex form-floating">
+                    <input type="text" class="form-control flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
-                  <label id="search-input-label" for="user-search-input"> Search: </label>
-                </form>
+                    <button type="button" id="open-save-search-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save-search-modal"> Save Search </button>
 
-                  <div id="filter-container" class="container">
-                    <div class="row px-3">
-                      <div class="col px-1 d-flex justify-content-center">
-                        <h4> Filters </h4>
-                      </div>
-                    </div>
+                    <input type="text" style="display: none;" >
 
-                    <div class="row  px-3">
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-pattern-category" >City</h5>
-
-                        <div>
-                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
-                          <input id="mesa-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="mesa">
-                          <label for="mesa-filter-pattern"> - Mesa </label>
-                        </div>
-
-                        <div>
-                          <input id="phoenix-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="phoenix" >
-                          <label for="phoenix-filter-pattern" > - Phoenix </label>
-                        </div>
-
-                        <div>
-                          <input id="scottsdale-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="scottsdale">
-                          <label for="scottsdale-filter-pattern" > - Scottsdale </label>
-                        </div>
-
-                        <div>
-                          <input id="flagstaff-filter-pattern" type="checkbox" data-query-key="city" data-query-pattern="flagstaff">
-                          <label for="flagstaff-filter-pattern" > - Flagstaff </label>
-                        </div>
-
-                      </div>
-
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-pattern-category" >Policies</h5>
-
-                        <div>
-                          <!-- query key tells us what keys to match the query pattern too. For example if the user clicks this check box, we search our entire list of clients, but only return clients who are in mesa.-->
-                          <input id="fire-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="fire">
-                          <label for="fire-filter-pattern"> - Fire </label>
-                        </div>
-
-                        <div>
-                          <input id="home-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="home" >
-                          <label for="home-filter-pattern" > - Home </label>
-                        </div>
-
-                        <div>
-                          <input id="pet-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="pet">
-                          <label for="pet-filter-pattern" > - Pet </label>
-                        </div>
-
-                        <div>
-                          <input id="boat-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="boat">
-                          <label for="boat-filter-pattern" > - Boat </label>
-                        </div>
-
-                        <div>
-                          <input id="auto-filter-pattern" type="checkbox" data-query-key="policies" data-query-pattern="auto">
-                          <label for="auto-filter-pattern" > - Auto </label>
-                        </div>
-
-                      </div>
-
-
-
-
-                      <div class="col-4 d-flex flex-column px-1">
-                        <h5 class="filter-range-pattern-category" data-is-range="true" >Age</h5>
-
-                        <div> Enter Range </div>
-                        <div>
-                          <input id="age-filter-range-pattern-1" class="age-filter-input" type="text" data-query-key="age" data-query-pattern="lower-range" placeholder="Min">
-                          <span> - </span>
-                          <input id="age-filter-range-pattern-2" class="age-filter-input" type="text" data-query-pattern="upper-range" placeholder="Max" >
-                        </div>
-                      </div>
-
-
-                    </div>
-
-                    <div class="row">
-                      <div class="col d-flex flex-row-reverse">
-                        <button type="button" id="clear-filters-btn" class="btn btn-danger"> Clear All Filters </button>
-                      </div>
-                    </div>
-
-
+                    <label id="search-input-label" for="user-search-input"> Search: </label>
                   </div>
 
+                </form>
+
+              </div>
+
+              <div class="d-flex flex-row">
+                <h6 id="appl-filters-display"> <span class="body-font-color">Applied Filters:</span> None</h6>
+
+                <div class="display-filters-container">
 
                 </div>
+
+              </div>
 
             </div>
           </div>
@@ -170,13 +208,25 @@
               </div>
             </div>
 
-            <div id="map-btn-container" class="d-flex justify-content-center">
-              <button id="start-drawing-btn" class="btn" type="button"> <i class="fa-solid fa-pencil"></i> </button>
-              
-              <button id="stop-drawing-btn" class="btn btn-primary display-none" type="button"> <i class="fa-solid fa-ban"></i></i> </button>
+            <div id="map-btn-container" class="d-flex justify-content-start align-items-center mt-2 ps-4">
 
-              <button id="clear-draw-btn" class="btn btn-primary" type="button"> <i class="fa-solid fa-arrows-rotate"></i></i> </button>
 
+                <div class="me-3 map-tools-header darker-body-color"> Map Tools: </div>
+
+                <div class="d-flex-col-center me-3" id="start-draw-container">
+                  <button id="start-drawing-btn" class="btn" type="button" title="Enable drawing on the map to select clients."> <i class="fa-solid fa-pencil"></i> </button>
+                  <div id="draw-tool-label" class="draw-tool-label"> Draw Tool</div>
+                </div>
+
+                <div class="d-flex-col-center me-3 display-none" id="stop-draw-container">
+                  <button id="stop-drawing-btn" class="btn btn-primary display-none" type="button" title="Disable drawing on the map."> <i class="fa-solid fa-ban"></i></i> </button>
+                  <div id="stop-draw-label" class="draw-tool-label display-none"> Stop Drawing</div>
+                </div>
+
+                <div class="d-flex-col-center me-3">
+                  <button id="clear-draw-btn" class="btn btn-primary" type="button" title="Clear all drawings on the map."> <i class="fa-solid fa-arrows-rotate"></i></i> </button>
+                  <div id="clear-draw-label" class="draw-tool-label"> Clear Drawings</div>
+                </div>
             </div>
 
           </div>
@@ -186,13 +236,7 @@
 
               <div>
 
-                <ul class="nav nav-tabs py-2 my-2" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" disabled>
-                      Search Results:
-                    </button>
-                  </li>
-                </ul>
+                <h3 class="darker-body-color" > Search Results: </h3> 
 
                 <div class="bootstrap-grey-border pb-2 sr-scroll-box" id="search-results-container">
 
@@ -200,7 +244,12 @@
                 </div>
 
                 <div class="float-end">
-                  <button type="button" id="expand-sr-btn" class="btn btn-primary">Expand Search Results</button>
+                  <button type="button" id="expand-sr-btn" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
+                    <div class="me-2">
+                      Expand Search Results
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </button>
                 </div>
 
               </div>
@@ -210,65 +259,61 @@
 
           <div class="row">
             <div class="col">
+              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center" >
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
               <div id="notif-container" class="my-3">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Notifications</button>
-                  </li>
-                </ul>
 
-                <div class="tab-content" id="myTabContent">
+                <h3 class="darker-body-color mb-3" > Notifications </h3> 
 
-                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="ps-3">
 
-                    <div class="d-flex justify-content-between">
-                      <h4 id="send-message-header"> Send Message To: </h4> <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#create-automation-modal"> Create Automation </button>
+
+                  <div class="d-flex justify-content-between">
+                    <h4 id="send-message-header"> Send Message To: </h4> 
+                  </div>
+
+                  <div id="notif-tab-1" class="notif-tab px-3 py-3">
+
+                    <div class="d-flex flex-row justify-content-between">
+                      <div class="w-50">
+
+                          <div>
+                            <label for="message-subject"> Subject: </label>
+                            <input id="message-subject" class="form-control" type="subject" name="subject">
+                          </div>
+
+                          <div>
+                            <label for="message-body"> Message: </label>
+                            <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
+                          </div>
+                      </div>
+
+                      <div>
+
+                        <label for="sel-msg-type"> Message Type: </label>
+                        <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
+                          <option value="def-select-opt" selected> Select a Message Type </option>
+                            <option value="sms"> Send SMS </option>
+                            <option value="email">Send Email </option>
+                            <option value="both">Send Email and SMS </option>
+                        </select>
+
+                        <label for="sel-msg-priority"> Message Priority: </label>
+                        <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
+                          <option value="def-select-opt" selected> Select a Message Priority </option>
+                            <option value="send-emergency"> Send Emergency Message</option>
+                            <option value="send-social">Send Social Message</option>
+                        </select>
+
+                      </div>
+
                     </div>
-
-                    <div id="notif-tab-1" class="notif-tab px-3 py-3">
-
-                      <div class="d-flex flex-row justify-content-between">
-                        <div class="w-50">
-
-                            <div>
-                              <label for="message-subject"> Subject: </label>
-                              <input id="message-subject" class="form-control" type="subject" name="subject">
-                            </div>
-
-                            <div>
-                              <label for="message-body"> Message: </label>
-                              <textarea id="message-body" class="form-control" type="text-area" name="message">  </textarea>
-                            </div>
-                        </div>
-
-                        <div>
-
-                          <label for="sel-msg-type"> Message Type: </label>
-                          <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
-                            <option value="def-select-opt" selected> Select a Message Type </option>
-                              <option value="send-sms"> Send SMS </option>
-                              <option value="send-email">Send Email </option>
-                              <option value="send-both">Send Email and SMS </option>
-                          </select>
-
-                          <label for="sel-msg-priority"> Message Priority: </label>
-                          <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
-                            <option value="def-select-opt" selected> Select a Message Priority </option>
-                              <option value="send-emergency"> Send Emergency Message</option>
-                              <option value="send-social">Send Social Message</option>
-                          </select>
-
-                        </div>
-
-                      </div>
-
-                      <div class="d-flex flex-row-reverse">
-                        <button id="send-msg" class="btn btn-primary"> Send Message </button>
-                      </div>
-
-                      <h3> Selected Clients </h3>
-                      <div id="selected-clients-container">
-                        <input id="selected-clients-id-array" type="hidden">
 
                         <button id="save-subset-btn" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#save-subset-modal">Save Selection as Subset</button>
 
@@ -277,11 +322,35 @@
                       <div>
                       </div>
                       
+                    <div class="d-flex flex-row-reverse">
+                      <button id="send-msg" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
+                        <div class="me-2">
+                            Send Message
+                        </div>
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
 
+                      <button type="button" class="red-alert-btn-primary d-flex justify-content-between align-items-center me-4" data-bs-toggle="modal" data-bs-target="#create-automation-modal"> 
+                        <div class="me-2">
+                          Create Automation
+                        </div>
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
                     </div>
+                    <div id="msg-popup"></div>
+
+                    <h3> Selected Clients </h3>
+                    <div id="selected-clients-container">
+                      <input id="selected-clients-id-array" type="hidden">
+
+                      <button type="button" class="red-alert-btn-primary display-none" id="no-selections-showing"> 
+                        <div class="me-2">
+                          Don't worry your selections are still here. Click here to show all your selections.
+                        </div>
+                      </button>
+                    </div>
+
                   </div>
-
-
                 </div>
 
 
@@ -302,17 +371,19 @@
 
               <div class="box-with-header mb-5">
                 <div class="bwh-header d-flex justify-content-center px-1 py-1">
-                  <h4> Saved Searches</h4>
+                  <h4 class="my-0"> Saved Searches</h4>
                 </div>
 
-                <div class="bwh-content px-2 pb-2">
-                  <ul class="list-group">
-                    <li class="list-group-item">An active item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
-                  </ul>
+                <div class="bwh-content pb-2">
+                  <div id="saved-search-container" class="d-flex flex-column justify-content-center align-items-center ">
+                    {% for search in saved_searches %}
+                      <div class="saved-search" data-search-query="{{search.1 }}">{{search.0}}</div>
+                    {% endfor %}
+
+                    {% if not has_saved_searches %}
+                      <div id="no-saved-searches" class="">You dont have any saved searches</div>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
 
@@ -341,6 +412,13 @@
             </div>
             </div>
           </div>
+
+          {% if not userHasClients %}                                     
+            <div class="d-flex justify-content-center">
+              <button type="button" id="generate-clients-for-user" class="btn btn-primary mt-3"> <a style="text-decoration: none; color: white;" href="{% url 'dashboard_urls:generate_clients'%}"> Click Here to Generate Clients! </a> </button>
+            </div>
+          {% endif %}
+
         </div>
       </div>
 
@@ -365,7 +443,38 @@
           <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button id="create-subset-btn" class="btn btn-primary"> Create Subset </button>
         </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="modal fade" id="save-search-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Save a Search Query</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Container that holds a pop up describing what fields failed to validate.-->
+          <div id="closable-popup-container-saved-search" class="mx-2">
+
+          </div>
+
+          <label for="name-for-search-to-save"> Name Your Search Query: </label>
+          <input id="name-for-search-to-save" type="text" class="form-control">
+
+
+          <label for="display-user-search-to-save"> Search Query to Save: </label>
+          <input id="display-user-search-to-save" type="text" class="form-control">
+
+        </div>
+
+        <div class="modal-footer">
+          <button id="save-search-btn" class="btn btn-info"> Save Search </button>
+          <button id="save-search-discard" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+        </div>
       </div>
     </div>
   </div>
@@ -380,8 +489,12 @@
         </div>
         <div class="modal-body">
 
+          <div id="closable-popup-container" class="d-flex justify-content-center">
+  
+          </div>
+
           <div class="d-flex flex-row justify-content-between">
-            <div class="w-50">  
+            <div class="w-50">
                 <div>
                   <label for="auto-name"> Automation Name: </label>
                   <input id="auto-name" class="form-control" type="subject" name="subject">
@@ -402,7 +515,7 @@
 
               <label for="auto-sel-msg-type"> Message Type: </label>
               <select id="auto-sel-msg-type" class="form-select mb-2" aria-label="Select message type">
-                <option value="auto-def-select-opt" selected> Select a Message Type </option>
+                <option value="auto-def-select-type-opt" selected> Select a Message Type </option>
                   <option value="sms"> Send SMS </option>
                   <option value="email">Send Email </option>
                   <option value="both">Send Email and SMS </option>
@@ -410,7 +523,7 @@
 
               <label for="auto-sel-msg-priority"> Message Priority: </label>
               <select id="auto-sel-msg-priority" class="form-select" aria-label="Select message priority">
-                <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                <option value="auto-def-select-priority-opt" selected> Select a Message Priority </option>
                   <option value="emergency"> Send Emergency Message</option>
                   <option value="social">Send Social Message</option>
               </select>
@@ -421,9 +534,9 @@
 
           <div class="d-flex flex-row justify-content-between">
             <div>
-              <label for="auto-sel-msg-frequency"> Message Frequency: </label>
+              <label for="auto-sel-msg-frequency"> Automation Type: </label>
               <select id="auto-sel-msg-frequency" class="form-select" aria-label="Select Message Frequency">
-                  <option value="auto-def-select-opt" selected> Select Message Frequency </option>
+                  <option value="auto-def-select-freq-opt" selected> Select Message Frequency </option>
                   <option value="once"> One Time </option>
                   <option value="many"> Recurring </option>
               </select>
@@ -431,16 +544,16 @@
 
             <div id="auto-send-msg-once-inputs" class="display-none">
               <label for="auto-send-once-date">Send Message On: </label>
-              <input id="auto-send-once-date" class="form-control" type="date" />     
+              <input id="auto-send-once-date" class="form-control" type="date" />
             </div>
 
             <div id="auto-send-msg-many-inputs" class="display-none">
 
               <label for="auto-send-many-date">Start Recurring Automation Date: </label>
-              <input id="auto-send-many-date" class="form-control" type="date" />   
+              <input id="auto-send-many-date" class="form-control" type="date" />
 
               <label for="auto-send-freq">Message Frequency: </label>
-              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>  
+              <input id="auto-send-freq" class="form-control" type="number" value="1" disabled/>
 
               <label for="auto-send-freq-unit"> Every: </label>
               <select id="auto-send-freq-unit" class="form-select" aria-label="Select Message Frequency">
@@ -454,9 +567,39 @@
           </div>
 
         </div>
-        <div class="modal-footer">
-          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button id="auto-send-msg" class="btn btn-primary" data-bs-dismiss="modal"> Create Automation </button>
+        <div class="modal-footer d-flex justify-content-between">
+          
+          <div class="d-flex">
+            <button type="button" id="create-one-time-test-auto" class="red-alert-btn-secondary d-flex justify-content-between align-items-center me-2">
+              <div class="me-2">
+                Create One Time Automation Test
+              </div>
+            </button>
+
+
+            <button type="button" id="create-recurr-test-auto" class="red-alert-btn-secondary d-flex justify-content-between align-items-center">
+              <div class="me-2">
+                Create Recurring Automation Test 
+              </div>
+            </button>
+          </div>
+
+          <div class="d-flex">
+            <button type="button" id="auto-modal-cancel" data-bs-dismiss="modal" class="red-alert-btn-delete d-flex justify-content-between align-items-center me-2">
+              <div class="me-2">
+                Discard
+              </div>
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            
+
+            <button type="button" id="auto-send-msg" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+              <div class="me-2">
+                Create Automation
+              </div>
+              <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -473,11 +616,12 @@
     <script src="{% static 'dashboard/js/dashboard.js' %}" >  </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Map js scripts -->
     <script src="{% static 'dashboard/js/map.js' %}"></script>
     <script src="{% static 'dashboard/js/pointinpoly.js' %}"></script>
     <script src="{% static 'dashboard/js/automation.js' %}"></script>
+    <script src="{% static 'dashboard/js/savedSearches.js' %}"></script>
 
   {% endblock %}

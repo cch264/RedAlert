@@ -28,15 +28,60 @@
             <ul id="automation-list" class="list-group">
 
               {% for oneTimeAuto in oneTimeAutos%}
-                <li class="list-group-item" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >{{oneTimeAuto.name}}</li>
+                <li class="list-group-item auto-li" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      {{oneTimeAuto.name}}
+                    </div>
+
+                    <div>
+                      {% if oneTimeAuto.active %}
+                        <span id="one-time-auto-timer-label-{{oneTimeAuto.id}}"> Scheduled to run in: </span> 
+                        <div id="one-time-auto-timer-{{oneTimeAuto.id}}" style="display: inline-block;">
+
+                        </div>
+                      {% else %}
+                        <span> Completed </span>
+                      {% endif%}
+                    </div>
+
+                  </div>
+                </li>
               {% endfor %}
 
               {% for recurringAuto in recurringAutos %}
-                <li class="list-group-item" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}" >{{recurringAuto.name}}</li>
+                <li class="list-group-item auto-li" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      {{recurringAuto.name}}
+                    </div>
+
+                    <div>
+                      <span> Scheduled to run in: </span>
+                      <div id="recurr-auto-timer-{{recurringAuto.id}}" style="display: inline-block;">
+
+                      </div>
+                    </div>
+
+                  </div>
+                </li>
               {% endfor %}
             </ul>
 
         
+
+            <h1> Your Saved Searches </h1>
+
+            <ul id="search-list" class="list-group">
+              {% for search in savedSearches%}
+                <li id="saved-search-{{search.id}}" class="list-group-item saved-search" data-bs-toggle="modal" data-bs-target="#save-search-modal-{{search.id}}" > {{search.name}}</li>
+              {% endfor %}
+
+              {% if not hasSavedSearches %}
+              <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+              {% endif %}
+            </ul>
+
 
         
             <h1> Your Subsets </h1>
@@ -50,19 +95,89 @@
         
 
         
-            <h1> Your Search Queries </h1>
-
-            <ul id="search-list" class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
-            </ul>
 
         </div>
 
     </div>
+
+
+    {% for search in savedSearches %}
+      <div class="modal fade saved-search-modal" id="save-search-modal-{{search.id}}" data-search-id="{{search.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h5 class="modal-title" id="search-modal-header-{{search.id}}"><span id="search-modal-header-mode-{{search.id}}">View</span> a Search Query</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+    
+            <div class="modal-body">
+              <!-- Container that holds a pop up describing what fields failed to validate.-->
+              <div id="closable-popup-container-saved-search-{{search.id}}" class="mx-2">
+    
+              </div>
+    
+              <label for="name-for-search-to-save-{{search.id}}"> Search Query Name: </label>
+              <input id="name-for-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.name}}" disabled>
+    
+    
+              <label for="display-user-search-to-save-{{search.id}}"> Search Query: </label>
+              <input id="display-user-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.query}}" disabled>
+    
+            </div>
+    
+            <div class="modal-footer">
+
+              <button type="button" id="close-search-modal-btn-{{search.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+                <div class="me-2">
+                  Close
+                </div>
+              </button>
+  
+              <button type="button" id="edit-search-btn-{{search.id}}" class="red-alert-btn-primary flex-row-between">
+                <div class="me-2">
+                  Edit
+                </div>
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <div class="d-flex justify-content-between w-100">
+                <div>
+
+                  <button type="button" id="delete-search-{{search.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Delete Search 
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                </div>
+
+                <div>
+
+                  <button type="button" id="discard-search-{{search.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Discard
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                  <button type="button" id="save-search-btn-{{search.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                    <div class="me-2">
+                      Save Search
+                    </div>
+                    <i class="fa-solid fa-floppy-disk"></i>
+                  </button>
+                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
 
     {% for oneTimeAuto in oneTimeAutos %}
 
@@ -74,7 +189,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-  
+
+            <div id="popup-container-onetime-modal-{{oneTimeAuto.id}}" class="d-flex flex-column align-items-center" >
+
+            </div>
+
             <div class="d-flex flex-row justify-content-between">
               <div class="w-50">  
                   <div>
@@ -99,18 +218,19 @@
                 <input type="hidden" id="auto-sel-msg-type-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_type}}">
 
                 <select id="auto-sel-msg-type-{{oneTimeAuto.id}}" class="form-select mb-2" aria-label="Select message type" disabled>
-                  <option value="auto-def-select-opt"> Select a Message Type </option>
+                  <option value="auto-many-def-select-type-opt"> Select a Message Type </option>
                     <option value="sms"> Send SMS </option>
                     <option value="email">Send Email </option>
                     <option value="both">Send Email and SMS </option>
                 </select>
-  
+
+                
                 <label for="auto-sel-msg-priority-{{oneTimeAuto.id}}"> Message Priority: </label>
 
                 <input type="hidden" id="auto-sel-msg-priority-val-{{oneTimeAuto.id}}" value="{{oneTimeAuto.msg_priority}}">
 
                 <select id="auto-sel-msg-priority-{{oneTimeAuto.id}}" class="form-select" aria-label="Select message priority" value="{{oneTimeAuto.msg_priority}}" disabled>
-                  <option value="auto-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="auto-many-def-select-priority-opt" selected> Select a Message Priority </option>
                     <option value="emergency"> Send Emergency Message</option>
                     <option value="social">Send Social Message</option>
                 </select>
@@ -161,19 +281,48 @@
   
           </div>
           <div class="modal-footer">
-            <button id="auto-modal-close-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="auto-modal-edit-{{oneTimeAuto.id}}" class="btn btn-primary"> Edit </button>
+
+            <button type="button" id="auto-modal-close-{{oneTimeAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+              <div class="me-2">
+                Close
+              </div>
+            </button>
+
+            <button type="button" id="auto-modal-edit-{{oneTimeAuto.id}}" class="red-alert-btn-primary flex-row-between">
+              <div class="me-2">
+                Edit
+              </div>
+              <i class="fa-solid fa-pen"></i>
+            </button>
 
             <div class="d-flex justify-content-between w-100">
               <div>
-                <button id="auto-delete-{{oneTimeAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+                <button type="button" id="auto-delete-{{oneTimeAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Delete Automation 
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
 
               <div>
-                <button id="auto-modal-discard-changes-{{oneTimeAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-                <button id="auto-save-changes-{{oneTimeAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+                <button type="button" id="auto-modal-discard-changes-{{oneTimeAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Discard
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+
+                <button type="button" id="auto-save-changes-{{oneTimeAuto.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                  <div class="me-2">
+                    Save Changes
+                  </div>
+                  <i class="fa-solid fa-floppy-disk"></i>
+                </button>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -192,7 +341,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>-{{oneTimeAuto.id}}
           <div class="modal-body">
-  
+
+            <div id="popup-container-recurr-modal-{{recurringAuto.id}}" class="d-flex flex-column align-items-center" >
+
+            </div>
+
             <div class="d-flex flex-row justify-content-between">
               <div class="w-50">  
                   <div>
@@ -217,7 +370,7 @@
                 <input type="hidden" id="auto-many-sel-msg-type-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_type}}">
 
                 <select id="auto-many-sel-msg-type-{{recurringAuto.id}}" class="form-select mb-2" aria-label="Select message type" disabled>
-                  <option value="auto-many-def-select-opt"> Select a Message Type </option>
+                  <option value="auto-many-def-select-type-opt"> Select a Message Type </option>
                     <option value="sms"> Send SMS </option>
                     <option value="email">Send Email </option>
                     <option value="both">Send Email and SMS </option>
@@ -228,7 +381,7 @@
                 <input type="hidden" id="auto-many-sel-msg-priority-val-{{recurringAuto.id}}" value="{{recurringAuto.msg_priority}}">
 
                 <select id="auto-many-sel-msg-priority-{{recurringAuto.id}}" class="form-select" aria-label="Select message priority" value="{{recurringAuto.msg_priority}}" disabled>
-                  <option value="auto-many-def-select-opt" selected> Select a Message Priority </option>
+                  <option value="auto-many-def-select-priority-opt" selected> Select a Message Priority </option>
                     <option value="emergency"> Send Emergency Message</option>
                     <option value="social">Send Social Message</option>
                 </select>
@@ -239,7 +392,7 @@
   
             <div class="d-flex flex-row justify-content-between">
               <div>
-                <label for="auto-many-sel-msg-frequency-{{recurringAuto.id}}"> Message Frequency: </label>
+                <label for="auto-many-sel-msg-frequency-{{recurringAuto.id}}"> Automation Type: </label>
 
                 <input type="hidden" id="auto-many-sel-msg-frequency-val-{{recurringAuto.id}}" value="many">
 
@@ -263,7 +416,9 @@
   
                 <label for="auto-many-send-freq-{{recurringAuto.id}}">Message Frequency: </label>
                 <input id="auto-many-send-freq-{{recurringAuto.id}}" class="form-control" type="number" value="1" disabled/>  
-  
+
+
+                
                 <input type="hidden" id="auto-many-send-freq-unit-val-{{recurringAuto.id}}" value="{{recurringAuto.send_msg_freq_unit}}">
                 <label for="auto-many-send-freq-unit-{{recurringAuto.id}}"> Every: </label>
                 <select id="auto-many-send-freq-unit-{{recurringAuto.id}}" class="form-select" aria-label="Select Message Frequency" disabled>
@@ -278,18 +433,48 @@
   
           </div>
           <div class="modal-footer">
-            <button id="auto-many-modal-close-{{recurringAuto.id}}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="auto-many-edit-auto-{{recurringAuto.id}}" class="btn btn-primary"> Edit </button>
 
+            <button type="button" id="auto-many-modal-close-{{recurringAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+              <div class="me-2">
+                Close
+              </div>
+            </button>
+
+            <button type="button" id="auto-many-edit-auto-{{recurringAuto.id}}" class="red-alert-btn-primary flex-row-between">
+              <div class="me-2">
+                Edit
+              </div>
+              <i class="fa-solid fa-pen"></i>
+            </button>
+
+            <!-- Save, delete, discard btns initially hidden from view.-->
             <div class="d-flex justify-content-between w-100">
               <div>
-                <button id="auto-many-delete-{{recurringAuto.id}}" class="btn btn-danger display-none"> Delete Automation </button>
+                <button type="button" id="auto-many-delete-{{recurringAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Delete Automation 
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
 
               <div>
-                <button id="auto-many-modal-discard-changes-{{recurringAuto.id}}" type="button" class="btn btn-secondary display-none">Discard Changes</button>
-                <button id="auto-many-save-changes-{{recurringAuto.id}}" class="btn btn-primary display-none"> Save Changes </button>
+                <button type="button" id="auto-many-modal-discard-changes-{{recurringAuto.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                  <div class="me-2">
+                    Discard
+                  </div>
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+
+                <button type="button" id="auto-many-save-changes-{{recurringAuto.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                  <div class="me-2">
+                    Save Changes
+                  </div>
+                  <i class="fa-solid fa-floppy-disk"></i>
+                </button>
               </div>
+              
             </div>
           </div>
         </div>
@@ -304,4 +489,5 @@
 {% block js_links %}
     <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
     <script src="{% static 'UserPages/js/automationManagement.js' %}" ></script> 
+    <script src="{% static 'UserPages/js/savedSearches.js' %}" ></script> 
   {% endblock %}

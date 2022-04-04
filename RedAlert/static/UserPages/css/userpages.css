@@ -8,3 +8,11 @@
 #user-profile-edit-form{
     display: none;
 }
+
+#pass-validation-alert-list{
+    display: none;
+}
+
+.auto-li:hover{
+    background-color: #DF6464;
+}
