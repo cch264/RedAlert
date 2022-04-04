@@ -220,10 +220,10 @@ window.addEventListener('load', (event) => {
             executeSearch();
 
           console.log(`SEARCH BOX VAL: ${ $('#user-search-input').val() }`);
-            
+
         })
 
-        
+
         createSearchKeyCategoryArray();
 
         assignSearchFilterListeners();
@@ -308,7 +308,7 @@ function send_client_notification()
           }
 
           // delay for fading effect
-          setTimeout(fade, 3000);
+          setTimeout(fade, 6000);
 
           // function to remove the div with the notification box in it after it
           // has faded out
@@ -353,7 +353,7 @@ function send_client_notification()
 
           // set up 'message failed' notification box
           block_to_insert = document.createElement( 'div' );
-          block_to_insert.innerHTML = 'There was an error when sending your alert. Please try again.' ;
+          block_to_insert.innerHTML = 'There was an error when sending your alert. Please make sure you have selected at least one client and filled in all fields.' ;
           $(block_to_insert).addClass("msg-failed-popup")
 
           // add notification box
@@ -366,7 +366,7 @@ function send_client_notification()
           }
 
           // delay for fading effect
-          setTimeout(fade, 3000);
+          setTimeout(fade, 6000);
 
           // function to remove the div with the notification box in it after it
           // has faded out
@@ -1118,7 +1118,7 @@ function executeSearchAjax() {
 
 
   }
-  
+
   function preventFormSubmission( event )
   {
     event.preventDefault;
