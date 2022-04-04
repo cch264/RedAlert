@@ -649,6 +649,7 @@ def send_auto_message( autoID, type ):
 def saveSubset(request):
     
     saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    
     # Check that the user is not using a duplicate subset name, for database purposes
     for subset in saved_subset_objects:
         print(subset.name + " New Name: " + request.POST['subsetName'])

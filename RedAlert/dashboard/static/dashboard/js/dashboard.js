@@ -1231,8 +1231,8 @@ function createNewSavedSubset()
             else if(data['Success'] === "True")
             {
               // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
-              let subsetContainer = $('#saved-subsets');
-              subsetContainer.append(`<li class="list-group-item list-group-item-action subset-li" data-subset-clients='${subsetToSave}' data-bs-toggle="modal" data-bs-target="#select-subset-modal">${subsetName}</li>`);
+              let subsetContainer = $('#saved-subsets-container');
+              subsetContainer.append(`<div class="saved-subset" data-subset-clients='${subsetToSave}'>${subsetName}</div>`);
               $('#save-subset-modal').modal('toggle');
 
               // Assign the new subset element a listener so it can be clicked.
