@@ -184,6 +184,9 @@ function filterSearchResults( searchResultJSON )
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
 
+    // Adds a warning to bottom of page that tells user no clients are selected.
+    checkForSelectedClients();
+
     clearFilterInputs();
 
     // When the page loads show all search results.
@@ -841,7 +844,6 @@ function deselectClientSearchResult( clientIDInt )
   invertPlusBtn( `#sr-btn-${clientIDInt}` );
   $(`#sr-${clientIDInt}`).attr('data-selected-client', 'false');
   toggleSpecificPin( clientIDInt.toString() );
-
   refreshSelectedClientsString(clientIDInt, false);
 }
 
@@ -1082,6 +1084,8 @@ function refreshSelectedClientsString( clientID, add=true)
   // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
 
+  checkForSelectedClients();
+
 }
 
 // Check if the user has selected any clients.
@@ -1089,10 +1093,19 @@ function checkForSelectedClients()
 {
   if($("#selected-clients-id-array").val() === "")
   {
-    
+    $(`#selected-clients-container`).append(`
+      <h4 class="ms-3 no-clients-sel-warning">
+        No Clients Selected.
+      </h4>
+    `);
+  }
+  else
+  {
+    $(".no-clients-sel-warning").remove();
   }
 }
 
+// Toggles the search result box between expanded and minimized.
 function addListenerToSearchResultScrollBox()
 {
 

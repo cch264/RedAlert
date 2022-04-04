@@ -142,8 +142,15 @@
         
 
           <div class="row">
-            <div class="col d-flex flex-row-reverse">
-              <button type="button" id="clear-filters-btn" class="btn btn-danger"> Clear All Filters </button>
+            <div class="col px-0 py-0 d-flex justify-content-center">
+
+              <button type="button" class="red-alert-btn-primary-compact d-flex justify-content-between align-items-center" id="clear-filters-btn"> 
+                <div class="me-2">
+                  Clear Filters
+                </div>
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+
             </div>
           </div>
         </div>
@@ -317,8 +324,10 @@
                     <div id="selected-clients-container">
                       <input id="selected-clients-id-array" type="hidden">
 
-                      <button id="no-selections-showing" class="btn btn-primary display-none">
+                      <button type="button" class="red-alert-btn-primary display-none" id="no-selections-showing"> 
+                        <div class="me-2">
                           Don't worry your selections are still here. Click here to show all your selections.
+                        </div>
                       </button>
                     </div>
 

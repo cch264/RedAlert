@@ -253,3 +253,20 @@ border-bottom: 1px #EAEAEB solid ;
 
 /* End search result container styles */
 
+
+/* START Notification Styles */
+.form-select{
+    border: 1px #5F0707 solid
+}
+
+.form-select:focus{
+    box-shadow: 0px 0px 6px 1px #F01716;
+    border: 1px solid #F01716;
+}
+
+.form-control:focus{
+    box-shadow: 0px 0px 6px 1px #F01716;
+    border: 1px solid #F01716;  
+}
+
+/* End Notification Styles */
