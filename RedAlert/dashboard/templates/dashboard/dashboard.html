@@ -331,7 +331,7 @@
                 <div class="bwh-content px-2 pb-2">
                   <ul id="saved-subsets"class="list-group">
                     {% for subset in saved_subsets %}
-                      <li id="{{subset.name}}" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#select-subset-modal">{{subset.name}}</li>
+                      <li class="list-group-item list-group-item-action subset-li" data-subset-clients="{{subset.clientIDs}}">{{subset.name}}</li>
                     {% endfor %}
                     
                   </ul>
@@ -344,27 +344,6 @@
         </div>
       </div>
 
-    </div>
-  </div>
-
-
-
-  <div class="modal fade" id="select-subset-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content d-flex">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Selected Subset</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-        </div>
-
-        <div class="modal-footer flex-column">
-          <button id="select-subset-btn" class="btn btn-primary" data-bs-dismiss="modal"> Select Subset </button>
-          <button id="subset-modal-edit" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Edit</button>
-        </div>
-
-      </div>
     </div>
   </div>
 

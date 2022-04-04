@@ -190,6 +190,9 @@ window.addEventListener('load', (event) => {
     executeSearch(true);
 
 
+    // Assign Listeners to the users subsets.
+    $(`.subset-li`).on('click', selectClientsFromSubset);
+
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
     $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); })
@@ -1082,16 +1085,19 @@ function createNewSavedSubset()
             {
               showAndDismissAlert("danger", "A subset with this name already exists, please choose another.");
             }
-            else if(data['Success'] == "True")
+            else if(data['Success'] === "True")
             {
               // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
               let subsetContainer = $('#saved-subsets');
-              subsetContainer.append(`<li id=${subsetName} class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#select-subset-modal">${subsetName}</li>`);
+              subsetContainer.append(`<li class="list-group-item list-group-item-action subset-li" data-subset-clients='${subsetToSave}' data-bs-toggle="modal" data-bs-target="#select-subset-modal">${subsetName}</li>`);
               $('#save-subset-modal').modal('toggle');
+
+              // Assign the new subset element a listener so it can be clicked.
+              $(`.subset-li`).on('click', selectClientsFromSubset);
               
             }
         },
-        // Error handling LOWKEY USELESS
+        // Error handling LOWKEY USELESS TRUE ASF
         error: function ( jqXHR, textStatus, errorThrown ) {
             console.log(`Error WITH SAVE SUBSET AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
             var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
@@ -1112,7 +1118,18 @@ function showAndDismissAlert(type, message) {
   $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
 }
 
-function selectSubset(subsetName)
+function selectClientsFromSubset( event )
 {
-  // 
+    let subsetClicked = event.target;
+
+    // Get the client id string from the subset element.
+    let clientIDString = $(subsetClicked).data('subsetClients');
+
+    console.log(`CLIENT IDS IN SUBSET ARE ${clientIDString}`);
+
+    // Set the value of this input element to the list of selected client ids, then call the refresh function
+    // That parses the input element value and selects ids in the string.
+    $('#selected-clients-id-array').val(clientIDString);
+
+    refreshSelectedClientsAfterSearch()
 }
