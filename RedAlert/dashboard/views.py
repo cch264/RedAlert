@@ -218,9 +218,10 @@ def create_client_list(request):
         #a_client.email = emails[random.randint(0, len(emails) - 1 )]
         #a_client.phone = phones[random.randint(0, len(phones) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        #a_client.email = "npn24@nau.edu"
-        a_client.email = "calvin7757@gmail.com"
-        a_client.phone = "14803690030"
+        a_client.email = "npn24@nau.edu"
+        a_client.phone = "13096202335"
+        #a_client.email = "calvin7757@gmail.com"
+        #a_client.phone = "14803690030"
         a_client.user_id = request.user.id
 
         a_client.save()
@@ -309,82 +310,83 @@ def send_message( request ):
     #print("Selected Emails: {}\n".format(selected_emails))
     #print("Selected Phones: {}\n".format(selected_phones))
 
-    # if "Send Email" is selected, then call the send_mail function with data
-    if message_type == "email":
-        for client_index in selected_client_info:
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                subject_temp = EMERGENCY_MSG + message_subject
-                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                + "\n\n" + END_MSG
-            # otherwise, format as a social alert
-            else:
-                subject_temp = "State Farm alert system - " + message_subject
-                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+    if( message_body != "" and message_subject != "" and message_priority != "def-select-opt" and message_type != "def-select-opt" ):
+        # if "Send Email" is selected, then call the send_mail function with data
+        if message_type == "email":
+            for client_index in selected_client_info:
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency":
+                    subject_temp = EMERGENCY_MSG + message_subject
+                    message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                    + "\n\n" + END_MSG
+                # otherwise, format as a social alert
+                else:
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
 
-            # send the email to the client
-            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                # send the email to the client
+                send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-            # test code to make sure email is sent to the correct address
-            #print("Sent to: {}\n".format(email_index))
+                # test code to make sure email is sent to the correct address
+                #print("Sent to: {}\n".format(email_index))
 
-    # if "Send SMS" is selected, then call the send_sms function with data
-    elif message_type == "sms":
-        for client_index in selected_client_info:
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                "\n\n" + message_body + "\n\n" + END_MSG
-            # otherwise, format as a social alert
-            else:
-                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
-                + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+        # if "Send SMS" is selected, then call the send_sms function with data
+        elif message_type == "sms":
+            for client_index in selected_client_info:
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency":
+                    message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                    "\n\n" + message_body + "\n\n" + END_MSG
+                # otherwise, format as a social alert
+                else:
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
+                    + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
 
-            # send the SMS message to the client
-            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+                # send the SMS message to the client
+                send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-            # test code to make sure sms is sent to the correct number
-            #print("Sent to: {}\n".format(sms_index))
+                # test code to make sure sms is sent to the correct number
+                #print("Sent to: {}\n".format(sms_index))
 
-    # if "Send Email and SMS" is selected, then call both functions with data
-    else:
-        for client_index in selected_client_info:
-            # formatting for SMS
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                "\n\n" + message_body + "\n\n"  + END_MSG
-            # otherwise, format as a social alert
-            else:
-                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
-                + "\n\n" + message_body + "\n\n"  + END_MSG
+        # if "Send Email and SMS" is selected, then call both functions with data
+        else:
+            for client_index in selected_client_info:
+                # formatting for SMS
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency":
+                    message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                    "\n\n" + message_body + "\n\n"  + END_MSG
+                # otherwise, format as a social alert
+                else:
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
+                    + "\n\n" + message_body + "\n\n"  + END_MSG
 
-            # send the SMS message to the client
-            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+                # send the SMS message to the client
+                send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-            # formatting for email
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                subject_temp = EMERGENCY_MSG + message_subject
-                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                + "\n\n"  + END_MSG
-            # otherwise, format as a social alert
-            else:
-                subject_temp = "State Farm alert system - " + message_subject
-                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                # formatting for email
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency":
+                    subject_temp = EMERGENCY_MSG + message_subject
+                    message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                    + "\n\n"  + END_MSG
+                # otherwise, format as a social alert
+                else:
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
 
-            # send the email to the client
-            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                # send the email to the client
+                send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-            # test code to make sure email is sent to the correct address
-            #print("Sent to: {}\n".format(email_index))
+                # test code to make sure email is sent to the correct address
+                #print("Sent to: {}\n".format(email_index))
 
-            # test code to make sure sms is sent to the correct number
-            #print("Sent to: {}\n".format(sms_index))
+                # test code to make sure sms is sent to the correct number
+                #print("Sent to: {}\n".format(sms_index))
 
-    # send json response back
-    response = {'Success': 'True'}
-    return JsonResponse(response)
+        # send json response back
+        response = {'Success': 'True'}
+        return JsonResponse(response)
 
 
 # Function that takes an ajax request and creates a new automation.
