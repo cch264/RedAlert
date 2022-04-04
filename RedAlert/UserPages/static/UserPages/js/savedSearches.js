@@ -63,24 +63,14 @@ function discardSavedSearch( searchID )
 
 function toggleButtons( searchID )
 {
-    if( $(`#save-search-btn-${searchID}`).hasClass(`display-none`) )
-    {
-        $(`#save-search-btn-${searchID}`).removeClass(`display-none`);
-        $(`#discard-search-${searchID}`).removeClass(`display-none`);
-        $(`#delete-search-${searchID}`).removeClass(`display-none`);
+   
+    $(`#save-search-btn-${searchID}`).toggle();
+    $(`#discard-search-${searchID}`).toggle();
+    $(`#delete-search-${searchID}`).toggle();
+
+    $(`#close-search-modal-btn-${searchID}`).toggle();
+    $(`#edit-search-btn-${searchID}`).toggle();
     
-        $(`#close-search-modal-btn-${searchID}`).addClass('display-none');
-        $(`#edit-search-btn-${searchID}`).addClass('display-none');
-    }
-    else
-    {
-        $(`#save-search-btn-${searchID}`).addClass(`display-none`);
-        $(`#discard-search-${searchID}`).addClass(`display-none`);
-        $(`#delete-search-${searchID}`).addClass(`display-none`);
-    
-        $(`#close-search-modal-btn-${searchID}`).removeClass('display-none');
-        $(`#edit-search-btn-${searchID}`).removeClass('display-none');
-    }
 
 }
 

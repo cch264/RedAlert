@@ -539,11 +539,39 @@
           </div>
 
         </div>
-        <div class="modal-footer">
-          <button id="create-one-time-test-auto" class="btn btn-info"> Create One Time Automation Test </button>
-          <button id="create-recurr-test-auto" class="btn btn-info"> Create Recurring Automation Test </button>
-          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
-          <button id="auto-send-msg" class="btn btn-primary"> Create Automation </button>
+        <div class="modal-footer d-flex justify-content-between">
+          
+          <div class="d-flex">
+            <button type="button" id="create-one-time-test-auto" class="red-alert-btn-secondary d-flex justify-content-between align-items-center me-2">
+              <div class="me-2">
+                Create One Time Automation Test
+              </div>
+            </button>
+
+
+            <button type="button" id="create-recurr-test-auto" class="red-alert-btn-secondary d-flex justify-content-between align-items-center">
+              <div class="me-2">
+                Create Recurring Automation Test 
+              </div>
+            </button>
+          </div>
+
+          <div class="d-flex">
+            <button type="button" id="auto-modal-cancel" data-bs-dismiss="modal" class="red-alert-btn-delete d-flex justify-content-between align-items-center me-2">
+              <div class="me-2">
+                Discard
+              </div>
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            
+
+            <button type="button" id="auto-send-msg" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+              <div class="me-2">
+                Create Automation
+              </div>
+              <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
