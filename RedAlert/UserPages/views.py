@@ -11,6 +11,7 @@ from dashboard.models import SavedSearches
 from dashboard.views import *
 
 
+
 # Get the User Auth object and the UserInfo Object
 @login_required( login_url='/')
 def show_profile_page( request ):
@@ -212,6 +213,26 @@ def update_search(request):
 
     saved_search.save()
 
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def update_subset(request):
+
+    saved_subset = SavedSubset.objects.get(id=request.POST['subsetID'])
+
+    saved_subset.name = request.POST['searchName']
+
+    saved_subset.save()
+
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def delete_subset( request ):
+    saved_subset = SavedSubset.objects.get(id=request.POST['subsetID'])
+    saved_subset.delete()
+    
     response = {'success': 'true'}
 
     return JsonResponse(response)

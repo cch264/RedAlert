@@ -329,7 +329,7 @@
                         <div class="me-2">
                           Create Automation
                         </div>
-                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-up-right-from-square"></i>
                       </button>
                     </div>
                     <div id="msg-popup"></div>
@@ -344,7 +344,14 @@
                         </div>
                       </button>
 
-                      <button id="save-subset-btn" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#save-subset-modal">Save Selection as Subset</button>
+                      
+
+                      <button type="button" class="red-alert-btn-primary flex-row-between" style="display: none;" id="save-subset-btn" data-bs-toggle="modal" data-bs-target="#save-subset-modal"> 
+                        <div class="me-2">
+                          Save Selections as Subset
+                        </div>
+                        <i class="fa-solid fa-up-right-from-square"></i>
+                      </button>
                     </div>
 
                   </div>
@@ -397,16 +404,24 @@
                   </div>
 
                   <div class="bwh-content px-2 pb-2">
-                    <ul id="saved-subsets"class="list-group">
+
+                    <div id="saved-subsets-container" class="d-flex flex-column justify-content-center align-items-center" >
                       {% for subset in saved_subsets %}
-                        <li class="list-group-item list-group-item-action subset-li" data-subset-clients="{{subset.clientIDs}}">{{subset.name}}</li>
+                        <div class="saved-subset" data-subset-clients="{{subset.clientIDs}}">{{subset.name}}</div>
                       {% endfor %}
-                    </ul>
+
+                      {% if not hasSubsets %}
+                        <div id="no-saved-subsets" class="">You dont have any saved subsets</div>
+                      {% endif %} 
+
+                    </div>
+
                   </div>
-               </div>
+
               </div>
             </div>
           </div>
+          </div> <!-- I think this can be removed. -->
 
           {% if not userHasClients %}                                     
             <div class="d-flex justify-content-center">

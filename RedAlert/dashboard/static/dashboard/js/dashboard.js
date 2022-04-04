@@ -194,7 +194,7 @@ window.addEventListener('load', (event) => {
 
 
     // Assign Listeners to the users subsets.
-    $(`.subset-li`).on('click', selectClientsFromSubset);
+    $(`.saved-subset`).on('click', selectClientsFromSubset);
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
@@ -1236,7 +1236,7 @@ function createNewSavedSubset()
               $('#save-subset-modal').modal('toggle');
 
               // Assign the new subset element a listener so it can be clicked.
-              $(`.subset-li`).on('click', selectClientsFromSubset);
+              $(`.saved-subset`).on('click', selectClientsFromSubset);
               
             }
         },

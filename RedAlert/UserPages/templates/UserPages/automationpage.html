@@ -78,7 +78,7 @@
               {% endfor %}
 
               {% if not hasSavedSearches %}
-              <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+                <li id="no-saved-searches" class="list-group-item">You don't have any saved searches</li>
               {% endif %}
             </ul>
 
@@ -88,8 +88,12 @@
 
             <ul id="subset-list"class="list-group">
               {% for subset in saved_subsets %}
-                <li class="list-group-item">{{subset.name}}</li>
+                <li id="saved-subset-{{subset.id}}" class="list-group-item saved-subset" data-bs-toggle="modal" data-bs-target="#save-subset-modal-{{subset.id}}">{{subset.name}}</li>
               {% endfor %}
+
+              {% if not has_subsets %}
+                <li id="no-saved-subsets" class="list-group-item">You don't have any saved subsets</li>
+              {% endif %}
             </ul>
 
         
@@ -177,6 +181,79 @@
         </div>
       </div>
 
+    {% endfor %}
+
+    {% for subset in saved_subsets%} 
+      <div class="modal fade saved-subset-modal" id="save-subset-modal-{{subset.id}}" data-subset-id="{{subset.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h5 class="modal-title" id="subset-modal-header-{{subset.id}}"><span id="subset-modal-header-mode-{{subset.id}}">View</span> Subset</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+    
+            <div class="modal-body">
+              <!-- Container that holds a pop up describing what fields failed to validate.-->
+              <div id="closable-popup-container-saved-subset-{{subset.id}}" class="mx-2">
+    
+              </div>
+    
+              <label for="name-for-subset-to-save-{{subset.id}}"> Subset Name: </label>
+              <input id="name-for-subset-to-save-{{subset.id}}" type="text" class="form-control" value="{{subset.name}}" disabled>
+    
+            </div>
+    
+            <div class="modal-footer">
+
+              <button type="button" id="close-subset-modal-btn-{{subset.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+                <div class="me-2">
+                  Close
+                </div>
+              </button>
+
+              <button type="button" id="edit-subset-btn-{{subset.id}}" class="red-alert-btn-primary flex-row-between">
+                <div class="me-2">
+                  Edit
+                </div>
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <div class="d-flex justify-content-between w-100">
+                <div>
+
+                  <button type="button" id="delete-subset-{{subset.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Delete subset 
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                </div>
+
+                <div>
+
+                  <button type="button" id="discard-subset-{{subset.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Discard
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                  <button type="button" id="save-subset-btn-{{subset.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                    <div class="me-2">
+                      Save subset
+                    </div>
+                    <i class="fa-solid fa-floppy-disk"></i>
+                  </button>
+                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     {% endfor %}
 
     {% for oneTimeAuto in oneTimeAutos %}
@@ -490,4 +567,5 @@
     <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
     <script src="{% static 'UserPages/js/automationManagement.js' %}" ></script> 
     <script src="{% static 'UserPages/js/savedSearches.js' %}" ></script> 
+    <script src="{% static 'UserPages/js/savedSubsets.js' %}" ></script> 
   {% endblock %}

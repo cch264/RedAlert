@@ -92,10 +92,7 @@ def show_dashboard( request ):
     #print( str(json_array) )
 
     saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
-    saved_subset_array = []
-
-    for subset in saved_subset_objects:
-        saved_subset_array.append(subset)
+    has_subset = saved_subset_objects.exists()
 
     saved_search_objects = SavedSearches.objects.filter(user_id=request.user.id)
     saved_search_array = []
@@ -109,7 +106,8 @@ def show_dashboard( request ):
 
     response = {
         'client_json' : client_json,
-        'saved_subsets' : saved_subset_array,
+        'saved_subsets' : saved_subset_objects,
+        'hasSubsets' : has_subset,
         'userHasClients':userHasClients,
         'saved_searches': saved_search_array,
         'has_saved_searches' : saved_search_objects.exists()
