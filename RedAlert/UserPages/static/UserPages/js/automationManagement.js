@@ -51,6 +51,7 @@ function initializeAutomationModal()
 
         $('#auto-sel-msg-frequency-' + oneTimeAutoID).on('change', ()=> toggleAutomationTypeOneTime( oneTimeAutoID ) );
 
+        fetchClientData(oneTimeAutoID, "once");
 
     });
 
@@ -60,6 +61,8 @@ function initializeAutomationModal()
         //console.log(`MODAL ID IS ${recurringAutoID}`);
 
         $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) );
+
+        fetchClientData(recurringAutoID, "many");
     })
     //$('#auto-modal-cancel').on('click', clearModalInputs )
    // $('#auto-send-msg').on('click', updateAutomation);

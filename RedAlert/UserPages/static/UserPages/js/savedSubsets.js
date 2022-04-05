@@ -13,6 +13,8 @@ function initializeSavedSubsetModals()
         console.log(`SAVED SUBET ID ${subsetID}`);
         assignSubsetButtonListeners(subsetID);
 
+        fetchClientData(subsetID, "subset");
+
     })
 }
 
