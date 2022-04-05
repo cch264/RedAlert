@@ -204,7 +204,13 @@ Kill mongo service:
 	
 Start mongodb with user account requirement. If you start the service with this command then you will
 need a username and password to login.
+You must start the mongodb server with this command or else the site will not work.
 	mongod --auth
+
+	Edit conf file for service.
+	sudo vim systemctl edit --full mongodb.service
+
+
 	
 	
 	db.createUser(
@@ -228,3 +234,10 @@ Meeting Notes:
 	Combine filters into a single drop down.
 
 	Add dynamic city filter based on client city.
+
+
+Meeting 04/05/2022:
+New Features:
+	UI has been completely redesigned.
+	Saved searches and saved subsets work
+	
