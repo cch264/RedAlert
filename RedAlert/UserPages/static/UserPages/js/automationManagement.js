@@ -6,6 +6,8 @@ var currentRecurringAuto;
 
 var currentOneTimeAuto;
 
+var autoTimers = {}
+
 function oneTimeAutoData( name, sub, msg, type, priority, send_date)
 {
     this.name = name;
@@ -670,7 +672,14 @@ function updateOneTimeAutomation( autoID )
         )
 
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#one-time-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#one-time-auto-name-${autoID}`).text( autoData.auto_name );
+
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['once' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "once" );
 
     $.ajax({
 
@@ -721,7 +730,14 @@ function updateRecurringAutomation( autoID )
     );
        
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#recurring-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#recurring-auto-name-${autoID}`).text( autoData.auto_name );
+    
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['many' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "many" );
 
     $.ajax({
 
@@ -749,12 +765,11 @@ function updateRecurringAutomation( autoID )
     });
 }
 
+
+
 function createTimerForAutomations( autoID, type )
 {   
-    /*
-    one-time-auto-timer-{{oneTimeAuto.id}}"
-recurr-auto-timer-{{recurringAuto.id}}"
-  */
+   
 
     var dateOfExecution;
 
@@ -779,8 +794,9 @@ recurr-auto-timer-{{recurringAuto.id}}"
 
     console.log(`Date of next execution ${dateOfExecution}`);
 
-    
-    var timerInterval = setInterval( function(){
+    let idString = type + autoID;
+
+    autoTimers[idString] = setInterval( function(){
         var currentDate = new Date().getTime(); // Get current time in UTC
 
         //console.log(`Current Date ${currentDate}`);
