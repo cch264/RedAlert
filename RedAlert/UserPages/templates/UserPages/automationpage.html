@@ -129,7 +129,7 @@
               <input id="display-user-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.query}}" disabled>
     
             </div>
-    
+
             <div class="modal-footer">
 
               <button type="button" id="close-search-modal-btn-{{search.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
@@ -201,9 +201,13 @@
     
               <label for="name-for-subset-to-save-{{subset.id}}"> Subset Name: </label>
               <input id="name-for-subset-to-save-{{subset.id}}" type="text" class="form-control" value="{{subset.name}}" disabled>
-    
+              
+              <div>
+                <span>Clients: </span> <span id="subset-display-clients-{{subset.id}}"> </span>
+              </div>
+
             </div>
-    
+
             <div class="modal-footer">
 
               <button type="button" id="close-subset-modal-btn-{{subset.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
@@ -354,6 +358,10 @@
                 </select>
               </div>
   
+            </div>
+
+            <div>
+              <span>Clients: </span> <span id="one-time-auto-display-clients-{{oneTimeAuto.id}}"> </span>
             </div>
   
           </div>
@@ -507,8 +515,14 @@
               </div>
   
             </div>
+
+
+            <div>
+              <span>Clients: </span> <span id="recurr-auto-display-clients-{{recurringAuto.id}}"> </span>
+            </div>
   
           </div>
+
           <div class="modal-footer">
 
             <button type="button" id="auto-many-modal-close-{{recurringAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
