@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 # Import the client model from redAlertSite app.
 from redAlertSite.models import Client
+from .models import Subset
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -90,6 +91,9 @@ def show_dashboard( request ):
     #print( len( json_array ) )
     #print( str(json_array) )
 
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    has_subset = saved_subset_objects.exists()
+
     saved_search_objects = SavedSearches.objects.filter(user_id=request.user.id)
     saved_search_array = []
 
@@ -102,6 +106,8 @@ def show_dashboard( request ):
 
     response = {
         'client_json' : client_json,
+        'saved_subsets' : saved_subset_objects,
+        'hasSubsets' : has_subset,
         'userHasClients':userHasClients,
         'saved_searches': saved_search_array,
         'has_saved_searches' : saved_search_objects.exists()
@@ -638,6 +644,29 @@ def send_auto_message( autoID, type ):
 
             # test code to make sure sms is sent to the correct number
             #print("Sent to: {}\n".format(sms_index))
+
+
+def saveSubset(request):
+    
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    
+    # Check that the user is not using a duplicate subset name, for database purposes
+    for subset in saved_subset_objects:
+        print(subset.name + " New Name: " + request.POST['subsetName'])
+        if subset.name == request.POST['subsetName']:
+            response = {'Success': 'duplicate'}
+            return JsonResponse(response)
+    
+
+    newSubset = Subset()
+    newSubset.name = request.POST['subsetName']
+    newSubset.clientIDs = request.POST['subset']
+    newSubset.user_id = request.user.id
+    #newSubset.id = 1
+    newSubset.save()
+
+    response = {'Success': 'True'}
+    return JsonResponse(response)
 
 
 def deleteSchedJob( autoID, type ):

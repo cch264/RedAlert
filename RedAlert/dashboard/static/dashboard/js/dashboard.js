@@ -3,7 +3,7 @@ var selected_client_id_array = [];
 
 var all_clients = JSON.parse( $('#client-json-input').val() );
 
-
+var savedSubsetKeys = [];
 
 var search_all_keys = [
   "id",
@@ -192,6 +192,9 @@ window.addEventListener('load', (event) => {
     // When the page loads show all search results.
     executeSearch(true);
 
+
+    // Assign Listeners to the users subsets.
+    $(`.saved-subset`).on('click', selectClientsFromSubset);
 
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
@@ -886,6 +889,7 @@ function getClientSearchResultObjByID( clientIDInt )
   {
     if(search_result_object[index].item.id === parseInt(clientIDInt) )
     {
+      console.log(`Client found ${parseInt(clientIDInt)}`);
       return search_result_object[index];
     }
   }
@@ -1084,6 +1088,15 @@ function refreshSelectedClientsString( clientID, add=true)
   // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
 
+  // Show or hide the save subset button 
+  if(selected_client_id_array.length != 0)
+  {
+    $('#save-subset-btn').show();
+  }
+  else
+  {
+    $('#save-subset-btn').hide();
+  }
   checkForSelectedClients();
 
 }
@@ -1159,12 +1172,115 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
+}
 
 
-  }
+function createPopup( message, targetID='popup-container' )
+{
+  var opacity = 1;
 
-  function preventFormSubmission( event )
-  {
-    event.preventDefault;
-    return false;
-  }
+  $(`#${targetID}`).append(`<div class="fading-popup" style="background-color: #19E412; font-size: 30px; padding:10px; display: flex; justify-content: center;"> <div><strong>${message}</strong> </div> </div>`);
+
+
+  var timer = setInterval( ()=>{
+        if( opacity > 0)
+        {
+          console.log(`Adjusting opacity`);
+          opacity -= .03;
+          $('.fading-popup').css('opacity', opacity);
+        }
+        else
+        {
+          console.log(`Killing timer`);
+          $('.fading-popup').remove();
+          clearInterval(timer)
+        }
+      }, 100 );
+
+}
+
+// ----------------------- Saved Subsets -----------------------------
+
+
+// Click event for save subset button
+$('#create-subset-btn').on('click', createNewSavedSubset );
+function createNewSavedSubset()
+{
+    // Get the selected clients.
+    let subsetToSave = $('#selected-clients-id-array').val();
+    let subsetName = $('#subset-name').val();
+
+    $.ajax({
+
+        url:'/dashboard/save_subset/',
+        // Type of Request
+        method: "POST",
+        // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+        // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+        headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
+        data: {subset: subsetToSave, subsetName: subsetName},
+
+        // Function to call when to django returns a response to our ajax request.
+        success: function (data) {
+            console.log("AJAX SAVE SUBSET WAS A SUCCESS " + data['Success']);
+            if(data['Success'] == "duplicate")
+            {
+              showAndDismissAlert("danger", "A subset with this name already exists, please choose another.");
+            }
+            else if(data['Success'] === "True")
+            {
+              // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
+              let subsetContainer = $('#saved-subsets-container');
+              subsetContainer.append(`<div class="saved-subset" data-subset-clients='${subsetToSave}'>${subsetName}</div>`);
+              $('#save-subset-modal').modal('toggle');
+
+              // Assign the new subset element a listener so it can be clicked.
+              $(`.saved-subset`).on('click', selectClientsFromSubset);
+              
+            }
+        },
+        // Error handling LOWKEY USELESS TRUE ASF
+        error: function ( jqXHR, textStatus, errorThrown ) {
+            console.log(`Error WITH SAVE SUBSET AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+            console.log('Error - ' + errorMessage);
+        }
+    });
+}
+
+function showAndDismissAlert(type, message) 
+{
+  var htmlAlert = '<div class="alert alert-' + type + '">' + message + '</div>';
+  // style="z-index: 2; position: absolute; top: 0; left: 0;"
+  // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
+  $(".alert-messages").prepend(htmlAlert);
+
+  // Since we are prepending, take the first alert and tell it to fade in and then fade out.
+  // Note: if we were appending, then should use last() instead of first()
+  $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
+}
+
+function selectClientsFromSubset( event )
+{
+    let subsetClicked = event.target;
+
+    // Get the client id string from the subset element.
+    let clientIDString = $(subsetClicked).data('subsetClients');
+
+    console.log(`CLIENT IDS IN SUBSET ARE ${clientIDString}`);
+
+    // Set the value of this input element to the list of selected client ids, then call the refresh function
+    // That parses the input element value and selects ids in the string.
+    $('#selected-clients-id-array').val(clientIDString);
+
+    refreshSelectedClientsAfterSearch();
+}
+  
+
+function preventFormSubmission( event )
+{
+  event.preventDefault;
+  return false;
+}

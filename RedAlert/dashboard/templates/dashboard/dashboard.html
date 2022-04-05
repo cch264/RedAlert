@@ -161,6 +161,7 @@
       <!-- In boot strap grid, you can have a maximum of 12 columns total, col-11 means user all 11 columns spaces avaialble, leaving only one column space for the remaining columns.-->
       <div class="col-9">
         <div class= "container-fluid">
+
           <div class="row" >
             <div class="col">
 
@@ -314,7 +315,8 @@
                       </div>
 
                     </div>
-
+                        
+                      
                     <div class="d-flex flex-row-reverse">
                       <button id="send-msg" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
                         <div class="me-2">
@@ -327,7 +329,7 @@
                         <div class="me-2">
                           Create Automation
                         </div>
-                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-up-right-from-square"></i>
                       </button>
                     </div>
                     <div id="msg-popup"></div>
@@ -341,6 +343,15 @@
                           Don't worry your selections are still here. Click here to show all your selections.
                         </div>
                       </button>
+
+                      
+
+                      <button type="button" class="red-alert-btn-primary flex-row-between" style="display: none;" id="save-subset-btn" data-bs-toggle="modal" data-bs-target="#save-subset-modal"> 
+                        <div class="me-2">
+                          Save Selections as Subset
+                        </div>
+                        <i class="fa-solid fa-up-right-from-square"></i>
+                      </button>
                     </div>
 
                   </div>
@@ -351,9 +362,9 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
+      
 
       <!-- This col is going to be really small because it only gets 1 column space out of the 12 available in this row.-->
       <div class="col-2 px-0">
@@ -387,25 +398,30 @@
           <div class="row" >
             <div class="col">
 
-               <div class="box-with-header">
-                <div class="bwh-header d-flex justify-content-center px-1 py-1">
-                  <h4> Saved Subsets</h4>
-                </div>
+              <div class="box-with-header">
+                  <div class="bwh-header d-flex justify-content-center px-1 py-1">
+                    <h4> Saved Subsets</h4>
+                  </div>
 
-                <div class="bwh-content px-2 pb-2">
-                  <ul class="list-group">
-                    <li class="list-group-item">An active item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
-                  </ul>
-                </div>
+                  <div class="bwh-content px-2 pb-2">
+
+                    <div id="saved-subsets-container" class="d-flex flex-column justify-content-center align-items-center" >
+                      {% for subset in saved_subsets %}
+                        <div class="saved-subset" data-subset-clients="{{subset.clientIDs}}">{{subset.name}}</div>
+                      {% endfor %}
+
+                      {% if not hasSubsets %}
+                        <div id="no-saved-subsets" class="">You dont have any saved subsets</div>
+                      {% endif %} 
+
+                    </div>
+
+                  </div>
+
               </div>
-
-            </div>
             </div>
           </div>
+          </div> <!-- I think this can be removed. -->
 
           {% if not userHasClients %}                                     
             <div class="d-flex justify-content-center">
@@ -416,6 +432,28 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <div class="modal fade" id="save-subset-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create New Subset</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body alert-messages">
+          <div>
+            <label for="subset-name"> Subset Name: </label>
+            <input id="subset-name" class="form-control" type="subject" name="subject">
+          </div>
+        </div>
+
+        <div class="modal-footer flex-row">
+          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="create-subset-btn" class="btn btn-primary"> Create Subset </button>
+        </div>
+      </div>
     </div>
   </div>
 

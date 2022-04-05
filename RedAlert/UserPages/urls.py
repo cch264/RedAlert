@@ -16,6 +16,8 @@ urlpatterns = [
     path('update_user_profile/', views.update_user_profile, name='update_user_profile'),
     path('delete_search/', views.delete_search, name='delete_search'),
     path('update_search/', views.update_search, name='update_search'),
+    path('update_subset/', views.update_subset, name='update_subset'),
+    path('delete_subset/', views.delete_subset, name='delete_subset'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 #print(include( 'dashboard.urls'))

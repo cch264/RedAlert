@@ -203,6 +203,23 @@
     text-align: center;
 }
 
+.saved-subset{
+    border-top: 1px #EAEAEB solid;
+    font-size: 18px;
+    padding-left: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+    text-align: center;
+}
+
+.saved-subset:hover{
+    background-color: #F56666;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer; 
+}
+
 
 #appl-filters-display{
     font-weight: 550;

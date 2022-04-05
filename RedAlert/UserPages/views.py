@@ -6,8 +6,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
+from dashboard.models import Subset
 from dashboard.models import SavedSearches
 from dashboard.views import *
+
 
 
 # Get the User Auth object and the UserInfo Object
@@ -34,6 +36,10 @@ def show_automations( request ):
     recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
     hasRecurringAutos = recurringAutos.exists()
 
+    # Grab the subsets for the current agent/user
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    hasSubsets = saved_subset_objects.exists()
+
     savedSearches = SavedSearches.objects.filter(user_id=request.user.id)
     hasSavedSearches = savedSearches.exists()
 
@@ -42,9 +48,15 @@ def show_automations( request ):
                'hasRecurringAutos': hasRecurringAutos,
                'recurringAutos': recurringAutos,
                'savedSearches': savedSearches,
-               'hasSavedSearches': hasSavedSearches}
+               'hasSavedSearches': hasSavedSearches,
+               'saved_subsets': saved_subset_objects,
+               'has_subsets' :hasSubsets
+               }
 
-    return render(request, 'UserPages/automationpage.html', context)    
+    return render(request, 'UserPages/automationpage.html', context)  
+
+
+
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
@@ -201,6 +213,26 @@ def update_search(request):
 
     saved_search.save()
 
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def update_subset(request):
+
+    saved_subset = Subset.objects.get(id=request.POST['subsetID'])
+
+    saved_subset.name = request.POST['subsetName']
+
+    saved_subset.save()
+
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def delete_subset( request ):
+    saved_subset = Subset.objects.get(id=request.POST['subsetID'])
+    saved_subset.delete()
+    
     response = {'success': 'true'}
 
     return JsonResponse(response)
