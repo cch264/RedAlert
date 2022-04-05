@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 # Import the client model from redAlertSite app.
 from redAlertSite.models import Client
-from .models import SavedSubset
+from .models import Subset
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -91,7 +91,7 @@ def show_dashboard( request ):
     #print( len( json_array ) )
     #print( str(json_array) )
 
-    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
     has_subset = saved_subset_objects.exists()
 
     saved_search_objects = SavedSearches.objects.filter(user_id=request.user.id)
@@ -648,7 +648,7 @@ def send_auto_message( autoID, type ):
 
 def saveSubset(request):
     
-    saved_subset_objects = SavedSubset.objects.filter(user_id=request.user.id)
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
     
     # Check that the user is not using a duplicate subset name, for database purposes
     for subset in saved_subset_objects:
@@ -658,10 +658,11 @@ def saveSubset(request):
             return JsonResponse(response)
     
 
-    newSubset = SavedSubset()
+    newSubset = Subset()
     newSubset.name = request.POST['subsetName']
     newSubset.clientIDs = request.POST['subset']
     newSubset.user_id = request.user.id
+    #newSubset.id = 1
     newSubset.save()
 
     response = {'Success': 'True'}
