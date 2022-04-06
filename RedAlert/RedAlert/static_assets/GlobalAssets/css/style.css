@@ -280,3 +280,15 @@
 .no-margin{
     margin: 0px;
 }
+
+
+.no-link-underline{
+    color: #F01716;
+    text-decoration: none;
+}
+
+.no-link-underline:hover{
+    animation-name: red-alert-btn-hover; /* Play animation on hover */
+    animation-fill-mode: forwards; /* Keep animation style after its over */
+    animation-duration: .25s;
+}

@@ -43,14 +43,25 @@
 
 
           <div class="d-flex flex-row-reverse mt-2">
-            <input type="submit" class="btn btn-success" value="Log in!">
+
+            <button type="submit" class="red-alert-btn-submit flex-row-between" value="Log in!"> 
+              <div class="me-2">
+                Log in!
+              </div>
+            </button>
           </div>
          
         </form>
       </div>
 
       <div>
-        <button type="button" class="btn btn-primary"> <a style="color: black;" href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a> </button> 
+
+        <button type="button" class="red-alert-btn-primary flex-row-between"> 
+          <div class="me-2">
+            <a class="no-link-underline" href="{% url 'loginAppUrls:create_new_user'%}"> Create new account! </a>
+          </div>
+          <i class="fa-solid fa-up-right-from-square"></i>
+        </button>
       </div>
 
     </div>
