@@ -45,7 +45,14 @@
               <label for="account-creation-input">Account Creation Date: </label>
               <input id="account-creation-input" class="form-control" value="{{ userInfoObj.account_creation_date }}" disabled>
 
-              <button id="edit-user-profile" type="button" class="btn btn-primary mt-3">Edit Profile</button>
+              
+
+              <button type="button" class="red-alert-btn-primary font-12 flex-row-between no-margin mt-2 w-100" id="edit-user-profile" > 
+                <div class="me-2">
+                  Edit Profile
+                </div>
+                <i class="fa-solid fa-pencil"></i>
+              </button>
 
             </form>
 
@@ -111,8 +118,20 @@
 
               <input id="user-changed-password" type="hidden" name="changed-password" value="false">
 
-              <button id="submit-user-profile-changes" type="submit" class="btn btn-success mt-2">Submit Changes</button>
-              <button id="discard-user-profile-changes" type="button" class="btn btn-danger mt-2">Discard Changes</button>
+              
+              <button type="submit" id="submit-user-profile-changes" class="red-alert-btn-submit flex-row-between">
+                <div class="me-2">
+                  Submit Changes
+                </div>
+                <i class="fa-solid fa-floppy-disk"></i>
+              </button>
+
+              <button type="button" id="discard-user-profile-changes" class="red-alert-btn-delete flex-row-between">
+                <div class="me-2">
+                  Discard Changes
+                </div>
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </form>
             
         </div>
