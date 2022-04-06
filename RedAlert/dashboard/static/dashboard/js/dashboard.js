@@ -209,13 +209,15 @@ window.addEventListener('load', (event) => {
           // Show the saved search button if the search box is empty or hide it if the search bar is empty.
           if( $('#user-search-input').val() != '' )
           {
-            $('#open-save-search-modal').css('display','block');
+            $('#open-save-search-modal').css('display','inline-flex');
           }
           else
           {
             $('#open-save-search-modal').css('display','none');
           }
 
+          // Hide the button that shows all users if it is showing when the user searches.
+          // We hide on search and then unhide after the search is complete.
           if( !$('#no-selections-showing').hasClass('display-none') )
           {
             $('#no-selections-showing').addClass('display-none');

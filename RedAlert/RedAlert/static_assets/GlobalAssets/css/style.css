@@ -269,3 +269,14 @@
     align-items: center;
 
 }
+
+
+/* FONT SIZES */
+
+.font-12{
+    font-size:12px;
+}
+
+.no-margin{
+    margin: 0px;
+}

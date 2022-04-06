@@ -418,7 +418,7 @@ def save_automation( request ):
         newRecurringAuto.user_id = request.user.id
         newRecurringAuto.save()
 
-         #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
+        #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
     else:
         newOneTimeAuto = OneTimeAutomation()
 
