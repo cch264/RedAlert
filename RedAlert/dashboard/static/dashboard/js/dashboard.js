@@ -296,6 +296,21 @@ function validateSendMessageFields()
     createPopup("Successfully Sent Message!", "popup-container-auto-create-success", "#11F3A9", 25);
     send_client_notification();
     closeAllClosablePopups();
+
+    // get html input fields
+    let subjectInput = document.getElementById("message-subject");
+    let bodyInput = document.getElementById("message-body");
+    let msgTypeInput = document.getElementById("sel-msg-type");
+    let msgPriorityInput = document.getElementById("sel-msg-priority");
+    let selectedClients = document.getElementById("selected-clients-id-array");
+
+    // reset field values to their original states
+    subjectInput.value = "";
+    bodyInput.value = "";
+    $(msgTypeInput)[0].selectedIndex = 0;
+    $(msgPriorityInput)[0].selectedIndex = 0;
+    //$('.selected-sr').remove();
+    refreshSelectedClientsAfterSearch();
   }
   else
   {
@@ -344,23 +359,6 @@ function send_client_notification()
       success: function (data) {
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
-
-
-
-          // get html input fields
-          let subjectInput = document.getElementById("message-subject");
-          let bodyInput = document.getElementById("message-body");
-          let msgTypeInput = document.getElementById("sel-msg-type");
-          let msgPriorityInput = document.getElementById("sel-msg-priority");
-          let selectedClients = document.getElementById("selected-clients-id-array");
-
-          // reset field values to their original states
-          subjectInput.value = "";
-          bodyInput.value = "";
-          $(msgTypeInput)[0].selectedIndex = 0;
-          $(msgPriorityInput)[0].selectedIndex = 0;
-          //$('.selected-sr').remove();
-          refreshSelectedClientsAfterSearch();
       },
       // Error handling LOWKEY USELESS
       error: function ( jqXHR, textStatus, errorThrown ) {
