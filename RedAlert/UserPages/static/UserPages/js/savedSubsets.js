@@ -126,7 +126,7 @@ function validateSavedSubset(subsetID)
 
         let popupMessage = `<div> Please Fill Out the Following Fields:  <ul>${warningMessage}</ul> </div>`;
 
-        createClosablePopup( popupMessage , targetID=`closable-popup-container-saved-subset-${subsetID}`, color='#BC1F43', fontSize = 22)
+        createClosablePopup( popupMessage , targetID=`closable-popup-container-saved-subset-${subsetID}`, color='#BC1F43', fontSize = 22, fontColor='#FFFFFF')
     }
 }
 

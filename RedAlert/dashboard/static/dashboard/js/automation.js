@@ -139,7 +139,7 @@ function validateAutomation()
     {
         missingInputWarningStr += "</ul></strong> </div>";
         //createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
-        createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+        createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
     }
 
 }

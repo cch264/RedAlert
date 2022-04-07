@@ -85,7 +85,7 @@
     
     {% if loginSuccess == 0 %}
       <script>
-        createClosablePopup(message='<div style="text-align: center"><strong>No account found with those credentials!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20)
+        createClosablePopup(message='<div style="text-align: center"><strong>No account found with those credentials!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20, fontColor='#FFFFFF')
       </script>
     {% endif %}
 
@@ -97,7 +97,7 @@
 
     {% if not_logged_in %}
       <script >
-        createClosablePopup(message='<div style="text-align: center"><strong>You must be logged in to view that page!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20);
+        createClosablePopup(message='<div style="text-align: center"><strong>You must be logged in to view that page!</strong> </div>', targetID='closable-popup-container', color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
       </script>
     {% endif %}
 
