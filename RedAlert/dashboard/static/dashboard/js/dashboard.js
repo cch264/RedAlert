@@ -249,8 +249,61 @@ window.addEventListener('load', (event) => {
 var btn = document.querySelector('#send-msg');
 
 btn.addEventListener('click', (event) => {
-  send_client_notification();
-})
+  validateSendMessageFields();
+  //send_client_notification();
+});
+
+function validateSendMessageFields()
+{
+  let requiredFieldMsg = "";
+  let canSendMessage = true;
+
+  if( $('#message-subject').val() === '')
+  {
+    requiredFieldMsg += "<li>Please Enter a Message Subject</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#message-body').val().trim() === '')
+  {
+    requiredFieldMsg += "<li>Please Enter a Message Body</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#sel-msg-type').val() === 'def-select-type-opt')
+  {
+    requiredFieldMsg += "<li>Please Select a Message Type</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#sel-msg-priority').val() === 'def-select-priority-opt')
+  {
+    requiredFieldMsg += "<li>Please Select a Message Priority</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#selected-clients-id-array').val() === '')
+  {
+    requiredFieldMsg += "<li>Please Select at Least One Client</li>";
+    canSendMessage = false;
+  }
+
+  
+
+
+  if( canSendMessage )
+  {
+    createPopup("Successfully Sent Message!", "popup-container-auto-create-success", "#11F3A9", 25);
+    send_client_notification();
+    closeAllClosablePopups();
+  }
+  else
+  {
+    requiredFieldMsg = `<ul>${requiredFieldMsg}</ul>`;
+    createClosablePopup( requiredFieldMsg, targetID='popup-container-auto-create-success', color='#BC1F43', fontSize = 20, fontColor="#FFFFFF");
+  }
+
+}
 
 function send_client_notification()
 {
@@ -292,41 +345,7 @@ function send_client_notification()
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
 
-          // grab reference to the parent div
-          let container_block = document.getElementById( 'msg-popup' );
 
-          // clear any outstanding notification boxes before creating a new one
-          while (container_block.lastChild)
-          {
-            container_block.removeChild(container_block.lastChild);
-          }
-
-          // set up 'message sent' notification box
-          block_to_insert = document.createElement( 'div' );
-          block_to_insert.innerHTML = 'Your alert has been sent.' ;
-          $(block_to_insert).addClass("msg-succeeded-popup")
-
-          // add notification box
-          container_block.appendChild( block_to_insert );
-
-          // function to fade out notification box
-          function fade()
-          {
-            $(block_to_insert).fadeOut("slow");
-          }
-
-          // delay for fading effect
-          setTimeout(fade, 6000);
-
-          // function to remove the div with the notification box in it after it
-          // has faded out
-          function remove_block()
-          {
-            container_block.removeChild(container_block.firstChild);
-          }
-
-          // set timer for removal of div
-          setTimeout(remove_block, 6000);
 
           // get html input fields
           let subjectInput = document.getElementById("message-subject");
@@ -340,7 +359,7 @@ function send_client_notification()
           bodyInput.value = "";
           $(msgTypeInput)[0].selectedIndex = 0;
           $(msgPriorityInput)[0].selectedIndex = 0;
-          $('.selected-sr').remove();
+          //$('.selected-sr').remove();
           refreshSelectedClientsAfterSearch();
       },
       // Error handling LOWKEY USELESS
@@ -348,43 +367,7 @@ function send_client_notification()
           console.log(`Error WITH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
           var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
-          console.log('Error - ' + errorMessage);
-
-          // grab reference to the parent div
-          let container_block = document.getElementById( 'msg-popup' );
-
-          // clear any outstanding notification boxes before creating a new one
-          while (container_block.lastChild)
-          {
-            container_block.removeChild(container_block.lastChild);
-          }
-
-          // set up 'message failed' notification box
-          block_to_insert = document.createElement( 'div' );
-          block_to_insert.innerHTML = 'There was an error when sending your alert. Please make sure you have selected at least one client and filled in all fields.' ;
-          $(block_to_insert).addClass("msg-failed-popup")
-
-          // add notification box
-          container_block.appendChild( block_to_insert );
-
-          // function to fade out notification box
-          function fade()
-          {
-            $(block_to_insert).fadeOut("slow");
-          }
-
-          // delay for fading effect
-          setTimeout(fade, 6000);
-
-          // function to remove the div with the notification box in it after it
-          // has faded out
-          function remove_block()
-          {
-            container_block.removeChild(container_block.firstChild);
-          }
-
-          // set timer for removal of div
-          setTimeout(remove_block, 6000);
+          console.log('Error Sending Message- ' + errorMessage);
       }
   });
 }
