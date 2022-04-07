@@ -609,12 +609,12 @@ function validateAutomation( autoID, type )
         if(type === "many")
         {
             //createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
-            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
         else
         {
             //createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
-            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
     }
 
