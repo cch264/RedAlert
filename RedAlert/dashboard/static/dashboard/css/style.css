@@ -142,8 +142,8 @@
 }
 
 #start-drawing-btn{
-    background-color:#07CA2E;
-    border-color:#07ED3C;
+    background-color:#40C95B;
+    border-color:#40C95B;
 }
 
 
@@ -152,8 +152,8 @@
 }
 
 #stop-drawing-btn{
-    background-color:#E94040;
-    border-color:#E94040;
+    background-color:#F01716;
+    border-color:#F01716;
 }
 
 
@@ -164,8 +164,8 @@
 
 
 #clear-draw-btn{
-    background-color:#B10404;
-    border-color:#B10404;
+    background-color:#F01716;
+    border-color:#F01716;
 }
 
 #clear-draw-btn:focus{
