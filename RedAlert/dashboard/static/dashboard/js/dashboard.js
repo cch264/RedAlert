@@ -1198,6 +1198,9 @@ function createNewSavedSubset()
 
               // Assign the new subset element a listener so it can be clicked.
               $(`.saved-subset`).on('click', selectClientsFromSubset);
+
+              // Remove no subsets warning from page
+              $('#no-saved-subsets').remove();
               
             }
         },
