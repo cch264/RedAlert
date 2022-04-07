@@ -224,7 +224,7 @@ def create_client_list(request):
         #a_client.email = emails[random.randint(0, len(emails) - 1 )]
         #a_client.phone = phones[random.randint(0, len(phones) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        a_client.email = "calvin7757@gmai.com"
+        a_client.email = "calvin7757@gmail.com"
         a_client.phone = "16026975905" # Kamerons phone number.
         #a_client.email = "calvin7757@gmail.com"
         #a_client.phone = "14803690030"
