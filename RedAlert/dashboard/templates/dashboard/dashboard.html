@@ -177,7 +177,13 @@
                   <div class="d-flex form-floating">
                     <input type="text" class="form-control flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
-                    <button type="button" id="open-save-search-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save-search-modal"> Save Search </button>
+
+                    <button type="button" class="red-alert-btn-primary font-12 flex-row-between no-margin" style="display: none;" id="open-save-search-modal" data-bs-toggle="modal" data-bs-target="#save-search-modal"> 
+                      <div class="me-2">
+                        Save Search
+                      </div>
+                      <i class="fa-solid fa-up-right-from-square"></i>
+                    </button>
 
                     <input type="text" style="display: none;" >
 
@@ -450,8 +456,21 @@
         </div>
 
         <div class="modal-footer flex-row">
-          <button id="auto-modal-cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button id="create-subset-btn" class="btn btn-primary"> Create Subset </button>
+
+          <button type="button" id="auto-modal-cancel" class="red-alert-btn-secondary d-flex justify-content-between align-items-center" data-bs-dismiss="modal">
+            <div class="me-2">
+              Cancel
+            </div>
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+
+          <button type="button" id="create-subset-btn" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+            <div class="me-2">
+              Create Subset
+            </div>
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+
         </div>
       </div>
     </div>
@@ -482,8 +501,22 @@
         </div>
 
         <div class="modal-footer">
-          <button id="save-search-btn" class="btn btn-info"> Save Search </button>
-          <button id="save-search-discard" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+          
+          
+          <button type="button" id="save-search-discard" class="red-alert-btn-secondary d-flex justify-content-between align-items-center" data-bs-dismiss="modal">
+            <div class="me-2">
+              Discard
+            </div>
+            <i class="fa-solid fa-trash"></i>
+          </button>
+
+          <button type="button" id="save-search-btn" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+            <div class="me-2">
+              Save Search
+            </div>
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+
         </div>
       </div>
     </div>

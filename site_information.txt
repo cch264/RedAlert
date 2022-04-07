@@ -202,6 +202,9 @@ Kill mongo service:
 	
 	kill pid_of_process
 	
+Change phone number of all clients in mongoDB database
+	 db.redAlertSite_client.updateMany({},{$set:{phone:Long("12252542523")}})
+
 Start mongodb with user account requirement. If you start the service with this command then you will
 need a username and password to login.
 You must start the mongodb server with this command or else the site will not work.
@@ -236,8 +239,5 @@ Meeting Notes:
 	Add dynamic city filter based on client city.
 
 
-Meeting 04/05/2022:
-New Features:
-	UI has been completely redesigned.
-	Saved searches and saved subsets work
+Client ID: 1000-1022
 	
