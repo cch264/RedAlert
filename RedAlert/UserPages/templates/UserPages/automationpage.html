@@ -66,6 +66,14 @@
                   </div>
                 </li>
               {% endfor %}
+
+              <!-- if user has not automations show message-->
+              {% if not hasAutos %}
+                <li class="list-group-item" id="has-no-autos-warning">
+                  You don't have any saved automations
+                </li>
+              
+              {% endif %}
             </ul>
 
         
@@ -86,7 +94,7 @@
         
             <h1> Your Subsets </h1>
 
-            <ul id="subset-list"class="list-group">
+            <ul id="subset-list" class="list-group">
               {% for subset in saved_subsets %}
                 <li id="saved-subset-{{subset.id}}" class="list-group-item saved-subset" data-bs-toggle="modal" data-bs-target="#save-subset-modal-{{subset.id}}">{{subset.name}}</li>
               {% endfor %}

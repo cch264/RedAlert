@@ -180,7 +180,7 @@ function deleteSubsetModal( subsetID )
         if( $(`#subset-list > li`).length === 0 )
         {
             console.log(`No saved subsetes left!!!`);
-            $(`#subset-list`).append(`<li id="no-saved-subsetes" class="list-group-item">You dont have any saved subsetes</li>`);
+            $(`#subset-list`).append(`<li id="no-saved-subsets" class="list-group-item">You dont have any saved subsetes</li>`);
         }
 
         deleteSavedSubset( subsetID );

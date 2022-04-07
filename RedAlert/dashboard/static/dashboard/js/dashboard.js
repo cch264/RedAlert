@@ -1164,7 +1164,51 @@ function executeSearchAjax() {
 
 
 // Click event for save subset button
-$('#create-subset-btn').on('click', createNewSavedSubset );
+$('#create-subset-btn').on('click', validateSubset );
+
+function validateSubset()
+{
+  let canCreateSubset = true;
+
+  if( $('#subset-name').val().trim() === '')
+  {
+    canCreateSubset = false;
+  }
+
+  if( canCreateSubset )
+  {
+    let subsetToSave = $('#selected-clients-id-array').val();
+    let subsetName = $('#subset-name').val();
+
+    createNewSavedSubset();
+
+    // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
+    let subsetContainer = $('#saved-subsets-container');
+
+    subsetContainer.append(`<div class="saved-subset" data-subset-clients='${subsetToSave}'>${subsetName}</div>`);
+
+    $('#save-subset-modal').modal('toggle');
+
+    // Assign the new subset element a listener so it can be clicked.
+    $(`.saved-subset`).on('click', selectClientsFromSubset);
+
+    // Remove no subsets warning from page
+    $('#no-saved-subsets').remove();
+
+    // Clear name value of subset form
+    $('#subset-name').val('');
+
+    createPopup( "Succesfully Saved Subset!", targetID='popup-container-auto-create-success', color='#11F3A9', fontSize = 30, decreaseOpacity=.03);
+
+    closeAllClosablePopups();
+  }
+  else
+  {
+    requiredFieldMsg = `<ul><li>Please Enter a Name for Your Subset</li></ul>`;
+    createClosablePopup( requiredFieldMsg, targetID='subset-warning-popup', color='#BC1F43', fontSize = 20, fontColor="#FFFFFF");
+  }
+}
+
 function createNewSavedSubset()
 {
     // Get the selected clients.
@@ -1185,24 +1229,6 @@ function createNewSavedSubset()
         // Function to call when to django returns a response to our ajax request.
         success: function (data) {
             console.log("AJAX SAVE SUBSET WAS A SUCCESS " + data['Success']);
-            if(data['Success'] == "duplicate")
-            {
-              showAndDismissAlert("danger", "A subset with this name already exists, please choose another.");
-            }
-            else if(data['Success'] === "True")
-            {
-              // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
-              let subsetContainer = $('#saved-subsets-container');
-              subsetContainer.append(`<div class="saved-subset" data-subset-clients='${subsetToSave}'>${subsetName}</div>`);
-              $('#save-subset-modal').modal('toggle');
-
-              // Assign the new subset element a listener so it can be clicked.
-              $(`.saved-subset`).on('click', selectClientsFromSubset);
-
-              // Remove no subsets warning from page
-              $('#no-saved-subsets').remove();
-              
-            }
         },
         // Error handling LOWKEY USELESS TRUE ASF
         error: function ( jqXHR, textStatus, errorThrown ) {
@@ -1212,18 +1238,6 @@ function createNewSavedSubset()
             console.log('Error - ' + errorMessage);
         }
     });
-}
-
-function showAndDismissAlert(type, message) 
-{
-  var htmlAlert = '<div class="alert alert-' + type + '">' + message + '</div>';
-  // style="z-index: 2; position: absolute; top: 0; left: 0;"
-  // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
-  $(".alert-messages").prepend(htmlAlert);
-
-  // Since we are prepending, take the first alert and tell it to fade in and then fade out.
-  // Note: if we were appending, then should use last() instead of first()
-  $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
 }
 
 function selectClientsFromSubset( event )

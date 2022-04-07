@@ -509,6 +509,12 @@ function deleteRecurringAutomation(autoID)
         deleteAutomation(autoID, "many");
 
         createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
+
+        // If the user deleted their last automation show them a li that says they have no automations
+        if($('#automation-list > li').length === 0)
+        {
+            $('#automation-list').append(`<li class="list-group-item auto-li" id="has-no-autos-warning">You don't have any saved automations</li>`);
+        }
     }
 }
 
