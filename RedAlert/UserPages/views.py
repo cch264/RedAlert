@@ -37,6 +37,8 @@ def show_automations( request ):
     recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
     hasRecurringAutos = recurringAutos.exists()
 
+    hasAutos = hasOneTimeAutos or hasRecurringAutos
+
     # Grab the subsets for the current agent/user
     saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
     hasSubsets = saved_subset_objects.exists()
@@ -45,9 +47,8 @@ def show_automations( request ):
     hasSavedSearches = savedSearches.exists()
 
     context = {'oneTimeAutos': oneTimeAutos,
-               'hasOneTimeAutos': hasOneTimeAutos,
-               'hasRecurringAutos': hasRecurringAutos,
                'recurringAutos': recurringAutos,
+               'hasAutos':hasAutos,
                'savedSearches': savedSearches,
                'hasSavedSearches': hasSavedSearches,
                'saved_subsets': saved_subset_objects,

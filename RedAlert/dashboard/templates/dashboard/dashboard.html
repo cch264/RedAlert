@@ -30,7 +30,8 @@
   <!-- USE .no-gutters to REMOVE SPACE BETWEEN COLUMNS-->
   <div class= "container-fluid">
 
-    <div id="popup-container">
+    <!-- container to show popups when saving searches-->
+    <div id="popup-container" class="d-flex justify-content-center">
     </div>
 
     <!-- This row contains the headers for filters and client search.-->
@@ -266,7 +267,7 @@
 
           <div class="row">
             <div class="col">
-              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center" >
+              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center mt-1" >
 
               </div>
             </div>
@@ -447,7 +448,11 @@
           <h5 class="modal-title" id="exampleModalLabel">Create New Subset</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body alert-messages">
+        <div class="modal-body">
+
+          <div id="subset-warning-popup" class="d-flex justify-content-center">
+          </div>
+
           <div>
             <label for="subset-name"> Subset Name: </label>
             <input id="subset-name" class="form-control" type="subject" name="subject">
@@ -460,7 +465,6 @@
             <div class="me-2">
               Cancel
             </div>
-            <i class="fa-solid fa-floppy-disk"></i>
           </button>
 
           <button type="button" id="create-subset-btn" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
