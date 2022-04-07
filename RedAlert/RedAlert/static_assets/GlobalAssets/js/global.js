@@ -13,7 +13,7 @@ function createPopup( message, targetID='popup-container', color='#19E412', font
 
   $(`#${targetID}`).append(`<div class="fading-popup w-75" style="background-color: ${color}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: center; border-radius: 10px;"> <div><strong>${message}</strong> </div> </div>`);
 
-  
+  /*
   timer = setInterval( ()=>{
         if( opacity > 0)
         {
@@ -28,7 +28,7 @@ function createPopup( message, targetID='popup-container', color='#19E412', font
           clearInterval(timer)
         }
       }, 100 );
-
+*/
 }
 
 

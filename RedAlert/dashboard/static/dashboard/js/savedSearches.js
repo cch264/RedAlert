@@ -97,6 +97,7 @@ function validateNewSavedSearch()
     {
         // If saved search validated then create a new saved search in the db.
         createNewSavedSearch();
+        closeAllClosablePopups(); // close any warning popups on the page.
     }
     else
     {
