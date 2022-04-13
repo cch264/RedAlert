@@ -30,7 +30,7 @@
               {% for oneTimeAuto in oneTimeAutos%}
                 <li class="list-group-item auto-li" id="one-time-auto-li-{{oneTimeAuto.id}}" data-bs-toggle="modal" data-bs-target="#one-time-auto-{{oneTimeAuto.id}}" >
                   <div class="d-flex justify-content-between">
-                    <div>
+                    <div id="one-time-auto-name-{{oneTimeAuto.id}}">
                       {{oneTimeAuto.name}}
                     </div>
 
@@ -52,7 +52,7 @@
               {% for recurringAuto in recurringAutos %}
                 <li class="list-group-item auto-li" id="recurring-auto-li-{{recurringAuto.id}}" data-bs-toggle="modal" data-bs-target="#recurring-auto-{{recurringAuto.id}}">
                   <div class="d-flex justify-content-between">
-                    <div>
+                    <div id="recurring-auto-name-{{recurringAuto.id}}">
                       {{recurringAuto.name}}
                     </div>
 
@@ -66,6 +66,14 @@
                   </div>
                 </li>
               {% endfor %}
+
+              <!-- if user has not automations show message-->
+              {% if not hasAutos %}
+                <li class="list-group-item" id="has-no-autos-warning">
+                  You don't have any saved automations
+                </li>
+              
+              {% endif %}
             </ul>
 
         
@@ -78,7 +86,7 @@
               {% endfor %}
 
               {% if not hasSavedSearches %}
-              <li id="no-saved-searches" class="list-group-item">You dont have any saved searches</li>
+                <li id="no-saved-searches" class="list-group-item">You don't have any saved searches</li>
               {% endif %}
             </ul>
 
@@ -87,11 +95,13 @@
             <h1> Your Subsets </h1>
 
             <ul id="subset-list" class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
+              {% for subset in saved_subsets %}
+                <li id="saved-subset-{{subset.id}}" class="list-group-item saved-subset" data-bs-toggle="modal" data-bs-target="#save-subset-modal-{{subset.id}}">{{subset.name}}</li>
+              {% endfor %}
+
+              {% if not has_subsets %}
+                <li id="no-saved-subsets" class="list-group-item">You don't have any saved subsets</li>
+              {% endif %}
             </ul>
 
         
@@ -127,7 +137,7 @@
               <input id="display-user-search-to-save-{{search.id}}" type="text" class="form-control" value="{{search.query}}" disabled>
     
             </div>
-    
+
             <div class="modal-footer">
 
               <button type="button" id="close-search-modal-btn-{{search.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
@@ -179,6 +189,83 @@
         </div>
       </div>
 
+    {% endfor %}
+
+    {% for subset in saved_subsets%} 
+      <div class="modal fade saved-subset-modal" id="save-subset-modal-{{subset.id}}" data-subset-id="{{subset.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h5 class="modal-title" id="subset-modal-header-{{subset.id}}"><span id="subset-modal-header-mode-{{subset.id}}">View</span> Subset</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+    
+            <div class="modal-body">
+              <!-- Container that holds a pop up describing what fields failed to validate.-->
+              <div id="closable-popup-container-saved-subset-{{subset.id}}" class="mx-2">
+    
+              </div>
+    
+              <label for="name-for-subset-to-save-{{subset.id}}"> Subset Name: </label>
+              <input id="name-for-subset-to-save-{{subset.id}}" type="text" class="form-control" value="{{subset.name}}" disabled>
+              
+              <div>
+                <span>Clients: </span> <span id="subset-display-clients-{{subset.id}}"> </span>
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+              <button type="button" id="close-subset-modal-btn-{{subset.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
+                <div class="me-2">
+                  Close
+                </div>
+              </button>
+
+              <button type="button" id="edit-subset-btn-{{subset.id}}" class="red-alert-btn-primary flex-row-between">
+                <div class="me-2">
+                  Edit
+                </div>
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <div class="d-flex justify-content-between w-100">
+                <div>
+
+                  <button type="button" id="delete-subset-{{subset.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Delete subset 
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                </div>
+
+                <div>
+
+                  <button type="button" id="discard-subset-{{subset.id}}" class="red-alert-btn-delete flex-row-between me-2" style="display:none;">
+                    <div class="me-2">
+                      Discard
+                    </div>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+
+                  <button type="button" id="save-subset-btn-{{subset.id}}" class="red-alert-btn-submit flex-row-between" style="display:none;">
+                    <div class="me-2">
+                      Save subset
+                    </div>
+                    <i class="fa-solid fa-floppy-disk"></i>
+                  </button>
+                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     {% endfor %}
 
     {% for oneTimeAuto in oneTimeAutos %}
@@ -279,6 +366,10 @@
                 </select>
               </div>
   
+            </div>
+
+            <div>
+              <span>Clients: </span> <span id="one-time-auto-display-clients-{{oneTimeAuto.id}}"> </span>
             </div>
   
           </div>
@@ -432,8 +523,14 @@
               </div>
   
             </div>
+
+
+            <div>
+              <span>Clients: </span> <span id="recurr-auto-display-clients-{{recurringAuto.id}}"> </span>
+            </div>
   
           </div>
+
           <div class="modal-footer">
 
             <button type="button" id="auto-many-modal-close-{{recurringAuto.id}}" data-bs-dismiss="modal" class="red-alert-btn-secondary flex-row-between">
@@ -492,4 +589,5 @@
     <script src="{% static 'UserPages/js/userpages.js' %}" > pageLoad(); </script> 
     <script src="{% static 'UserPages/js/automationManagement.js' %}" ></script> 
     <script src="{% static 'UserPages/js/savedSearches.js' %}" ></script> 
+    <script src="{% static 'UserPages/js/savedSubsets.js' %}" ></script> 
   {% endblock %}

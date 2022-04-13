@@ -283,3 +283,76 @@ function resetPassFieldsOnLoad()
 
 
 
+// Fetch a JSON of client data for a specific resource to display to the user.
+function fetchClientData(resourceID, resourceType)
+{
+    $.ajax({
+
+        url:'/user_pages/retrieve_clients_for_modals/',
+        // Type of Request
+        method: "POST",
+        // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+        // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+        headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
+        data: {resourceID: resourceID, resourceType: resourceType},
+
+        // Function to call when to django returns a response to our ajax request.
+        success: function (data) {
+            //var x = JSON.stringify(data);
+            console.log("AJAX FETCH CLIENTS WAS A SUCCESS " + data['success']);
+            passClientDataToModal(resourceID, resourceType, data['clients']);
+        },
+        // Error handling LOWKEY USELESS
+        error: function ( jqXHR, textStatus, errorThrown ) {
+            console.log(`Error WITH FETCHING CLIENTS AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+            console.log('Error - ' + errorMessage);
+        }
+    });
+}
+
+// Take the returned client data, parse into json, and then set the span element in the appropraite modal to display the client ids.
+function passClientDataToModal(resourceID, resourceType, clients)
+{   
+    console.log(`Resource id and type ${resourceID} ${resourceType}`);
+    // Parse the string to get a json object.
+    let clientsJSON = JSON.parse(clients);
+
+    let clientListString = "";
+
+    // Loops through the clients inside the clients array.
+    // clients is an array of javascript objects.
+    for( const client of clientsJSON )
+    {
+        //console.log(`Client ${client} `);
+        //console.log(`Client id ${client['id']} Client name ${client['name']} `);
+        clientListString += client['name'] + ', '; // Create stirng of client names so users know who their autos/subsets affect
+    }
+
+
+    if( resourceType === "once")
+    {
+        $(`#one-time-auto-display-clients-${resourceID}`).text(clientListString);
+    }
+    else if( resourceType === "many" )
+    {
+        console.log(`Setting recurr auto clients`);
+        $(`#recurr-auto-display-clients-${resourceID}`).text(clientListString);
+    }
+    else
+    {
+        $(`#subset-display-clients-${resourceID}`).text(clientListString);
+    }
+    
+       /*
+    one-time-auto-display-clients-
+    subset-display-clients-
+    */
+}
+
+
+
+
+

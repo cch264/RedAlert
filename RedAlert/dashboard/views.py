@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 # Import the client model from redAlertSite app.
 from redAlertSite.models import Client
+from .models import Subset
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -95,6 +96,9 @@ def show_dashboard( request ):
     #print( len( json_array ) )
     #print( str(json_array) )
 
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    has_subset = saved_subset_objects.exists()
+
     saved_search_objects = SavedSearches.objects.filter(user_id=request.user.id)
     saved_search_array = []
 
@@ -107,6 +111,8 @@ def show_dashboard( request ):
 
     response = {
         'client_json' : client_json,
+        'saved_subsets' : saved_subset_objects,
+        'hasSubsets' : has_subset,
         'userHasClients':userHasClients,
         'saved_searches': saved_search_array,
         'has_saved_searches' : saved_search_objects.exists()
@@ -223,8 +229,8 @@ def create_client_list(request):
         #a_client.email = emails[random.randint(0, len(emails) - 1 )]
         #a_client.phone = phones[random.randint(0, len(phones) - 1 )]
         #a_client.email = a_client.name.split(' ')[0] + emails[random.randint(0, len(emails) - 1 )]
-        a_client.email = "npn24@nau.edu"
-        a_client.phone = "13096202335"
+        a_client.email = "calvin7757@gmail.com"
+        a_client.phone = "16026975905" # Kamerons phone number.
         #a_client.email = "calvin7757@gmail.com"
         #a_client.phone = "14803690030"
         a_client.user_id = request.user.id
@@ -610,7 +616,7 @@ def save_automation( request ):
         newRecurringAuto.user_id = request.user.id
         newRecurringAuto.save()
 
-         #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
+        #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
     else:
         newOneTimeAuto = OneTimeAutomation()
 
@@ -836,6 +842,29 @@ def send_auto_message( autoID, type ):
 
             # test code to make sure sms is sent to the correct number
             #print("Sent to: {}\n".format(sms_index))
+
+
+def saveSubset(request):
+    
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    
+    # Check that the user is not using a duplicate subset name, for database purposes
+    for subset in saved_subset_objects:
+        print(subset.name + " New Name: " + request.POST['subsetName'])
+        if subset.name == request.POST['subsetName']:
+            response = {'Success': 'duplicate'}
+            return JsonResponse(response)
+    
+
+    newSubset = Subset()
+    newSubset.name = request.POST['subsetName']
+    newSubset.clientIDs = request.POST['subset']
+    newSubset.user_id = request.user.id
+    #newSubset.id = 1
+    newSubset.save()
+
+    response = {'Success': 'True'}
+    return JsonResponse(response)
 
 
 def deleteSchedJob( autoID, type ):

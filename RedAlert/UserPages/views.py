@@ -1,3 +1,4 @@
+import resource
 from django.shortcuts import render
 # Import the userinfo model object so we can use it here.
 from userLoginApp.models import UserInfo
@@ -6,8 +7,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from dashboard.models import OneTimeAutomation
 from dashboard.models import RecurringAutomation
+from dashboard.models import Subset
 from dashboard.models import SavedSearches
 from dashboard.views import *
+
 
 
 # Get the User Auth object and the UserInfo Object
@@ -34,17 +37,28 @@ def show_automations( request ):
     recurringAutos = RecurringAutomation.objects.filter(user_id = request.user.id )
     hasRecurringAutos = recurringAutos.exists()
 
+    hasAutos = hasOneTimeAutos or hasRecurringAutos
+
+    # Grab the subsets for the current agent/user
+    saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
+    hasSubsets = saved_subset_objects.exists()
+
     savedSearches = SavedSearches.objects.filter(user_id=request.user.id)
     hasSavedSearches = savedSearches.exists()
 
     context = {'oneTimeAutos': oneTimeAutos,
-               'hasOneTimeAutos': hasOneTimeAutos,
-               'hasRecurringAutos': hasRecurringAutos,
                'recurringAutos': recurringAutos,
+               'hasAutos':hasAutos,
                'savedSearches': savedSearches,
-               'hasSavedSearches': hasSavedSearches}
+               'hasSavedSearches': hasSavedSearches,
+               'saved_subsets': saved_subset_objects,
+               'has_subsets' :hasSubsets
+               }
 
-    return render(request, 'UserPages/automationpage.html', context)    
+    return render(request, 'UserPages/automationpage.html', context)  
+
+
+
 
 def show_faq( request ):
     return render(request, 'UserPages/faqpage.html')
@@ -202,5 +216,80 @@ def update_search(request):
     saved_search.save()
 
     response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def update_subset(request):
+
+    saved_subset = Subset.objects.get(id=request.POST['subsetID'])
+
+    saved_subset.name = request.POST['subsetName']
+
+    saved_subset.save()
+
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+def delete_subset( request ):
+    saved_subset = Subset.objects.get(id=request.POST['subsetID'])
+    saved_subset.delete()
+    
+    response = {'success': 'true'}
+
+    return JsonResponse(response)
+
+
+# Returns a json of client objects for a specific modal on the automation page.
+# Get client data to display to user when viewing automation or subset so they know what clients are 
+# part of the automation or subset.
+def retrieve_clients_for_modals( request ):
+
+    resourceID = request.POST['resourceID']
+    resourceType = request.POST['resourceType']
+
+    if resourceType == "once": # If resource type is recurring automation
+        resourceObj = OneTimeAutomation.objects.get(id=resourceID)
+        clientsArray = resourceObj.selected_clients.split(',') # We store clients associated with a resource as a comma seperated string, so we are breaking it into an array of individual client ids.
+
+    elif resourceType == "many": # If resource type is one time automation
+        resourceObj = RecurringAutomation.objects.get(id=resourceID)
+        clientsArray = resourceObj.selected_clients.split(',')
+
+    else: # Else if the resource is a subset.
+        resourceObj = Subset.objects.get(id=resourceID)
+        clientsArray = resourceObj.clientIDs.split(',')
+
+    clientObjects = Client.objects.filter(id__in=clientsArray)
+
+    json_array = []
+    for client in clientObjects:
+        clientDict = {}
+        clientDict["id"] = client.id
+        clientDict["name"] = client.name
+        '''
+        clientDict["unit_num"] = client.unit_num
+        clientDict["street"] = client.street
+        clientDict["city"] = client.city
+        clientDict["zip_code"] = client.zip_code
+        clientDict["state"] = client.state
+        clientDict["license_num"] = client.license_num
+        clientDict["policies"] = client.policies
+        clientDict["age"] = client.age
+        clientDict["birthdate"] = str(client.birthdate)
+        clientDict["gender"] = client.gender
+        clientDict["notification_status"] = client.notification_status
+        clientDict["email"] = client.email
+        clientDict["phone"] = client.phone
+        clientDict["lat"] = client.lat
+        clientDict["long"] = client.long
+        '''
+        json_array.append(clientDict) 
+
+
+    json_array = json.dumps(json_array)
+    print("Client Objects for resource {} resource id is: {}".format(clientObjects, resourceID))
+
+    response = {'success': 'true', 'clients': json_array}
 
     return JsonResponse(response)

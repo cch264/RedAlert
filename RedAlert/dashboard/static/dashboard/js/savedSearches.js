@@ -64,7 +64,7 @@ function createNewSavedSearch()
     // Add the new saved search to the list of saved searches.
     searchContainer.append(`<div class="saved-search" data-search-query="${searchToSave}">${searchToSaveName}</li>`);
 
-    createPopup( "Succesfully Saved Search!", targetID='popup-container', color='#19E412', fontSize = 30, decreaseOpacity=.03);
+    createPopup( "Succesfully Saved Search!", targetID='popup-container', color='#11F3A9', fontSize = 30, decreaseOpacity=.03);
 
     $('.saved-search').on('click', executeSavedSearch );
 
@@ -97,13 +97,14 @@ function validateNewSavedSearch()
     {
         // If saved search validated then create a new saved search in the db.
         createNewSavedSearch();
+        closeAllClosablePopups(); // close any warning popups on the page.
     }
     else
     {
 
         let popupMessage = `<div> Please Fill Out the Following Fields:  <ul>${warningMessage}</ul> </div>`;
 
-        createClosablePopup( popupMessage , targetID='closable-popup-container-saved-search', color='#BC1F43', fontSize = 22)
+        createClosablePopup( popupMessage , targetID='closable-popup-container-saved-search', color='#BC1F43', fontSize = 22, fontColor='#FFFFFF')
     }
     
 }

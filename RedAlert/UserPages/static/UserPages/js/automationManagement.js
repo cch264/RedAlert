@@ -6,6 +6,8 @@ var currentRecurringAuto;
 
 var currentOneTimeAuto;
 
+var autoTimers = {}
+
 function oneTimeAutoData( name, sub, msg, type, priority, send_date)
 {
     this.name = name;
@@ -51,6 +53,7 @@ function initializeAutomationModal()
 
         $('#auto-sel-msg-frequency-' + oneTimeAutoID).on('change', ()=> toggleAutomationTypeOneTime( oneTimeAutoID ) );
 
+        fetchClientData(oneTimeAutoID, "once");
 
     });
 
@@ -60,6 +63,8 @@ function initializeAutomationModal()
         //console.log(`MODAL ID IS ${recurringAutoID}`);
 
         $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) );
+
+        fetchClientData(recurringAutoID, "many");
     })
     //$('#auto-modal-cancel').on('click', clearModalInputs )
    // $('#auto-send-msg').on('click', updateAutomation);
@@ -504,6 +509,12 @@ function deleteRecurringAutomation(autoID)
         deleteAutomation(autoID, "many");
 
         createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
+
+        // If the user deleted their last automation show them a li that says they have no automations
+        if($('#automation-list > li').length === 0)
+        {
+            $('#automation-list').append(`<li class="list-group-item auto-li" id="has-no-autos-warning">You don't have any saved automations</li>`);
+        }
     }
 }
 
@@ -604,12 +615,12 @@ function validateAutomation( autoID, type )
         if(type === "many")
         {
             //createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
-            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
         else
         {
             //createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
-            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
     }
 
@@ -667,7 +678,14 @@ function updateOneTimeAutomation( autoID )
         )
 
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#one-time-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#one-time-auto-name-${autoID}`).text( autoData.auto_name );
+
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['once' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "once" );
 
     $.ajax({
 
@@ -718,7 +736,14 @@ function updateRecurringAutomation( autoID )
     );
        
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#recurring-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#recurring-auto-name-${autoID}`).text( autoData.auto_name );
+    
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['many' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "many" );
 
     $.ajax({
 
@@ -746,12 +771,11 @@ function updateRecurringAutomation( autoID )
     });
 }
 
+
+
 function createTimerForAutomations( autoID, type )
 {   
-    /*
-    one-time-auto-timer-{{oneTimeAuto.id}}"
-recurr-auto-timer-{{recurringAuto.id}}"
-  */
+   
 
     var dateOfExecution;
 
@@ -776,8 +800,9 @@ recurr-auto-timer-{{recurringAuto.id}}"
 
     console.log(`Date of next execution ${dateOfExecution}`);
 
-    
-    var timerInterval = setInterval( function(){
+    let idString = type + autoID;
+
+    autoTimers[idString] = setInterval( function(){
         var currentDate = new Date().getTime(); // Get current time in UTC
 
         //console.log(`Current Date ${currentDate}`);

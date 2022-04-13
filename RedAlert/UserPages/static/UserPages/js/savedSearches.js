@@ -12,14 +12,15 @@ function initializeSavedSearchModals()
         let searchID = $(this).data('searchId');
 
         console.log(`SAVED SEARCH ID ${searchID}`);
-        assignButtonListeners(searchID);
+        assignSearchButtonListeners(searchID);
 
     })
 }
 
 
-function assignButtonListeners( searchID )
+function assignSearchButtonListeners( searchID )
 {
+    console.log(`ASSIGNIGN SAVED SEARCHES LISTNERS ID ${searchID}`);
     $(`#edit-search-btn-${searchID}`).on('click', () => {editSavedSavedSearch(searchID) });
     $(`#discard-search-${searchID}`).on('click', () => { discardSavedSearch(searchID) });
     $(`#save-search-btn-${searchID}`).on('click', ()=> { validateSavedSearch(searchID) });
@@ -29,6 +30,7 @@ function assignButtonListeners( searchID )
 function editSavedSavedSearch(searchID)
 {
 
+    console.log(`EDITING SAVED SAVED SEARCH ID ${searchID}`);
     // Save the search query information before allowing edits.
     searchName = $(`#name-for-search-to-save-${searchID}`).val();
     searchQuery = $(`#display-user-search-to-save-${searchID}`).val();
@@ -37,8 +39,8 @@ function editSavedSavedSearch(searchID)
     $(`#display-user-search-to-save-${searchID}`).prop('disabled', false);
     $(`#name-for-search-to-save-${searchID}`).prop('disabled', false);
 
-    toggleModalHeader( searchID );
-    toggleButtons( searchID );
+    toggleSearchModalHeader( searchID );
+    toggleSearchButtons( searchID );
 }
 
 
@@ -48,7 +50,7 @@ function discardSavedSearch( searchID )
 
     if( discardChanges )
     {
-        toggleButtons( searchID );
+        toggleSearchButtons( searchID );
     
         $(`#display-user-search-to-save-${searchID}`).prop('disabled', true);
         $(`#name-for-search-to-save-${searchID}`).prop('disabled', true);
@@ -56,12 +58,12 @@ function discardSavedSearch( searchID )
         $(`#name-for-search-to-save-${searchID}`).val(searchName);
         $(`#display-user-search-to-save-${searchID}`).val(searchQuery);
 
-        toggleModalHeader( searchID );
+        toggleSearchModalHeader( searchID );
     }
 
 }
 
-function toggleButtons( searchID )
+function toggleSearchButtons( searchID )
 {
    
     $(`#save-search-btn-${searchID}`).toggle();
@@ -74,7 +76,7 @@ function toggleButtons( searchID )
 
 }
 
-function toggleModalHeader( searchID )
+function toggleSearchModalHeader( searchID )
 {
     let currentHeader = $(`#search-modal-header-mode-${searchID}`).text();
 
@@ -118,7 +120,7 @@ function validateSavedSearch(searchID)
         closeAllClosablePopups();
 
         // Hide delete, save, and discard button after editing saved search.
-        toggleButtons(searchID);
+        toggleSearchButtons(searchID);
 
         $(`#saved-search-${searchID}`).text($(`#name-for-search-to-save-${searchID}`).val());
 
@@ -133,7 +135,7 @@ function validateSavedSearch(searchID)
 
         let popupMessage = `<div> Please Fill Out the Following Fields:  <ul>${warningMessage}</ul> </div>`;
 
-        createClosablePopup( popupMessage , targetID=`closable-popup-container-saved-search-${searchID}`, color='#BC1F43', fontSize = 22)
+        createClosablePopup( popupMessage , targetID=`closable-popup-container-saved-search-${searchID}`, color='#BC1F43', fontSize = 22, fontColor='#FFFFFF')
     }
 }
 

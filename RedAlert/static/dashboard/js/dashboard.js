@@ -895,7 +895,7 @@ function getClientFromAllClients( clientID )
 
 function refreshSelectedClientsAfterSearch()
 {
-  $('.selected-sr').remove(); // remove all previous search results.
+  $('.selected-sr').remove(); // remove all previous search results. We are going to recreate them in just a few lines.
 
   let selectedClientID = $("#selected-clients-id-array").val();
 

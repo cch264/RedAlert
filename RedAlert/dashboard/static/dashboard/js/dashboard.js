@@ -3,7 +3,7 @@ var selected_client_id_array = [];
 
 var all_clients = JSON.parse( $('#client-json-input').val() );
 
-
+var savedSubsetKeys = [];
 
 var search_all_keys = [
   "id",
@@ -193,6 +193,9 @@ window.addEventListener('load', (event) => {
     executeSearch(true);
 
 
+    // Assign Listeners to the users subsets.
+    $(`.saved-subset`).on('click', selectClientsFromSubset);
+
     $("#expand-sr-btn").on('click', addListenerToSearchResultScrollBox );
 
     $('#no-selections-showing').on('click', ()=>{ $('#no-selections-showing').addClass('display-none'); $('#user-search-input').val(""); executeSearch(); });
@@ -206,13 +209,15 @@ window.addEventListener('load', (event) => {
           // Show the saved search button if the search box is empty or hide it if the search bar is empty.
           if( $('#user-search-input').val() != '' )
           {
-            $('#open-save-search-modal').css('display','block');
+            $('#open-save-search-modal').css('display','inline-flex');
           }
           else
           {
             $('#open-save-search-modal').css('display','none');
           }
 
+          // Hide the button that shows all users if it is showing when the user searches.
+          // We hide on search and then unhide after the search is complete.
           if( !$('#no-selections-showing').hasClass('display-none') )
           {
             $('#no-selections-showing').addClass('display-none');
@@ -244,8 +249,76 @@ window.addEventListener('load', (event) => {
 var btn = document.querySelector('#send-msg');
 
 btn.addEventListener('click', (event) => {
-  send_client_notification();
-})
+  validateSendMessageFields();
+  //send_client_notification();
+});
+
+function validateSendMessageFields()
+{
+  let requiredFieldMsg = "";
+  let canSendMessage = true;
+
+  if( $('#message-subject').val() === '')
+  {
+    requiredFieldMsg += "<li>Please Enter a Message Subject</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#message-body').val().trim() === '')
+  {
+    requiredFieldMsg += "<li>Please Enter a Message Body</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#sel-msg-type').val() === 'def-select-type-opt')
+  {
+    requiredFieldMsg += "<li>Please Select a Message Type</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#sel-msg-priority').val() === 'def-select-priority-opt')
+  {
+    requiredFieldMsg += "<li>Please Select a Message Priority</li>";
+    canSendMessage = false;
+  }
+
+  if( $('#selected-clients-id-array').val() === '')
+  {
+    requiredFieldMsg += "<li>Please Select at Least One Client</li>";
+    canSendMessage = false;
+  }
+
+  
+
+
+  if( canSendMessage )
+  {
+    createPopup("Successfully Sent Message!", "popup-container-auto-create-success", "#11F3A9", 25);
+    send_client_notification();
+    closeAllClosablePopups();
+
+    // get html input fields
+    let subjectInput = document.getElementById("message-subject");
+    let bodyInput = document.getElementById("message-body");
+    let msgTypeInput = document.getElementById("sel-msg-type");
+    let msgPriorityInput = document.getElementById("sel-msg-priority");
+    let selectedClients = document.getElementById("selected-clients-id-array");
+
+    // reset field values to their original states
+    subjectInput.value = "";
+    bodyInput.value = "";
+    $(msgTypeInput)[0].selectedIndex = 0;
+    $(msgPriorityInput)[0].selectedIndex = 0;
+    //$('.selected-sr').remove();
+    refreshSelectedClientsAfterSearch();
+  }
+  else
+  {
+    requiredFieldMsg = `<ul>${requiredFieldMsg}</ul>`;
+    createClosablePopup( requiredFieldMsg, targetID='popup-container-auto-create-success', color='#BC1F43', fontSize = 20, fontColor="#FFFFFF");
+  }
+
+}
 
 function send_client_notification()
 {
@@ -286,100 +359,13 @@ function send_client_notification()
       success: function (data) {
           //var x = JSON.stringify(data);
           console.log("AJAX RESPONDEED WITH SUCCESS THE QUERY WAS: ");
-
-          // grab reference to the parent div
-          let container_block = document.getElementById( 'msg-popup' );
-
-          // clear any outstanding notification boxes before creating a new one
-          while (container_block.lastChild)
-          {
-            container_block.removeChild(container_block.lastChild);
-          }
-
-          // set up 'message sent' notification box
-          block_to_insert = document.createElement( 'div' );
-          block_to_insert.innerHTML = 'Your alert has been sent.' ;
-          $(block_to_insert).addClass("msg-succeeded-popup")
-
-          // add notification box
-          container_block.appendChild( block_to_insert );
-
-          // function to fade out notification box
-          function fade()
-          {
-            $(block_to_insert).fadeOut("slow");
-          }
-
-          // delay for fading effect
-          setTimeout(fade, 6000);
-
-          // function to remove the div with the notification box in it after it
-          // has faded out
-          function remove_block()
-          {
-            container_block.removeChild(container_block.firstChild);
-          }
-
-          // set timer for removal of div
-          setTimeout(remove_block, 10000);
-
-          // get html input fields
-          let subjectInput = document.getElementById("message-subject");
-          let bodyInput = document.getElementById("message-body");
-          let msgTypeInput = document.getElementById("sel-msg-type");
-          let msgPriorityInput = document.getElementById("sel-msg-priority");
-          let selectedClients = document.getElementById("selected-clients-id-array");
-
-          // reset field values to their original states
-          subjectInput.value = "";
-          bodyInput.value = "";
-          $(msgTypeInput)[0].selectedIndex = 0;
-          $(msgPriorityInput)[0].selectedIndex = 0;
-          $('.selected-sr').remove();
-          refreshSelectedClientsAfterSearch();
       },
       // Error handling LOWKEY USELESS
       error: function ( jqXHR, textStatus, errorThrown ) {
           console.log(`Error WITH AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
           var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
 
-          console.log('Error - ' + errorMessage);
-
-          // grab reference to the parent div
-          let container_block = document.getElementById( 'msg-popup' );
-
-          // clear any outstanding notification boxes before creating a new one
-          while (container_block.lastChild)
-          {
-            container_block.removeChild(container_block.lastChild);
-          }
-
-          // set up 'message failed' notification box
-          block_to_insert = document.createElement( 'div' );
-          block_to_insert.innerHTML = 'There was an error when sending your alert. Please make sure you have selected at least one client and filled in all fields.' ;
-          $(block_to_insert).addClass("msg-failed-popup")
-
-          // add notification box
-          container_block.appendChild( block_to_insert );
-
-          // function to fade out notification box
-          function fade()
-          {
-            $(block_to_insert).fadeOut("slow");
-          }
-
-          // delay for fading effect
-          setTimeout(fade, 6000);
-
-          // function to remove the div with the notification box in it after it
-          // has faded out
-          function remove_block()
-          {
-            container_block.removeChild(container_block.firstChild);
-          }
-
-          // set timer for removal of div
-          setTimeout(remove_block, 10000);
+          console.log('Error Sending Message- ' + errorMessage);
       }
   });
 }
@@ -886,6 +872,7 @@ function getClientSearchResultObjByID( clientIDInt )
   {
     if(search_result_object[index].item.id === parseInt(clientIDInt) )
     {
+      console.log(`Client found ${parseInt(clientIDInt)}`);
       return search_result_object[index];
     }
   }
@@ -1084,6 +1071,15 @@ function refreshSelectedClientsString( clientID, add=true)
   // Set the value of this input element so we have a place to store the selected client ids.
   $("#selected-clients-id-array").val(selected_client_id_array.toString());
 
+  // Show or hide the save subset button 
+  if(selected_client_id_array.length != 0)
+  {
+    $('#save-subset-btn').show();
+  }
+  else
+  {
+    $('#save-subset-btn').hide();
+  }
   checkForSelectedClients();
 
 }
@@ -1159,12 +1155,108 @@ function executeSearchAjax() {
             console.log('Error - ' + errorMessage);
         }
     });
+}
 
 
-  }
+// ----------------------- Saved Subsets -----------------------------
 
-  function preventFormSubmission( event )
+
+// Click event for save subset button
+$('#create-subset-btn').on('click', validateSubset );
+
+function validateSubset()
+{
+  let canCreateSubset = true;
+
+  if( $('#subset-name').val().trim() === '')
   {
-    event.preventDefault;
-    return false;
+    canCreateSubset = false;
   }
+
+  if( canCreateSubset )
+  {
+    let subsetToSave = $('#selected-clients-id-array').val();
+    let subsetName = $('#subset-name').val();
+
+    createNewSavedSubset();
+
+    // Immediately add the new subset to the list, otherwise the page would need to be refreshed first.
+    let subsetContainer = $('#saved-subsets-container');
+
+    subsetContainer.append(`<div class="saved-subset" data-subset-clients='${subsetToSave}'>${subsetName}</div>`);
+
+    $('#save-subset-modal').modal('toggle');
+
+    // Assign the new subset element a listener so it can be clicked.
+    $(`.saved-subset`).on('click', selectClientsFromSubset);
+
+    // Remove no subsets warning from page
+    $('#no-saved-subsets').remove();
+
+    // Clear name value of subset form
+    $('#subset-name').val('');
+
+    createPopup( "Succesfully Saved Subset!", targetID='popup-container-auto-create-success', color='#11F3A9', fontSize = 30, decreaseOpacity=.03);
+
+    closeAllClosablePopups();
+  }
+  else
+  {
+    requiredFieldMsg = `<ul><li>Please Enter a Name for Your Subset</li></ul>`;
+    createClosablePopup( requiredFieldMsg, targetID='subset-warning-popup', color='#BC1F43', fontSize = 20, fontColor="#FFFFFF");
+  }
+}
+
+function createNewSavedSubset()
+{
+    // Get the selected clients.
+    let subsetToSave = $('#selected-clients-id-array').val();
+    let subsetName = $('#subset-name').val();
+
+    $.ajax({
+
+        url:'/dashboard/save_subset/',
+        // Type of Request
+        method: "POST",
+        // Django requires forms to use a csrf token so we have to pass the token along with our ajax request.
+        // Were getting the token from an input created by django by using {% csrf_token %} in our template which generates the input.
+        headers:{ 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        // Pass data to the django function
+        data: {subset: subsetToSave, subsetName: subsetName},
+
+        // Function to call when to django returns a response to our ajax request.
+        success: function (data) {
+            console.log("AJAX SAVE SUBSET WAS A SUCCESS " + data['Success']);
+        },
+        // Error handling LOWKEY USELESS TRUE ASF
+        error: function ( jqXHR, textStatus, errorThrown ) {
+            console.log(`Error WITH SAVE SUBSET AJAX RESP ${ errorThrown } ${textStatus} ${jqXHR.responseXML}`);
+            var errorMessage = jqXHR.status + ': ' + jqXHR.statusText
+
+            console.log('Error - ' + errorMessage);
+        }
+    });
+}
+
+function selectClientsFromSubset( event )
+{
+    let subsetClicked = event.target;
+
+    // Get the client id string from the subset element.
+    let clientIDString = $(subsetClicked).data('subsetClients');
+
+    console.log(`CLIENT IDS IN SUBSET ARE ${clientIDString}`);
+
+    // Set the value of this input element to the list of selected client ids, then call the refresh function
+    // That parses the input element value and selects ids in the string.
+    $('#selected-clients-id-array').val(clientIDString);
+
+    refreshSelectedClientsAfterSearch();
+}
+  
+
+function preventFormSubmission( event )
+{
+  event.preventDefault;
+  return false;
+}

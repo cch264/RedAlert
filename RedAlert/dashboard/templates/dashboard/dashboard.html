@@ -30,7 +30,8 @@
   <!-- USE .no-gutters to REMOVE SPACE BETWEEN COLUMNS-->
   <div class= "container-fluid">
 
-    <div id="popup-container">
+    <!-- container to show popups when saving searches-->
+    <div id="popup-container" class="d-flex justify-content-center">
     </div>
 
     <!-- This row contains the headers for filters and client search.-->
@@ -161,6 +162,7 @@
       <!-- In boot strap grid, you can have a maximum of 12 columns total, col-11 means user all 11 columns spaces avaialble, leaving only one column space for the remaining columns.-->
       <div class="col-9">
         <div class= "container-fluid">
+
           <div class="row" >
             <div class="col">
 
@@ -176,7 +178,13 @@
                   <div class="d-flex form-floating">
                     <input type="text" class="form-control flex-grow-1" id="user-search-input" placeholder="Type your search here!">
 
-                    <button type="button" id="open-save-search-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save-search-modal"> Save Search </button>
+
+                    <button type="button" class="red-alert-btn-primary font-12 flex-row-between no-margin" style="display: none;" id="open-save-search-modal" data-bs-toggle="modal" data-bs-target="#save-search-modal"> 
+                      <div class="me-2">
+                        Save Search
+                      </div>
+                      <i class="fa-solid fa-up-right-from-square"></i>
+                    </button>
 
                     <input type="text" style="display: none;" >
 
@@ -259,7 +267,7 @@
 
           <div class="row">
             <div class="col">
-              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center" >
+              <div id="popup-container-auto-create-success" class="d-flex flex-column align-items-center mt-1" >
 
               </div>
             </div>
@@ -298,7 +306,7 @@
 
                         <label for="sel-msg-type"> Message Type: </label>
                         <select id="sel-msg-type" class="form-select mb-2" aria-label="Select message type">
-                          <option value="def-select-opt" selected> Select a Message Type </option>
+                          <option value="def-select-type-opt" selected> Select a Message Type </option>
                             <option value="sms"> Send SMS </option>
                             <option value="email">Send Email </option>
                             <option value="both">Send Email and SMS </option>
@@ -306,7 +314,7 @@
 
                         <label for="sel-msg-priority"> Message Priority: </label>
                         <select id="sel-msg-priority" class="form-select" aria-label="Select message priority">
-                          <option value="def-select-opt" selected> Select a Message Priority </option>
+                          <option value="def-select-priority-opt" selected> Select a Message Priority </option>
                             <option value="send-emergency"> Send Emergency Message</option>
                             <option value="send-social">Send Social Message</option>
                         </select>
@@ -314,7 +322,8 @@
                       </div>
 
                     </div>
-
+                        
+                      
                     <div class="d-flex flex-row-reverse">
                       <button id="send-msg" class="red-alert-btn-primary d-flex justify-content-between align-items-center">
                         <div class="me-2">
@@ -327,10 +336,9 @@
                         <div class="me-2">
                           Create Automation
                         </div>
-                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-up-right-from-square"></i>
                       </button>
                     </div>
-                    <div id="msg-popup"></div>
 
                     <h3> Selected Clients </h3>
                     <div id="selected-clients-container">
@@ -340,6 +348,15 @@
                         <div class="me-2">
                           Don't worry your selections are still here. Click here to show all your selections.
                         </div>
+                      </button>
+
+                      
+
+                      <button type="button" class="red-alert-btn-primary flex-row-between" style="display: none;" id="save-subset-btn" data-bs-toggle="modal" data-bs-target="#save-subset-modal"> 
+                        <div class="me-2">
+                          Save Selections as Subset
+                        </div>
+                        <i class="fa-solid fa-up-right-from-square"></i>
                       </button>
                     </div>
 
@@ -351,9 +368,9 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
+      
 
       <!-- This col is going to be really small because it only gets 1 column space out of the 12 available in this row.-->
       <div class="col-2 px-0">
@@ -387,25 +404,30 @@
           <div class="row" >
             <div class="col">
 
-               <div class="box-with-header">
-                <div class="bwh-header d-flex justify-content-center px-1 py-1">
-                  <h4> Saved Subsets</h4>
-                </div>
+              <div class="box-with-header">
+                  <div class="bwh-header d-flex justify-content-center px-1 py-1">
+                    <h4> Saved Subsets</h4>
+                  </div>
 
-                <div class="bwh-content px-2 pb-2">
-                  <ul class="list-group">
-                    <li class="list-group-item">An active item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
-                  </ul>
-                </div>
+                  <div class="bwh-content px-2 pb-2">
+
+                    <div id="saved-subsets-container" class="d-flex flex-column justify-content-center align-items-center" >
+                      {% for subset in saved_subsets %}
+                        <div class="saved-subset" data-subset-clients="{{subset.clientIDs}}">{{subset.name}}</div>
+                      {% endfor %}
+
+                      {% if not hasSubsets %}
+                        <div id="no-saved-subsets" class="">You dont have any saved subsets</div>
+                      {% endif %} 
+
+                    </div>
+
+                  </div>
+
               </div>
-
-            </div>
             </div>
           </div>
+          </div> <!-- I think this can be removed. -->
 
           {% if not userHasClients %}                                     
             <div class="d-flex justify-content-center">
@@ -416,6 +438,44 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <div class="modal fade" id="save-subset-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create New Subset</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div id="subset-warning-popup" class="d-flex justify-content-center">
+          </div>
+
+          <div>
+            <label for="subset-name"> Subset Name: </label>
+            <input id="subset-name" class="form-control" type="subject" name="subject">
+          </div>
+        </div>
+
+        <div class="modal-footer flex-row">
+
+          <button type="button" id="auto-modal-cancel" class="red-alert-btn-secondary d-flex justify-content-between align-items-center" data-bs-dismiss="modal">
+            <div class="me-2">
+              Cancel
+            </div>
+          </button>
+
+          <button type="button" id="create-subset-btn" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+            <div class="me-2">
+              Create Subset
+            </div>
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -444,8 +504,22 @@
         </div>
 
         <div class="modal-footer">
-          <button id="save-search-btn" class="btn btn-info"> Save Search </button>
-          <button id="save-search-discard" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+          
+          
+          <button type="button" id="save-search-discard" class="red-alert-btn-secondary d-flex justify-content-between align-items-center" data-bs-dismiss="modal">
+            <div class="me-2">
+              Discard
+            </div>
+            <i class="fa-solid fa-trash"></i>
+          </button>
+
+          <button type="button" id="save-search-btn" class="red-alert-btn-submit d-flex justify-content-between align-items-center">
+            <div class="me-2">
+              Save Search
+            </div>
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+
         </div>
       </div>
     </div>
