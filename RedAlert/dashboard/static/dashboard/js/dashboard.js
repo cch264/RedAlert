@@ -321,7 +321,7 @@ function send_client_notification()
           }
 
           // set timer for removal of div
-          setTimeout(remove_block, 6000);
+          setTimeout(remove_block, 10000);
 
           // get html input fields
           let subjectInput = document.getElementById("message-subject");
@@ -379,7 +379,7 @@ function send_client_notification()
           }
 
           // set timer for removal of div
-          setTimeout(remove_block, 6000);
+          setTimeout(remove_block, 10000);
       }
   });
 }
@@ -907,11 +907,11 @@ function getClientFromAllClients( clientID )
   return false;
 }
 
-/* 
+/*
 * When a user makes a search, the existing search results are removed and recreated.
 * This is a huge problem if the user has already selected clients. This function reselects any clients
 * that were previously selected when the search bar is used.
-*/ 
+*/
 function refreshSelectedClientsAfterSearch()
 {
   $('.selected-sr').remove(); // remove all previous search results.
@@ -992,8 +992,8 @@ function generateSearchElement(result)
 {
   return `<div id="sr-${result.item.id}" data-selected-client="false" data-client-id="${result.item.id}" class="bootstrap-grey-bottom my-1 me-1 ms-5 d-flex flex-row client-sr">
               <div class="d-flex flex-column justify-content-center ps-2 sr-btn-container">
-                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn d-flex justify-content-between align-items-center"> 
-                   <div class="me-2">Select </div> 
+                <div id="sr-btn-${result.item.id}" class="select-client-btn plus-btn d-flex justify-content-between align-items-center">
+                   <div class="me-2">Select </div>
                    <i class="fa-solid fa-plus"></i> </div>
               </div>
 
