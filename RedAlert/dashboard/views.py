@@ -10,8 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import random
 import string
-from sms import send_sms
-from django.core.mail import send_mail
 from .models import OneTimeAutomation
 from .models import RecurringAutomation
 from .models import SavedSearches
@@ -19,6 +17,12 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from sms import send_sms
+from django.core.mail import send_mail
+import email
+import imaplib
+import environ
+
 
 #import datetime
 from datetime import date
@@ -28,8 +32,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import STATE_STOPPED, STATE_RUNNING, STATE_PAUSED
 
 
-
-
+# define and read env files
+env = environ.Env()
+environ.Env.read_env()
 
 # Initialize the background schedular
 scheduler = BackgroundScheduler()
@@ -47,12 +52,12 @@ def show_dashboard( request ):
     if scheduler.state != STATE_RUNNING:
         refreshSchedJobs()
         print("Initiliazing shed jobs for first time.")
+        new_job = scheduler.add_job(get_email_response, 'cron', second=1, id = 'get_email_responses' )
     else:
         print("Not Initiliazing Jobs for first time. Printing Sheduled Jobs: {}".format(scheduler.get_jobs()) )
 
     #delete_all_clients()
     #create_client_list(request)
-
 
     print("Length of clients retreived from db  {}".format( len( Client.objects.filter(user_id=request.user.id) ) ) )
 
@@ -244,15 +249,11 @@ def delete_all_clients():
         client.delete()
 
 
-
-
 def generate_clients_from_dashboard(request):
 
     create_client_list(request)
 
     return HttpResponseRedirect( reverse('dashboard_urls:dashboard_page') )
-
-
 
 
 # EXAMPLE AJAX REQUEST RESPONSE METHOD.
@@ -273,6 +274,7 @@ def execute_search( request ):
 
         return JsonResponse(response) # return response as JSON
 
+
 # method for sending messages (both email and SMS) out to clients
 # Author: Nick Nannen
 def send_message( request ):
@@ -286,7 +288,8 @@ def send_message( request ):
 
     # define constants
     EMERGENCY_MSG = "EMERGENCY ALERT FROM STATE FARM: "
-    END_MSG = "Do not reply to this alert"
+    EMAIL_END_MSG = 'Reply "STOP ALL" to unsubscribe from all alerts or "STOP SOCIAL" to only recieve emergency alerts.'
+    SMS_END_MSG = 'Reply "STOP" to unsubscribe from all alerts.'
 
     # correctly format selected clients array
     selected_clients = selected_clients.split(",")
@@ -310,7 +313,7 @@ def send_message( request ):
     # loop through selected clients and get each's contact info
     for client_index in selected_clients_array:
         # get client name, email, and phone and store in array
-        selected_client_info.append([client_index.name, client_index.email, str(client_index.phone)])
+        selected_client_info.append([client_index.name, client_index.email, str(client_index.phone), client_index.notification_status])
 
     # test code for making sure emails and phone numbers are correctly stored
     #print("Selected Emails: {}\n".format(selected_emails))
@@ -321,17 +324,29 @@ def send_message( request ):
         if message_type == "email":
             for client_index in selected_client_info:
                 # if the alert is marked as an emergency, format as such
-                if message_priority == "send-emergency":
+                if message_priority == "send-emergency" and client_index[3] != 'none':
                     subject_temp = EMERGENCY_MSG + message_subject
                     message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                    + "\n\n" + END_MSG
-                # otherwise, format as a social alert
-                else:
-                    subject_temp = "State Farm alert system - " + message_subject
-                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                    + "\n\n" + EMAIL_END_MSG
 
-                # send the email to the client
-                send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + EMAIL_END_MSG
+
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
@@ -340,16 +355,28 @@ def send_message( request ):
         elif message_type == "sms":
             for client_index in selected_client_info:
                 # if the alert is marked as an emergency, format as such
-                if message_priority == "send-emergency":
+                if message_priority == "send-emergency" and client_index[3] != 'none':
                     message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                    "\n\n" + message_body + "\n\n" + END_MSG
-                # otherwise, format as a social alert
-                else:
-                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
-                    + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                    "\n\n" + message_body + "\n\n" + SMS_END_MSG
 
-                # send the SMS message to the client
-                send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
+                    + client_index[0] + "\n\n" + message_body + "\n\n"  + SMS_END_MSG
+
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
@@ -359,30 +386,54 @@ def send_message( request ):
             for client_index in selected_client_info:
                 # formatting for SMS
                 # if the alert is marked as an emergency, format as such
-                if message_priority == "send-emergency":
+                if message_priority == "send-emergency"  and client_index[3] != 'none':
                     message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                    "\n\n" + message_body + "\n\n"  + END_MSG
-                # otherwise, format as a social alert
-                else:
-                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
-                    + "\n\n" + message_body + "\n\n"  + END_MSG
+                    "\n\n" + message_body + "\n\n"  + SMS_END_MSG
 
-                # send the SMS message to the client
-                send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
+                    + "\n\n" + message_body + "\n\n"  + SMS_END_MSG
+
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
                 # formatting for email
                 # if the alert is marked as an emergency, format as such
-                if message_priority == "send-emergency":
+                if message_priority == "send-emergency" and client_index[3] != 'none':
                     subject_temp = EMERGENCY_MSG + message_subject
                     message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                    + "\n\n"  + END_MSG
-                # otherwise, format as a social alert
-                else:
-                    subject_temp = "State Farm alert system - " + message_subject
-                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                    + "\n\n"  + EMAIL_END_MSG
 
-                # send the email to the client
-                send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + EMAIL_END_MSG
+
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
@@ -390,9 +441,156 @@ def send_message( request ):
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
 
-        # send json response back
-        response = {'Success': 'True'}
-        return JsonResponse(response)
+
+def get_email_response():
+    # get environment data
+    EMAIL = env("EMAIL_ADDRESS")
+    PASSWORD = env("EMAIL_PASS")
+    SERVER = env("EMAIL_HOST")
+
+    # connect to the server and go to its inbox
+    mail = imaplib.IMAP4_SSL(SERVER)
+    mail.login(EMAIL, PASSWORD)
+    mail.select('inbox')
+
+    # search using the ALL criteria to retrieve every message inside the inbox
+    # and get its status and a list of ids
+    status, data = mail.search(None, 'ALL')
+
+    # the list returned is a list of bytes separated by white spaces on this format: [b'1 2 3', b'4 5 6']
+    # create an empty list
+    mail_ids = []
+
+    # go through the list splitting its blocks of bytes and adding to the mail_ids list
+    for block in data:
+        mail_ids += block.split()
+
+    # for every id we'll fetch the email and extract its content
+    for mail_id_index in mail_ids:
+        # fetch the email given its id and format of the message
+        status, data = mail.fetch(mail_id_index, '(RFC822)')
+
+        # content data at the '(RFC822)' format comes in a list with a tuple with header, content, and the closing
+        # byte b')'
+        # iterate through this list
+        for response_part in data:
+            # if its a tuple go for the content at its second element
+            if isinstance(response_part, tuple):
+                message = email.message_from_bytes(response_part[1])
+
+                # extract the info about sender of the message and format correctly
+                temp_from = message['from'].split('<')
+                temp_from = temp_from[1].split('>')
+                mail_from = temp_from[0]
+
+                # if its not plain text, separate the message from its annexes to get the text
+                if message.is_multipart():
+                    mail_content = ''
+
+                    # multipart we has the text message and other things like annex, and html version
+                    # of the message
+                    # loop through the email payload
+                    for part in message.get_payload():
+                        # if the content type is text/plain, extract it
+                        if part.get_content_type() == 'text/plain':
+                            mail_content += part.get_payload()
+                else:
+                    # if the message isn't multipart, extract it
+                    mail_content = message.get_payload()
+
+                # convert the content into a string
+                mail_content = str(mail_content)
+
+                # import clients whose email matches the sender's from the database
+                currentClients = Client.objects.filter(email=mail_from)
+
+                # set message strings
+                notif_status_subject = 'State Farm alert system - Notification Status Alert'
+                stop_all_msg = 'All alerts have been stopped for email address: ' + mail_from + \
+                '. You will now not recieve any alerts.' + '\n\nReply "START ALL" to resubscribe to all alerts'
+                stop_social_msg = 'Social alerts have been stopped for email address: ' + mail_from + \
+                '. You will now recieve only emergency alerts.' + '\n\nReply "START SOCIAL" to resubscribe to social alerts'
+
+                # if a 'STOP' is found, look for strings 'ALL' or "SOCIAL"
+                if mail_content.find('STOP') != -1:
+                    # if 'ALL' is found, set client's notification_status to none
+                    if mail_content.find('ALL') != -1:
+                        for clientIndex in currentClients:
+                            clientIndex.notification_status = 'none'
+                            # save the client's updated entry
+                            clientIndex.save()
+                            # send confirmation of notification change
+                            send_mail(notif_status_subject, stop_all_msg, "RedAlertTester@gmail.com", [mail_from])
+
+                            #print(f'STOPPING ALL NOTIFICATIONS FOR: {mail_from}')
+                            #print(f'Name: {clientIndex.name}, Notification Status: {clientIndex.notification_status}\n')
+
+                    # if 'SOCIAL' is found, set client's notification_status to emergency
+                    elif mail_content.find('SOCIAL') != -1:
+                        for clientIndex in currentClients:
+                            clientIndex.notification_status = 'emergency'
+                            # save the client's updated entry
+                            clientIndex.save()
+                            # send confirmation of notification change
+                            send_mail(notif_status_subject, stop_social_msg, "RedAlertTester@gmail.com", [mail_from])
+
+                            #print(f'STOPPING SOCIAL NOTIFICATIONS FOR: {mail_from}')
+                            #print(f'Name: {clientIndex.name}, Notification Status: {clientIndex.notification_status}\n')
+
+                # set message strings
+                start_all_msg = 'All alerts have been started for email address: ' + mail_from + \
+                '. You will now recieve social and emergency alerts.' + '\n\nReply "STOP ALL" to unsubscribe from all alerts or "STOP SOCIAL" to only recieve emergency alerts.'
+                start_social_msg = 'Social alerts have been started for email address: ' + mail_from + \
+                '. You will now recieve social alerts.' + '\n\nReply "STOP ALL" to unsubscribe from all alerts or "STOP SOCIAL" to only recieve emergency alerts.'
+
+                # if a 'START' is found, look for strings 'ALL' or "SOCIAL"
+                if mail_content.find('START') != -1:
+                    # if 'ALL' is found, set client's notification_status to all
+                    if mail_content.find('ALL') != -1:
+                        for clientIndex in currentClients:
+                            clientIndex.notification_status = 'all'
+                            # save the client's updated entry
+                            clientIndex.save()
+                            # send confirmation of notification change
+                            send_mail(notif_status_subject, start_all_msg, "RedAlertTester@gmail.com", [mail_from])
+
+                            #print(f'STARTING ALL NOTIFICATIONS FOR: {mail_from}')
+                            #print(f'Name: {clientIndex.name}, Notification Status: {clientIndex.notification_status}\n')
+
+                    # if 'SOCIAL' is found, set client's notification_status to all
+                    elif mail_content.find('SOCIAL') != -1:
+                        for clientIndex in currentClients:
+                            clientIndex.notification_status = 'all'
+                            # save the client's updated entry
+                            clientIndex.save()
+                            # send confirmation of notification change
+                            send_mail(notif_status_subject, start_social_msg, "RedAlertTester@gmail.com", [mail_from])
+
+                            #print(f'STARTING SOCIAL NOTIFICATIONS FOR: {mail_from}')
+                            #print(f'Name: {clientIndex.name}, Notification Status: {clientIndex.notification_status}\n')
+
+    # if there are emails found, delete them after all operations have completed
+    if len(mail_ids) > 0:
+        # define the range for the operation
+        start = mail_ids[0].decode()
+        end = mail_ids[-1].decode()
+
+        # move the emails to the trash
+        mail.store(f'{start}:{end}'.encode(), '+X-GM-LABELS', '\\Trash')
+
+        # access the Gmail trash
+        mail.select('[Gmail]/Trash')
+
+        # mark the emails to be deleted
+        mail.store("1:*", '+FLAGS', '\\Deleted')
+
+        # remove permanently the emails
+        mail.expunge()
+
+    # close the mailboxes
+    mail.close()
+    # close the connection
+    mail.logout()
 
 
 # Function that takes an ajax request and creates a new automation.
