@@ -1,4 +1,3 @@
-import resource
 from django.shortcuts import render
 # Import the userinfo model object so we can use it here.
 from userLoginApp.models import UserInfo
@@ -19,7 +18,7 @@ def show_profile_page( request ):
 
     print("Ran show profile page view")
 
-    # .get is used to retrieve a singel obj from the db, .filter is the equivalent to using 
+    # .get is used to retrieve a singel obj from the db, .filter is the equivalent to using
     # .where and allows you to retreive a subset of objects from the db.
     # So here we are passing the user auth object to the view and also retrieving the UserInfo object that corresponds to the user Auth object
     # UserInfo.id DOES NOT CORRESPOND TO A MATCHING USER AUTH MODEL. A UserInfo.user_id corresponds to a UserAuth objects id field.
@@ -29,7 +28,7 @@ def show_profile_page( request ):
 
 @login_required( login_url='/')
 def show_automations( request ):
-    
+
     print("USER ID IS {}".format( request.user.id ))
     oneTimeAutos = OneTimeAutomation.objects.filter(user_id = request.user.id ) # Use the auth user id to get the automations for THIS user only.
     hasOneTimeAutos = oneTimeAutos.exists()
@@ -55,7 +54,7 @@ def show_automations( request ):
                'has_subsets' :hasSubsets
                }
 
-    return render(request, 'UserPages/automationpage.html', context)  
+    return render(request, 'UserPages/automationpage.html', context)
 
 
 
@@ -120,12 +119,12 @@ def update_automation( request ):
     print("Request Dictionary is: {}".format( request.POST ))
     response = {'Success': 'True'}
 
-    
 
-    
+
+
     if request.POST['message_freq'] == "many":
         newRecurringAuto = RecurringAutomation.objects.get(id=request.POST['auto_id'] )
-        newRecurringAuto.name = request.POST['auto_name'] 
+        newRecurringAuto.name = request.POST['auto_name']
         newRecurringAuto.start_date = request.POST['send_msg_many_start_date']
         newRecurringAuto.start_date_str = request.POST['send_msg_many_start_date']
         newRecurringAuto.msg_body = request.POST['message_body']
@@ -136,14 +135,14 @@ def update_automation( request ):
         newRecurringAuto.save()
 
         # Delete the previously scheduled job for this automation.
-        deleteSchedJob( newRecurringAuto.id, "many") 
+        deleteSchedJob( newRecurringAuto.id, "many")
 
          #newRecurringAuto.send_msg_freq Dont do anything with this field rn as it has a default for the moment.
     else:
 
         newOneTimeAuto = OneTimeAutomation.objects.get(id=request.POST['auto_id'] )
 
-        newOneTimeAuto.name = request.POST['auto_name'] 
+        newOneTimeAuto.name = request.POST['auto_name']
         newOneTimeAuto.date = request.POST['send_msg_once_date']
         newOneTimeAuto.date_str = request.POST['send_msg_once_date']
         newOneTimeAuto.msg_body = request.POST['message_body']
@@ -155,7 +154,7 @@ def update_automation( request ):
         # Delete the previously scheduled job for this automation.
         deleteSchedJob( newOneTimeAuto.id, "one")
 
-    
+
 
     # We just deleted a previous sheduled job, now lets refresh the sched job list so the job for this automation is recreated.
     refreshSchedJobs()
@@ -234,14 +233,14 @@ def update_subset(request):
 def delete_subset( request ):
     saved_subset = Subset.objects.get(id=request.POST['subsetID'])
     saved_subset.delete()
-    
+
     response = {'success': 'true'}
 
     return JsonResponse(response)
 
 
 # Returns a json of client objects for a specific modal on the automation page.
-# Get client data to display to user when viewing automation or subset so they know what clients are 
+# Get client data to display to user when viewing automation or subset so they know what clients are
 # part of the automation or subset.
 def retrieve_clients_for_modals( request ):
 
@@ -284,7 +283,7 @@ def retrieve_clients_for_modals( request ):
         clientDict["lat"] = client.lat
         clientDict["long"] = client.long
         '''
-        json_array.append(clientDict) 
+        json_array.append(clientDict)
 
 
     json_array = json.dumps(json_array)
