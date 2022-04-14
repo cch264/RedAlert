@@ -319,6 +319,7 @@ def send_message( request ):
     #print("Selected Emails: {}\n".format(selected_emails))
     #print("Selected Phones: {}\n".format(selected_phones))
 
+    # if all fields are filled out...
     if( message_body != "" and message_subject != "" and message_priority != "def-select-opt" and message_type != "def-select-opt" ):
         # if "Send Email" is selected, then call the send_mail function with data
         if message_type == "email":
@@ -740,7 +741,8 @@ def send_auto_message( autoID, type ):
 
     # define constants
     EMERGENCY_MSG = "EMERGENCY ALERT FROM STATE FARM: "
-    END_MSG = "Do not reply to this alert"
+    EMAIL_END_MSG = 'Reply "STOP ALL" to unsubscribe from all alerts or "STOP SOCIAL" to only recieve emergency alerts.'
+    SMS_END_MSG = 'Reply "STOP" to unsubscribe from all alerts.'
 
     # correctly format selected clients array
     selected_clients = selected_clients.split(",")
@@ -764,97 +766,147 @@ def send_auto_message( autoID, type ):
     # loop through selected clients and get each's contact info
     for client_index in selected_clients_array:
         # get client name, email, and phone and store in array
-        selected_client_info.append([client_index.name, client_index.email, str(client_index.phone)])
+        selected_client_info.append([client_index.name, client_index.email, str(client_index.phone), client_index.notification_status])
 
     # test code for making sure emails and phone numbers are correctly stored
     #print("Selected Emails: {}\n".format(selected_emails))
     #print("Selected Phones: {}\n".format(selected_phones))
 
-    # if "Send Email" is selected, then call the send_mail function with data
-    if message_type == "email":
-        for client_index in selected_client_info:
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                subject_temp = EMERGENCY_MSG + message_subject
-                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                + "\n\n" + END_MSG
-            # otherwise, format as a social alert
-            else:
-                subject_temp = "State Farm alert system - " + message_subject
-                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+    # if all fields are filled out...
+    if( message_body != "" and message_subject != "" and message_priority != "def-select-opt" and message_type != "def-select-opt" ):
+        # if "Send Email" is selected, then call the send_mail function with data
+        if message_type == "email":
+            for client_index in selected_client_info:
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency" and client_index[3] != 'none':
+                    subject_temp = EMERGENCY_MSG + message_subject
+                    message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                    + "\n\n" + EMAIL_END_MSG
 
-            # send the email to the client
-            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-            # test code to make sure email is sent to the correct address
-            #print("Sent to: {}\n".format(email_index))
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
-    # if "Send SMS" is selected, then call the send_sms function with data
-    elif message_type == "sms":
-        for client_index in selected_client_info:
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                "\n\n" + message_body + "\n\n" + END_MSG
-            # otherwise, format as a social alert
-            else:
-                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
-                + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + EMAIL_END_MSG
 
-            # send the SMS message to the client
-            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-            # test code to make sure sms is sent to the correct number
-            #print("Sent to: {}\n".format(sms_index))
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
-    # if "Send Email and SMS" is selected, then call both functions with data
-    else:
-        for client_index in selected_client_info:
-            # formatting for SMS
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
-                "\n\n" + message_body + "\n\n"  + END_MSG
-            # otherwise, format as a social alert
-            else:
-                message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
-                + "\n\n" + message_body + "\n\n"  + END_MSG
+                # test code to make sure email is sent to the correct address
+                #print("Sent to: {}\n".format(email_index))
 
-            # send the SMS message to the client
-            send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+        # if "Send SMS" is selected, then call the send_sms function with data
+        elif message_type == "sms":
+            for client_index in selected_client_info:
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency" and client_index[3] != 'none':
+                    message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                    "\n\n" + message_body + "\n\n" + SMS_END_MSG
 
-            # formatting for email
-            # if the alert is marked as an emergency, format as such
-            if message_priority == "send-emergency":
-                subject_temp = EMERGENCY_MSG + message_subject
-                message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
-                + "\n\n"  + END_MSG
-            # otherwise, format as a social alert
-            else:
-                subject_temp = "State Farm alert system - " + message_subject
-                message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + END_MSG
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-            # send the email to the client
-            send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
 
-            # test code to make sure email is sent to the correct address
-            #print("Sent to: {}\n".format(email_index))
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
+                    + client_index[0] + "\n\n" + message_body + "\n\n"  + SMS_END_MSG
 
-            # test code to make sure sms is sent to the correct number
-            #print("Sent to: {}\n".format(sms_index))
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # test code to make sure sms is sent to the correct number
+                #print("Sent to: {}\n".format(sms_index))
+
+        # if "Send Email and SMS" is selected, then call both functions with data
+        else:
+            for client_index in selected_client_info:
+                # formatting for SMS
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency"  and client_index[3] != 'none':
+                    message_temp = EMERGENCY_MSG + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] + \
+                    "\n\n" + message_body + "\n\n"  + SMS_END_MSG
+
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
+                    + "\n\n" + message_body + "\n\n"  + SMS_END_MSG
+
+                    # send the SMS message to the client
+                    send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # formatting for email
+                # if the alert is marked as an emergency, format as such
+                if message_priority == "send-emergency" and client_index[3] != 'none':
+                    subject_temp = EMERGENCY_MSG + message_subject
+                    message_temp = EMERGENCY_MSG + "\n\n" + "State Farm alert for: " + client_index[0] + "\n\n" + message_body \
+                    + "\n\n"  + EMAIL_END_MSG
+
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # otherwise, format as a social alert
+                elif client_index[3] != 'none' and client_index[3] != 'emergency':
+                    subject_temp = "State Farm alert system - " + message_subject
+                    message_temp = "State Farm alert for: " + client_index[0] + "\n\n" + message_body + "\n\n"  + EMAIL_END_MSG
+
+                    # send the email to the client
+                    send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
+
+                    # send json response back
+                    response = {'Success': 'True'}
+                    return JsonResponse(response)
+
+                # test code to make sure email is sent to the correct address
+                #print("Sent to: {}\n".format(email_index))
+
+                # test code to make sure sms is sent to the correct number
+                #print("Sent to: {}\n".format(sms_index))
 
 
 def saveSubset(request):
-    
+
     saved_subset_objects = Subset.objects.filter(user_id=request.user.id)
-    
+
     # Check that the user is not using a duplicate subset name, for database purposes
     for subset in saved_subset_objects:
         print(subset.name + " New Name: " + request.POST['subsetName'])
         if subset.name == request.POST['subsetName']:
             response = {'Success': 'duplicate'}
             return JsonResponse(response)
-    
+
 
     newSubset = Subset()
     newSubset.name = request.POST['subsetName']
