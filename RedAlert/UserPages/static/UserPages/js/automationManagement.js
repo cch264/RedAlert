@@ -632,6 +632,16 @@ function validateAutomation( autoID, type )
 // Type can be either many or one to denote what type of automation to delete.
 function deleteAutomation(autoID, type)
 {
+
+    if( type==="many")
+    {
+        clearInterval(autoTimers['many' + autoID]);
+    }
+    else
+    {
+        clearInterval(autoTimers['once' + autoID]);
+    }
+
     $.ajax({
         url:'/user_pages/delete_automation/',
         // Type of Request
@@ -829,15 +839,16 @@ function createTimerForAutomations( autoID, type )
         if( timeLeft < 0)
         {
             console.log(` Remove timer for auto with id ${autoID}`)
-            clearInterval(timerInterval);
             if(type === "once")
             {
                 $(`#one-time-auto-timer-${autoID}`).remove();
                 $(`#one-time-auto-timer-label-${autoID}`).text('Completed');
+                clearInterval(autoTimers['once' + autoID]);
             }
             else
             {
                 $(`#recurr-auto-timer-${autoID}`).remove();
+                clearInterval(autoTimers['many' + autoID]);
             }
         }
 
