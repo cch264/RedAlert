@@ -747,3 +747,4 @@ def save_user_search(request):
     response = {'Success':'true'}
 
     return JsonResponse(response)
+
