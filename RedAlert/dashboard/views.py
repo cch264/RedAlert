@@ -333,10 +333,6 @@ def send_message( request ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     subject_temp = "State Farm alert system - " + message_subject
@@ -345,12 +341,12 @@ def send_message( request ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
         # if "Send SMS" is selected, then call the send_sms function with data
         elif message_type == "sms":
@@ -363,9 +359,6 @@ def send_message( request ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
 
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
@@ -375,12 +368,12 @@ def send_message( request ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
         # if "Send Email and SMS" is selected, then call both functions with data
         else:
@@ -394,10 +387,6 @@ def send_message( request ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
@@ -405,10 +394,6 @@ def send_message( request ):
 
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
-
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
 
                 # formatting for email
                 # if the alert is marked as an emergency, format as such
@@ -420,10 +405,6 @@ def send_message( request ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     subject_temp = "State Farm alert system - " + message_subject
@@ -432,15 +413,15 @@ def send_message( request ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
 
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
 
 def get_email_response():
@@ -786,10 +767,6 @@ def send_auto_message( autoID, type ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     subject_temp = "State Farm alert system - " + message_subject
@@ -798,12 +775,12 @@ def send_auto_message( autoID, type ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
         # if "Send SMS" is selected, then call the send_sms function with data
         elif message_type == "sms":
@@ -816,10 +793,6 @@ def send_auto_message( autoID, type ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " \
@@ -828,12 +801,12 @@ def send_auto_message( autoID, type ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
         # if "Send Email and SMS" is selected, then call both functions with data
         else:
@@ -847,10 +820,6 @@ def send_auto_message( autoID, type ):
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     message_temp = "State Farm alert system - " + message_subject + "\n\n" + "State Farm alert for: " + client_index[0] \
@@ -858,10 +827,6 @@ def send_auto_message( autoID, type ):
 
                     # send the SMS message to the client
                     send_sms( message_temp, "+19087749012", client_index[2], fail_silently=False )
-
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
 
                 # formatting for email
                 # if the alert is marked as an emergency, format as such
@@ -873,10 +838,6 @@ def send_auto_message( autoID, type ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # otherwise, format as a social alert
                 elif client_index[3] != 'none' and client_index[3] != 'emergency':
                     subject_temp = "State Farm alert system - " + message_subject
@@ -885,15 +846,15 @@ def send_auto_message( autoID, type ):
                     # send the email to the client
                     send_mail(subject_temp, message_temp, "RedAlertTester@gmail.com", [client_index[1]])
 
-                    # send json response back
-                    response = {'Success': 'True'}
-                    return JsonResponse(response)
-
                 # test code to make sure email is sent to the correct address
                 #print("Sent to: {}\n".format(email_index))
 
                 # test code to make sure sms is sent to the correct number
                 #print("Sent to: {}\n".format(sms_index))
+
+            # send json response back
+            response = {'Success': 'True'}
+            return JsonResponse(response)
 
 
 def saveSubset(request):
