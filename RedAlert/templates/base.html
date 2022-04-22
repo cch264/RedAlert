@@ -9,7 +9,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    
+
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -23,13 +23,13 @@
         <!-- Font awesome cdn so we can use their icons. -->
         <script src="https://kit.fontawesome.com/6cf6986f3d.js" crossorigin="anonymous"></script>
 
-        
+
 
 
         <!-- Custom page styles go here, load custom style sheets last. -->
         {% block css_links %} {% endblock %}
 
-        
+
     </head>
 
     <body>
@@ -43,7 +43,7 @@
                     </div>
                     <div id="site-header" class="ms-4"> State Farm Red Alert </div>
                 </div>
-                
+
                 <!-- Hide this div on screens smaller than large -->
                 <div id="nav-bar-links-desktop" class="d-md-flex d-none align-items-center justify-content-between me-4" >
                         <a class="dropdown-item" href="{% url 'user_pages_urls:show_profile_page'%}"> Profile Page </a>
@@ -51,7 +51,7 @@
                         <a class="dropdown-item" href="{% url 'user_pages_urls:automation_page'%}"> Automations </a>
                         <a class="dropdown-item" href="{% url 'user_pages_urls:faq_page'%}"> FAQ </a>
                         <a id="logout-button" class="dropdown-item" href="{% url 'loginAppUrls:log_user_out' 1%}"> Log Out </a> <!-- Pass optinal paramter 1 to the url. -->
-                    
+
                 </div>
 
                  <!-- Hide this div on screens bigger than large.-->
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-               
+
 
              </div>
         </nav>
@@ -79,7 +79,7 @@
                  own content. Templates in apps will contain their own block titles content, which will tell django to place that HTML
                  inside of this file and display it.
             -->
-            {% block content %} 
+            {% block content %}
             {% endblock %}
         </div>
 
@@ -87,7 +87,7 @@
         <!-- Add jquery and bootstrap to every single page. Bootstrap says to place these scripts here right before the closing body tag.-->
         <!-- Every single page has access to jquery with this tag. -->
         <script src="{% static 'GlobalAssets/js/jquery-3.6.0.min.js' %}" > </script>
-        
+
         <!-- Jquery uses jquery 3.2.1 so if there are issues well download a new version of jquery-->
         <!-- <script src="{% static 'GlobalAssets/js/bootstrap.min.js' %}" > </script> -->
 
@@ -96,12 +96,12 @@
         <!-- This js file includes bootstrap js and popper.-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-        
+
         <script src="{% static 'GlobalAssets/js/global.js' %}" > </script>
 
         <script src="{% static 'GlobalAssets/js/fuse.js' %}" > </script>
 
-        <script src="{% static 'GlobalAssets/js/anime.min.js' %}"></script> 
+        <script src="{% static 'GlobalAssets/js/anime.min.js' %}"></script>
 
         <!-- Add page custom js last. -->
         {% block js_links %} {% endblock %}
@@ -110,15 +110,15 @@
             <div class="d-flex flex-column justify-content-center w-100">
 
                 <div class="d-flex justify-content-center" >
-                    Project Red Alert 
+                    Project Red Alert
                 </div>
 
                 <div class="d-flex justify-content-center" >
-                    Last Updated: 5 February 2022
+                    Last Updated: 21 April 2022
                 </div>
             </div>
           </nav>
     </body>
 
-    
+
 </html>
