@@ -1,6 +1,8 @@
 window.addEventListener('load', (event) => {
 
     initializeAutomationModal();
+    $('#create-one-time-test-auto').on('click', ()=> {createAutomation(true) } );
+    $('#create-recurr-test-auto').on('click', ()=>{createAutomation(true) } );
 })
 
 
@@ -50,6 +52,8 @@ function clearModalInputs()
     $('#auto-send-freq').val('1');
     $('#auto-send-freq-unit').val('day').change();
 
+    closeAllClosablePopups(); // function from global.js
+
 }
 
 function validateAutomation()
@@ -57,7 +61,7 @@ function validateAutomation()
 
     let canSubmit = true;
 
-    let missingInputWarningStr = "The following fields must be filled out: <ul>";
+    let missingInputWarningStr = "<div><strong>The following fields must be filled out: <ul>";
 
     if( $('#auto-name').val().trim() === "")
     {
@@ -126,17 +130,22 @@ function validateAutomation()
         $(`#create-automation-modal`).modal('hide');
 
         createPopup("Successfully Created Automation!", "popup-container-auto-create-success", "#11F3A9", 25);
+
+        closeAllClosablePopups();
+
+        //createClosablePopup( message = "Successfully Created Automation!", targetID='popup-container-auto-create-success', color='#19E412', fontSize = 20);
     }
     else
     {
-        missingInputWarningStr += "</ul>"
-        createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
+        missingInputWarningStr += "</ul></strong> </div>";
+        //createPopup(missingInputWarningStr, "popup-container-auto-modal", "#E63131", 18, 0.02);
+        createClosablePopup( message = missingInputWarningStr, targetID='closable-popup-container', color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
     }
 
 }
 
 
-function createAutomation()
+function createAutomation( createTestAuto = false )
 {   
     let autoData = {
         auto_name: $('#auto-name').val(),
@@ -157,6 +166,14 @@ function createAutomation()
             {message_freq: msg_freq},
             {send_msg_once_date: $('#auto-send-once-date').val()}
          )
+
+          // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             console.log(`Setting one time test auto type`);
+             autoData.message_type = "test_one_time_auto";
+         }
+
     }
     else
     {
@@ -167,6 +184,14 @@ function createAutomation()
             {send_msg_many_freq: 1 },
             {send_msg_many_unit: $('#auto-send-freq-unit').val() }
         );
+
+         // If create test auto is true, change the message type to reflect that so we can handle the message properly in the refreshSchedJobs method.
+         if( createTestAuto )
+         {
+             autoData.message_type = "test_recurr_auto";
+             console.log(`Setting recurr test auto type`);
+         }
+
        
     }
 

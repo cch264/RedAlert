@@ -35,7 +35,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['localhost','104.168.198.79','hwsrv-937117.hostwindsdns.com']
 
 
 # Application definition
@@ -90,10 +90,18 @@ WSGI_APPLICATION = 'RedAlert.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'red_alert_db_development'
-    }
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': 'red_alert_db_development',
+            'CLIENT': {
+                'username': 'redalertadmin',
+                'password': 'red_AlerT_191_216',
+                'host': 'localhost',
+                'port': 27017,
+                'authSource':'admin',
+                'authMechanism':'SCRAM-SHA-1'
+                }
+            }
 }
 
 # Will need to use this for a production server. As a server on local host doesnt need a password.

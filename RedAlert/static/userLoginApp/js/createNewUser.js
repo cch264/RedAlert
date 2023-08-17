@@ -4,6 +4,9 @@ window.addEventListener('load', (event) => {
 
     resetPassFieldsOnLoad();
 
+    $('#id_agent_code').on('keyup', checkNewAccountInput );
+    $('#id_agent_phone_number').on('keyup', checkNewAccountInput );
+
 
     // Give both pass fields listeners to detect changes in the input. Notice the first two params are switched in validatePassword. This is because validatePassword checks input1 against password validators but only checks input2
     // when validating the form for submission, therefore we need to also add a listeners to the other input to check input2 against input1 while the user types.
@@ -36,6 +39,55 @@ window.addEventListener('load', (event) => {
         }
     });
 });
+
+
+
+function checkNewAccountInput()
+{
+
+    let regExp = new RegExp("^\\d+$");
+    let agentCodeValid = regExp.exec($('#id_agent_code').val());
+    let agentPhoneNumValid = regExp.exec($('#id_agent_phone_number').val());
+
+    let inputsValid = agentCodeValid && agentPhoneNumValid;
+
+    if( !inputsValid )
+    {
+        console.log(`Disabling submit button.`);
+        $('#create-new-account-btn').attr('disabled', true);
+    }
+    else
+    {
+        console.log(`Enabling submit button.`);
+        $('#create-new-account-btn').attr('disabled', false);
+    }
+
+    
+    
+    $('.agent-code-number-req-warning').remove();
+
+    if( !agentCodeValid )
+    {
+        console.log(`Adding warning for: code`)
+        $("label[for='id_agent_code']").append(`<span class='agent-code-number-req-warning red-text'> *Please Enter a Number</span>`);
+    }
+
+
+    $('.agent-phone-number-req-warning').remove();
+
+    if( !agentPhoneNumValid )
+    {
+        console.log(`Adding warning for: phone`)
+        $("label[for='id_agent_phone_number']").append(`<span class='agent-phone-number-req-warning red-text'> *Please Enter a Number</span>`);
+    }
+}
+
+
+
+
+
+
+
 
 // Validates the first input field only checking if password meets the requirements.
 function validatePassword( input1ID, input2ID, passValidStatusListID)
@@ -239,3 +291,5 @@ function insertPasswordValidationHTML()
       </ul>`
     ).insertAfter( $('#id_password_confirm') );
 }
+
+

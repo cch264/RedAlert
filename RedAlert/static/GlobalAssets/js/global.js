@@ -13,6 +13,7 @@ function createPopup( message, targetID='popup-container', color='#19E412', font
 
   $(`#${targetID}`).append(`<div class="fading-popup w-75" style="background-color: ${color}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: center; border-radius: 10px;"> <div><strong>${message}</strong> </div> </div>`);
 
+  
   timer = setInterval( ()=>{
         if( opacity > 0)
         {
@@ -35,13 +36,18 @@ function createPopup( message, targetID='popup-container', color='#19E412', font
 var warningTimer;
 
 // Make sure your container is set to flex and justify-content-center for this to look right!
-function createClosablePopup( message="No msg provided", targetID='closable-popup-container', color='#BC1F43', fontSize = 30)
+function createClosablePopup( message="No msg provided", targetID='closable-popup-container', color='#BC1F43', fontSize = 30, fontColor='#000000')
 {
   $('.closable-popup').remove(); // remove old popups.
 
   console.log(`Creating popup target id is ${targetID}`);
 
-  $(`#${targetID}`).append(`<div class="closable-popup w-100" style="background-color: ${color}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: center; border-radius: 10px;"> <div><strong>${message}</strong> </div> </div>`);
+  $(`#${targetID}`).append(`<div class="closable-popup w-100" style="background-color: ${color}; color:${fontColor}; font-size: ${fontSize}px; padding:10px; display: flex; justify-content: space-between; border-radius: 10px;">
+                                ${message}
+                                <div class="closable-popup-close-btn d-flex justify-content-center align-items-center" class="me-2"><i class="fa-solid fa-xmark"></i></div>
+                            </div>`);
+
+  $('.closable-popup-close-btn').on('click', ()=> { $('.closable-popup').remove(); })                            
 
   // Animation library
   anime({
@@ -74,4 +80,10 @@ function createClosablePopup( message="No msg provided", targetID='closable-popu
   });
 
 
+}
+
+
+function closeAllClosablePopups()
+{
+  $('.closable-popup').remove(); // remove old popups.
 }

@@ -6,6 +6,8 @@ var currentRecurringAuto;
 
 var currentOneTimeAuto;
 
+var autoTimers = {}
+
 function oneTimeAutoData( name, sub, msg, type, priority, send_date)
 {
     this.name = name;
@@ -51,6 +53,7 @@ function initializeAutomationModal()
 
         $('#auto-sel-msg-frequency-' + oneTimeAutoID).on('change', ()=> toggleAutomationTypeOneTime( oneTimeAutoID ) );
 
+        fetchClientData(oneTimeAutoID, "once");
 
     });
 
@@ -59,7 +62,9 @@ function initializeAutomationModal()
 
         //console.log(`MODAL ID IS ${recurringAutoID}`);
 
-        $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) )
+        $('#auto-many-sel-msg-frequency-' + recurringAutoID).on('change', ()=> toggleAutomationRecurring( recurringAutoID ) );
+
+        fetchClientData(recurringAutoID, "many");
     })
     //$('#auto-modal-cancel').on('click', clearModalInputs )
    // $('#auto-send-msg').on('click', updateAutomation);
@@ -120,6 +125,8 @@ function initializeOneTimeAutoModals()
 
     assignOneTimeModalButtonListeners( oneTimeAutoID )
 
+    createTimerForAutomations( oneTimeAutoID, "once" );
+
    })
 
   
@@ -140,6 +147,8 @@ function initializeRecurringAutoModals()
         $('#auto-many-send-freq-unit-' + recurringAutoID).val( $('#auto-many-send-freq-unit-val-' + recurringAutoID).val() ).change();
 
         assignRecurrModalButtonListeners(recurringAutoID);
+
+        createTimerForAutomations( recurringAutoID, "many" );
         
 
     })
@@ -180,6 +189,8 @@ function stopEditingOneTimeModal( autoID )
         restoreOneTimeModalInputs( autoID );
     
         toggleOneTimeModalInputs( autoID, true );
+
+        closeAllClosablePopups();
     }
 
 }
@@ -390,6 +401,8 @@ function stopEditingRecurModal( autoID )
         restoreRecurModalInputs( autoID );
     
         toggleRecurringModalInputs( autoID, true );
+
+        closeAllClosablePopups(); // located in global.js
     }
 
 }
@@ -496,6 +509,12 @@ function deleteRecurringAutomation(autoID)
         deleteAutomation(autoID, "many");
 
         createPopup('Successfully Deleted Automation!', targetID='popup-container', color='#11F3A9');
+
+        // If the user deleted their last automation show them a li that says they have no automations
+        if($('#automation-list > li').length === 0)
+        {
+            $('#automation-list').append(`<li class="list-group-item auto-li" id="has-no-autos-warning">You don't have any saved automations</li>`);
+        }
     }
 }
 
@@ -586,6 +605,8 @@ function validateAutomation( autoID, type )
         }
 
         createPopup("Successfully Updated Automation!", "popup-container", "#11F3A9", 25);
+
+        closeAllClosablePopups();
     }
     else
     {
@@ -593,11 +614,13 @@ function validateAutomation( autoID, type )
 
         if(type === "many")
         {
-            createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
+            //createPopup(missingInputWarningStr, `popup-container-recurr-modal-${autoID}`, "#E63131", 18, 0.02);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-recurr-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
         else
         {
-            createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
+            //createPopup(missingInputWarningStr, `popup-container-onetime-modal-${autoID}`, "#E63131", 18, 0.02);
+            createClosablePopup( message = missingInputWarningStr, targetID=`popup-container-onetime-modal-${autoID}`, color='#BC1F43', fontSize = 20, fontColor='#FFFFFF');
         }
     }
 
@@ -609,6 +632,16 @@ function validateAutomation( autoID, type )
 // Type can be either many or one to denote what type of automation to delete.
 function deleteAutomation(autoID, type)
 {
+
+    if( type==="many")
+    {
+        clearInterval(autoTimers['many' + autoID]);
+    }
+    else
+    {
+        clearInterval(autoTimers['once' + autoID]);
+    }
+
     $.ajax({
         url:'/user_pages/delete_automation/',
         // Type of Request
@@ -655,7 +688,14 @@ function updateOneTimeAutomation( autoID )
         )
 
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#one-time-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#one-time-auto-name-${autoID}`).text( autoData.auto_name );
+
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['once' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "once" );
 
     $.ajax({
 
@@ -706,7 +746,14 @@ function updateRecurringAutomation( autoID )
     );
        
     // Change the name of the automation list element to reflect a possibly new name for the auto.
-    $(`#recurring-auto-li-${autoID}`).text( autoData.auto_name );
+    $(`#recurring-auto-name-${autoID}`).text( autoData.auto_name );
+    
+    // Global object that holds timers for each automation, id is the key and value is the timer.
+    // Clear old timer and then recreate it.
+    clearInterval(autoTimers['many' + autoID]);
+
+    // Recreate the timer for this automation in case the user changed the send date.
+    createTimerForAutomations( autoID, "many" );
 
     $.ajax({
 
@@ -732,4 +779,111 @@ function updateRecurringAutomation( autoID )
             console.log('Error - ' + errorMessage);
         }
     });
+}
+
+
+
+function createTimerForAutomations( autoID, type )
+{   
+   
+
+    var dateOfExecution;
+
+    if(type === "once")
+    {
+        // Gets time in UTC but converts to users time zone, this is an issue. Basically creating a date using
+        // the date constructor will offset the date given by minus one day. This is some issue with converting from UTC to current Timezone
+        // as we are passing a date that is in the current timezone already. Because javascript is so awesome we need to
+        // appen a time to the date for the date to be correct. 'T10:00:00' this time stands for 10am since that is when notifications are sent in our app.
+        //
+        // TO Clarify: new Date().getTime() returns the time in the users time zone. new Date(dateString) returns a UTC time that is converted to our timezone.
+        // At the time of writing UTC was 1 day ahead of today so parsing a stirng date for 03-31-2022 would return 03-30-2022.
+        // Parsing a date with a string is discouraged accoring to the MDN so next time pass integers representing the date to avoid head aches.
+        dateOfExecution = new Date( $(`#auto-send-once-date-${autoID}`).val() + "T10:00:00").getTime(); 
+    }
+    else
+    {
+        dateOfExecution = new Date($(`#auto-many-send-many-date-${autoID}`).val()  + "T10:00:00" ).getTime(); 
+
+        dateOfExecution = getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution );
+    }
+
+    console.log(`Date of next execution ${dateOfExecution}`);
+
+    let idString = type + autoID;
+
+    autoTimers[idString] = setInterval( function(){
+        var currentDate = new Date().getTime(); // Get current time in UTC
+
+        //console.log(`Current Date ${currentDate}`);
+
+        var timeLeft = dateOfExecution - currentDate;
+
+        //console.log(`Time left until execution ${timeLeft}`);
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        if(type === "once")
+        {
+            $(`#one-time-auto-timer-${autoID}`).html( days + "d " + hours + "h " + minutes + "m " + seconds + "s"); 
+        }
+        else
+        {
+            $(`#recurr-auto-timer-${autoID}`).html( days + "d " + hours + "h " + minutes + "m " + seconds + "s" );
+        }
+
+        if( timeLeft < 0)
+        {
+            console.log(` Remove timer for auto with id ${autoID}`)
+            if(type === "once")
+            {
+                $(`#one-time-auto-timer-${autoID}`).remove();
+                $(`#one-time-auto-timer-label-${autoID}`).text('Completed');
+                clearInterval(autoTimers['once' + autoID]);
+            }
+            else
+            {
+                $(`#recurr-auto-timer-${autoID}`).remove();
+                clearInterval(autoTimers['many' + autoID]);
+            }
+        }
+
+    }, 1000);
+}
+
+
+// Receive the date of execution for recurring auto.
+// Recurring next send date will either be the recurring start date OR if the start day has passed, the next execution will be today + the frequency for this auto.
+// Not accurate to the hour! Simply adds one day, week, month, or year to the current date depending on when the recurring automation is supposed to be sent.
+function getDateOfNextExecutionForRecurAutos( autoID, dateOfExecution )
+{
+
+    var today = new Date().getTime();
+
+    if( dateOfExecution > today)
+    {
+        return dateOfExecution;
+    }
+    
+    // Else, date of execution has passed.
+
+    let autoFreq = $(`#auto-many-send-freq-unit-${autoID}`).val();
+
+    switch(autoFreq){
+        case "day":
+
+            return today + 86400000; // Add one day in milliseconds to the current date, that is the next automatione execution time.
+        case "week":
+
+            return today + 604800000;
+        case "month":
+
+            return today + 2629746000;
+        case "year":
+            return today + 31556952000;
+    }
 }

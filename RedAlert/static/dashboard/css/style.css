@@ -26,10 +26,10 @@
 }
 
 .bwh-header{
-    border: 2px solid;
-    border-radius: 6px;
-    background-color: #0d6efd;
-    color: white;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #000000;
+    margin-bottom: 3px;
 }
 
 .bootstrap-grey-border{
@@ -41,35 +41,43 @@
     border-bottom: 1px solid rgba(0,0,0,.125);
 }
 
-
-.sel-sr-color{
-    background-color: #f1f1f1;
-}
-
 .remove-sr-btn{
-    border: 2px solid rgb(216, 49, 49);
-    border-radius: 5px;
-    padding: 3px;
+    border: 2px solid #F01716;
     cursor: pointer;
+    border-radius: 50px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    color: #F01716;
 }
 
 .remove-sr-btn:hover{
     background-color: #f57d7d;
+    color: white;
 }
 
 .select-client-btn{
-    border: 2px solid rgb(124, 174, 216);
-    border-radius: 5px;
-    padding: 3px;
+    border: 2px solid #1D84B5;
     cursor: pointer;
+    border-radius: 50px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    color: #1D84B5;
 }
 
 .select-client-btn:hover{
-    border: 2px solid rgb(124, 174, 216);
-    border-radius: 5px;
-    padding: 3px;
+    border: 2px solid #1D84B5;
     cursor: pointer;
-    background-color: rgb(217, 229, 235);
+    border-radius: 50px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: #60BCE6;
+    color: white;
 }
 
 
@@ -82,8 +90,6 @@
 }
 
 #filter-container{
-    width: 40%;
-    border: 3px solid #0d6efd;
     border-radius: 8px;
     margin-left: 5px;
     padding: 10px;
@@ -91,7 +97,7 @@
 }
 
 .age-filter-input{
-    width: 35%;
+    width: 80%;
     display: inline;
 }
 
@@ -130,11 +136,9 @@
 
 #client-map{
     height: 700px;
-    width: 90%;
     margin-left:auto;
     margin-right: auto;
-    border: 2px solid #0d6efd;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 #start-drawing-btn{
@@ -167,3 +171,140 @@
 #clear-draw-btn:focus{
     box-shadow: 0 0 0 .25rem #F53B3B;;
 }
+
+
+
+/*
+#save-search-btn{
+    
+}
+*/
+
+#open-save-search-modal{
+    margin-right: 10px;
+    margin-left: 10px;
+    display: none;
+}
+
+.saved-search:hover{
+    background-color: #F56666;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.saved-search{
+    border-top: 1px #EAEAEB solid;
+    font-size: 18px;
+    padding-left: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+    text-align: center;
+}
+
+.saved-subset{
+    border-top: 1px #EAEAEB solid;
+    font-size: 18px;
+    padding-left: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+    text-align: center;
+}
+
+.saved-subset:hover{
+    background-color: #F56666;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer; 
+}
+
+
+#appl-filters-display{
+    font-weight: 550;
+}
+
+
+
+.grey-bottom-border{
+    border-bottom:1px #EAEAEB solid ;
+}
+
+
+/* START Filter column styles */
+
+.indent-filter-container{
+    padding-left: 10px;
+}
+
+.filter-row{
+margin-bottom: 5px;
+border-bottom: 1px #EAEAEB solid ;
+}
+
+
+/* END Filter column styles */
+
+
+/* START search bar styles */
+#user-search-input{
+    display: inline-block;
+    border: 1px solid #5F0707;
+}
+
+#user-search-input:focus{
+    box-shadow: 0px 0px 6px 2px #F01716;
+    border: 1px solid #F01716;
+}
+/* END Search bar styles */
+
+
+/* Start search result container styles */
+
+
+.sel-sr-color{
+    background-color: #FEECEC;
+    border-radius: 10px;
+}
+
+.map-tools-header{
+    font-size: 18px;
+}
+
+/* End search result container styles */
+
+
+/* START Notification Styles */
+.form-select{
+    border: 1px #5F0707 solid
+}
+
+.form-select:focus{
+    box-shadow: 0px 0px 6px 1px #F01716;
+    border: 1px solid #F01716;
+}
+
+.form-control:focus{
+    box-shadow: 0px 0px 6px 1px #F01716;
+    border: 1px solid #F01716;  
+}
+
+/* End Notification Styles */
+
+
+/* MAP controls */
+
+.draw-tool-label{
+    font-size: 12px;
+    color: #555555;
+}
+
+.d-flex-col-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* END MAP controls */
